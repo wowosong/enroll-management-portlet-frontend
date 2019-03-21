@@ -47,6 +47,7 @@ exports.cssLoaders = function (options) {
     if (options.extract) {
       return ExtractTextPlugin.extract({
         use: loaders,
+        publicPath: '../../',         // 这里是/static/css/static/img/img@2x.c634efc.png 所以跳出两层../../； 注意配置这一部分，根据目录结构自由调整
         fallback: 'vue-style-loader'
       })
     } else {
