@@ -1,0 +1,166 @@
+/*
+
+使用 POSTCSS 转码, 可以使用 less 的一些语法如: 嵌套结构, &引用
+
+*/
+
+
+
+
+
+ /* Transition
+  -------------------------- */
+    /* Colors
+  -------------------------- */
+    /* Link
+  -------------------------- */
+    /* Border
+  -------------------------- */
+    /* Box-shadow
+  -------------------------- */
+    /* Fill
+  -------------------------- */
+    /* Font
+  -------------------------- */
+    /* Size
+  -------------------------- */
+    /* z-index
+  -------------------------- */
+    /* Disable base
+  -------------------------- */
+    /* Icon
+  -------------------------- */
+    /* Checkbox
+  -------------------------- */
+    /* Radio
+  -------------------------- */
+    /* Select
+  -------------------------- */
+  .el-select {width:100%; }
+  .el-form--inline .el-select {width:160px;}
+
+    /* Alert
+  -------------------------- */
+    /* Message Box
+  -------------------------- */
+    /* Message
+  -------------------------- */
+  .el-message {
+    top:80px;
+  }
+  .el-message__group {
+    height: auto;
+  }
+  .el-message__group p {
+    white-space: normal;
+  }
+
+
+    /* Notification
+  -------------------------- */
+    /* Input
+  -------------------------- */
+  .el-date-editor.el-input, .el-date-editor.el-input__inner { width:100%; }
+  .el-upload {width:auto;}
+  .el-form--inline .el-form-item {margin-right:16px;margin-bottom:16px;}
+  .el-form--inline .el-input { width:160px;}
+  .el-form--inline .el-input-number .el-input {width:100%;}
+
+
+    /* Cascader
+  -------------------------- */
+    /* Group
+  -------------------------- */
+    /* Tab
+  -------------------------- */
+/*  .el-tabs__header {border-color:#e5e7ea;}
+  .el-tabs--card>.el-tabs__header .el-tabs__item.is-active { border-color:#e5e7ea;border-bottom-color:#fff;background:#fff;}
+  .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active { border-right-color:#e5e7ea;border-left-color:#e5e7ea; }
+  .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active:first-child {border-left-color:#e5e7ea;}
+  .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active:last-child {border-right-color:#e5e7ea;}*/
+
+
+    /* Button
+  -------------------------- */
+  .el-button {padding:9px 14px; font-size:14px;}
+  .el-button--small {padding:8px 12px; font-size:14px;}
+  .el-button--mini {padding:5px 8px; font-size:12px;}
+
+  .el-button--text {padding-left:0;padding-right:0;margin: 0 0 5px 0;}
+  .el-button + .el-button {margin-left:16px;}
+  .el-button [class*="el-icon-"] + span {margin-left:6px;}
+  .el-input-group__append .el-button, .el-input-group__append .el-select, .el-input-group__prepend .el-button, .el-input-group__prepend .el-select{ margin: -10px -20px;}
+
+
+
+    /* cascader
+  -------------------------- */
+    /* Switch
+ -------------------------- */
+    /* Dialog
+ -------------------------- */
+  .dialog_980 {width:980px;}
+  .el-dialog--small {width:700px;}
+    /* Table
+ -------------------------- */
+ .el-table__body-wrapper, .el-table__footer-wrapper, .el-table__header-wrapper {
+  width:101%;
+   }
+    /* Pagination
+
+ -------------------------- */
+  .el-pagination {
+      padding-left: 0;
+      padding-top: 10px;
+      margin-top:32px;
+      margin-bottom:32px;text-align: center;}
+.el-pagination__rightwrapper {float: none;}
+
+    /* Popover
+ -------------------------- */
+    /* Tooltip
+  -------------------------- */
+    /* Tag
+  -------------------------- */
+    /* Dropdown
+  -------------------------- */
+    /* Badge
+  -------------------------- */
+  .el-badge__content {border:none;}
+
+
+    /* Card
+  --------------------------*/
+    /* Slider
+  --------------------------*/
+    /* Steps
+  --------------------------*/
+    /* Steps
+  --------------------------*/
+    /* Rate
+  --------------------------*/
+    /* DatePicker
+  --------------------------*/
+    /* Loading
+  --------------------------*/
+    /* Scrollbar
+  --------------------------*/
+    /* Carousel
+  --------------------------*/
+    /* Collapse
+  --------------------------*/
+
+  /* breadcrumb
+  -------------------------- */
+  .el-breadcrumb { display: inline-block; font-size:12px; }
+
+  /* tree
+  -------------------------- */
+.el-tree-node>.el-tree-node__children { overflow: visible; }
+.el-tree-node__expand-icon {font-size:14px; line-height:36px;width:24px;height:36px;border:none; margin-left:0;margin-right:0 !important;text-align: center;flex-shrink: 0;}
+.el-tree-node__expand-icon:before {display: inline-block; content:''; width:0;height:0; border:6px solid transparent; border-right-width:0;border-left-color:#97a8be; border-left-width:7px; }
+.el-tree-node__expand-icon.is-leaf:before {display: none;}
+
+.el-tree-node__content {font-size:0;}
+.el-tree-node__content:hover .el-tree-node__label{ background:#e4e8f1 }
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content .el-tree-node__label {background:#edf7ff;}
