@@ -74,7 +74,12 @@ body{
 .noData{
   text-align: center;
 }
-.clear::after{
-  content: '';
+.clearfix:before,
+.clearfix:after {
   display: block;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both;
 }

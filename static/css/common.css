@@ -1,0 +1,11 @@
+.container{
+  width: 100%;
+  min-width: 1182px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+.main-wrap{
+  width: 1182px;
+  margin: 0 auto;
+}
+
