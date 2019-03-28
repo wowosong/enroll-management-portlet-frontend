@@ -1,6 +1,6 @@
 <template>
-  <footer>
-    <div class="container">
+  <div class="container">
+    <footer>
       <div class="main-wrap">
         <div class="tel-wrap">
           <ul class="clearfix">
@@ -23,8 +23,8 @@
           <span>嘉祥官网</span>
         </div>
       </div>
-    </div>
-  </footer>
+    </footer>
+  </div>
 </template>
 <script>//page footer
 export default {
@@ -57,11 +57,11 @@ export default {
 </script>
 <style lang="less" scoped>
   footer {
-    padding: 40px 30px 40px 50px;
     color: #fff;
     background: #323232;
     .main-wrap {
       position: relative;
+      padding: 27px 30px 40px 50px;
     }
     .tel-wrap {
       margin-right: 50px;
@@ -76,7 +76,7 @@ export default {
         margin-right: 0;
       }
       .copyright {
-        margin-top: 40px;
+        margin-top: 27px;
         span {
           margin-left: 30px;
         }
@@ -84,8 +84,8 @@ export default {
     }
     .qrcode {
       position: absolute;
-      right: 0;
-      top: 0;
+      right: 30px;
+      top: 40px;
       background: #3a3939;
       padding: 6px;
       width: 82px;
@@ -98,5 +98,9 @@ export default {
         text-align: center;
       }
     }
+  }
+
+  .container {
+    background: #323232;
   }
 </style>

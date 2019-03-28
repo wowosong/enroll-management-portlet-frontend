@@ -19,8 +19,29 @@ import VueResource from 'vue-resource'
 Vue.use(VueResource)
 import router_list from './router'
 
+import './comm_filter'
 
-
+import default_avatar from '@/imgs/avatar.png'
+import default_img from '@/imgs/default_image_small.png'
+Vue.prototype.errorImg = function (e, type) {
+  // e.target.src=default_avatar_url;
+  if (type) {
+    switch (type) {
+      case 'avatar':
+        e.target.src = default_avatar;
+        break;
+      case 'video':
+        e.target.src = default_img;
+        break;
+      case 'image':
+        e.target.src = default_img;
+        break;
+      default:
+        e.target.src = default_img;
+        break;
+    }
+  }
+}
 /* vue-resource 统一请求处理
  *-------------------------------------------------------------------------------*/
 window.http = Vue.http
@@ -101,7 +122,7 @@ Vue.http.interceptors.push(function (request, next) {
  *-------------------------------------------------------------------------------end*/
 
 
- 
+
 
 /* 初始化路由 并挂载到vue
  *-------------------------------------------------------------------------------*/
