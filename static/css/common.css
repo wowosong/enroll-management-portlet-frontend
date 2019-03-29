@@ -2,6 +2,7 @@
 body{
   color: #333;
   background: #eff3f5;
+  font-size: 14px;
 }
 #app{
   width: 100%;
@@ -39,4 +40,18 @@ body{
   float: right;
   width: 280px;
   padding: 20px 0;
+}
+.text_one{
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+  line-height: 20px;
+  height: 20px;
+}
+.no_data{
+  text-align: center;
+  padding: 50px 0;
+}
+.no_data::before{
+  content: '暂无数据'
 }
