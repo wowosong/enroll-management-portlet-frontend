@@ -16,6 +16,9 @@ import notice from '@/views/notice/index'
 //通知详情
 import noticeDetail from '@/views/notice/detail'
 
+// 招生计划
+import signup from '@/views/sign_up/index'
+
 import page404 from '../views/error/404'
 
 const list = [{
@@ -31,6 +34,12 @@ const list = [{
       path: '/plan',
       name: 'plan',
       component: plan,
+    },
+    {
+
+      path: '/signup',
+      name: 'signup',
+      component: signup
     },
     {
       path: '/plan/detail',

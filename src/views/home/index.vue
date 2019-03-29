@@ -114,6 +114,9 @@
 </script>
 
 <style lang="less" scoped>
+  .container{
+    background: #fff;
+  }
   .banner {
     height: 420px;
     background: url(~css_img/banner.jpg) no-repeat center;
@@ -237,7 +240,7 @@
   }
 
   .notice-wrap {
-    width: 1182px;
+    width: 1120px;
     margin: 40px auto;
     padding: 0 16px;
     box-sizing: border-box;

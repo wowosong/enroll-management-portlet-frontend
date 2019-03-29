@@ -18,7 +18,7 @@ module.exports = {
         secure: false
       },
       '/gateway': {
-        target: 'http://clouddev.myedu.gov.cn',
+        target: 'http://1.119.192.249:8090',
         changeOrigin: true,
         secure: false
       },
@@ -31,7 +31,7 @@ module.exports = {
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */
