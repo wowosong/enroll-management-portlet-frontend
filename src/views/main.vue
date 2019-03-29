@@ -1,7 +1,7 @@
 <template>
-  <div v-if="inited">
+  <div v-if="inited" class="main">
     <comm_head></comm_head>
-    <router-view></router-view>
+    <router-view class="box"></router-view>
     <comm_footer></comm_footer>
   </div>
 </template>
@@ -88,3 +88,15 @@ export default {
     }
 }
 </script>
+<style>
+  .main{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+  .box{
+    flex-grow: 1;
+  }
+</style>
+

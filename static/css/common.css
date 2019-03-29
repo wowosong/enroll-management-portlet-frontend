@@ -1,8 +1,11 @@
-#app{
-  width: 100%;
-}
+
 body{
   color: #333;
+  background: #eff3f5;
+}
+#app{
+  width: 100%;
+  height: 100%;
 }
 .container{
   width: 100%;
@@ -15,3 +18,25 @@ body{
   box-sizing: border-box;
 }
 
+.comm_main{
+  width: 1200px;
+  margin: 20px auto;
+}
+.comm_item{
+  background: #fff;
+}
+.clearfix::after{
+  content:'';
+  display: block;
+  clear: both;
+}
+.float_left{
+  float: left;
+  width: 900px;
+  padding: 20px 30px;
+}
+.float_right{
+  float: right;
+  width: 280px;
+  padding: 20px 0;
+}
