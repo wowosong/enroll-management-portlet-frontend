@@ -5,6 +5,10 @@ import home from '@/views/home/index'
 
 // 招生计划
 import plan from '@/views/plan/index'
+//详情
+import detail from '@/views/plan/detail'
+//填写须知
+import notice from '@/views/plan/notice'
 
 // 招生计划
 import signup from '@/views/sign_up/index'
@@ -26,9 +30,20 @@ const list = [{
       component: plan,
     },
     {
+
       path: '/signup',
       name: 'signup',
-      component: signup,
+      component: signup
+    },
+    {
+      path: '/plan/detail',
+      name: 'detail',
+      component: detail,
+    },
+    {
+      path: '/fillInstructions',
+      name: 'notice',
+      component: notice,
     }
   ],
 },
