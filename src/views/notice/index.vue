@@ -1,13 +1,12 @@
 <template>
     <div class="comm_main clearfix">
         <div class="comm_item float_left">
-            <div class="item_tit">招生计划<span>ENROLLMENT PLAN</span></div>
+            <div class="item_tit">通知公告</div>
             <div class="plan_cont">
                 <div class="plan_list" v-for="(item,index) in planList" :key="index">
                     <i class="ico"></i>
-                    <div class="plan_tit text_one">卡机是否回家看电视附近开始的恢复会计师电话费看见当时方会计师电话费看见当时附近开始的恢复会计师对方还看电视剧符号看电视剧</div>
-                    <span class="btn color1" :class="{dis_click:item.isSign == 0}">立即报名</span>
-                    <span class="btn color2">招生简章</span>
+                    <div class="plan_tit text_one" @click="noticeDetail(item)">卡机是否回家看电视附近开始的恢复会计师电话费看见当时方会计师电话费看见当时附近开始的恢复会计师对方还看电视剧符号看电视剧</div>
+                    <span class="time">2019-09-09</span>
                 </div>
                 <div class="no_data" v-if="!planList || planList.length == 0"></div>
             </div>
@@ -34,7 +33,16 @@
                         title:'看见爱上发挥的教科书福建省的看法和圣诞节开发速度快',
                         isSign:1
                     }
-                ]
+                ],
+                
+            }
+        },
+        mounted(){
+
+        },
+        methods:{
+            noticeDetail(item){
+                this.$router.push('/notice/detail')
             }
         }
     }
@@ -68,41 +76,18 @@
             height: 4px;
             border-radius: 50%;
             float: left;
-            margin-top: 14px;
-            margin-right: 10px;
+            margin-top: 8px;
         }
         .plan_tit{
             color: #333;
-            margin-top: 6px;
-            width: 600px;
-            display: inline-block;
             cursor: pointer;
+            margin-left: 10px;
+            display: inline-block;
+            width: 720px;
         }
         .plan_tit:hover{
             color: #aa2f33;
         }
-        .btn{
-            line-height: 32px;
-            border-radius: 3px;
-            border:1px solid #bbb;
-            float: right;
-            margin-left: 22px;
-            padding: 0 15px;
-            cursor: pointer;
-        }
-        .color1{
-            color: #aa2f33;
-            border:1px solid #aa2f33;
-        }
-        .btn:hover{
-            background: #aa2f33;
-            border:1px solid #aa2f33;
-            color: #fff;
-        }
-        .btn.dis_click{
-            background: #eee;
-            color: #999;
-            border:1px solid #bbb;
-        }
+        .time{float: right;}
     }
 </style>

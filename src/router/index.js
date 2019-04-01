@@ -5,10 +5,16 @@ import home from '@/views/home/index'
 
 // 招生计划
 import plan from '@/views/plan/index'
-//详情
+//招生计划详情
 import detail from '@/views/plan/detail'
 //填写须知
-import notice from '@/views/plan/notice'
+import instructions from '@/views/plan/instructions'
+//个人中心
+import center from '@/views/center/index'
+//通知
+import notice from '@/views/notice/index'
+//通知详情
+import noticeDetail from '@/views/notice/detail'
 
 // 招生计划
 import signup from '@/views/sign_up/index'
@@ -42,8 +48,23 @@ const list = [{
     },
     {
       path: '/fillInstructions',
+      name: 'instructions',
+      component: instructions,
+    },
+    {
+      path: '/center',
+      name: 'center',
+      component: center,
+    },
+    {
+      path: '/notice',
       name: 'notice',
       component: notice,
+    },
+    {
+      path: '/notice/detail',
+      name: 'noticeDetail',
+      component: noticeDetail,
     }
   ],
 },
