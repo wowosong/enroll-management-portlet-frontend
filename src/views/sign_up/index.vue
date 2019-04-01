@@ -54,7 +54,7 @@
                 </el-form-item>
                 <el-form-item label="性别:" prop="gender">
                   <el-radio-group v-model="formData.info.gender">
-                    <el-radio v-for="(gender,index) in genderList" :label="gender.seiValue">{{gender.seiName}}
+                    <el-radio v-for="(gender,index) in genderList" :key="index" :label="gender.seiValue">{{gender.seiName}}
                     </el-radio>
                   </el-radio-group>
                   <!--错误信息-->
