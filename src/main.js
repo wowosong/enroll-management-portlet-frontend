@@ -20,6 +20,7 @@ Vue.use(VueResource)
 import router_list from './router'
 
 import './comm_filter'
+import './components/fileUpload/index.js'
 
 import default_avatar from '@/imgs/avatar.png'
 import default_img from '@/imgs/default_image_small.png'
@@ -131,6 +132,73 @@ const router = new Router({
   mode: 'hash',
   routes: router_list,
 })
+window.userInfo = {
+  id:''
+}
+
+/**
+ *
+ * 自定义公共方法
+ *
+ */
+
+// 只生成一层 a=b;c=d
+window.eduFilterParam = function (obj) {
+  let rs = []
+  for (let ii in obj) {
+    rs.push(ii + '=' + obj[ii])
+  }
+  return rs.join(';');
+}
+
+
+window.setCookie = function (name, value, time) {
+  let exp = new Date()
+
+  if(time){
+    exp.setTime(exp.getTime()-10000)
+  }else{
+    exp.setTime(exp.getTime() +  12 * 60 * 60 * 1000)
+  }
+  // console.log('exp',exp)
+  document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString()
+}
+
+window.getCookie = function (name) {
+  var arr = [],
+    reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)")
+  if (arr = document.cookie.match(reg))
+    return unescape(arr[2])
+  else
+    return null
+}
+
+//清除所有cookie
+window.clearAllCookie = function () {
+  let keys = document.cookie.match(/[^ =;]+(?=\=)/g);
+  if (keys) {
+    for (let i = keys.length; i--;)
+      document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString()
+  }
+}
+window.logout = function () {
+  //清除本地缓存重新登陆
+  localStorage.clear();
+  clearAllCookie();
+  window.userInfo = {
+    id:''
+  };
+  let localtoken = getCookie('accesstoken') ? JSON.parse(getCookie('accesstoken')) : null
+  if (localtoken && localtoken.access_token) {
+    http.get('/gateway/auth/logout', {
+      headers: { Authorization: 'Bearer ' + localtoken.access_token },
+    }).then((xhr) => {
+      router.push('/')
+    })
+  } else {
+    router.push('/')
+  }
+}
 
 // 初始化整个app
 const store = new Vuex.Store({
