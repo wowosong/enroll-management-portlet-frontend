@@ -12,20 +12,20 @@
               <span v-if="!formData.info.status">修改</span>
             </template>
           </p>
-          <div class="basic-info">
-            <div class="user-img">
-              <div class="user_photo">
-                <img :src="imgUrl+formData.info.pictureFileId" v-if="formData.info.pictureFileId">
+          <el-form :model="formData.info" :rules="rules" ref="ruleForm" label-width="170px">
+            <div class="basic-info">
+              <div class="user-img">
+                <div class="user_photo">
+                  <img :src="imgUrl+formData.info.pictureFileId" v-if="formData.info.pictureFileId">
+                </div>
+                <div class='img_null' v-if="userImgErr">证件照不能为空</div>
+                <div class="up_suerphoto" v-if="!isShow" @click="uploadPicture">
+                  <img src="@/imgs/upload.png">上传证件
+                </div>
+                <p v-if="!formData.info.status">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
               </div>
-              <div class='img_null' v-if="userImgErr">证件照不能为空</div>
-              <div class="up_suerphoto" v-if="!isShow" @click="uploadPicture">
-                <img src="@/imgs/upload.png">上传证件
-              </div>
-              <p v-if="!formData.info.status">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
-            </div>
-            <div class="user-info">
-              <el-form :model="formData.info" :rules="rules" ref="ruleForm" label-width="170px">
-                <el-form-item label="学生姓名:" prop="name">
+              <div class="user-info">
+                <el-form-item label="学生姓名:" prop="name" id="formData_name">
                   <el-col :span="12">
                     <el-input v-model="formData.info.name"></el-input>
                   </el-col>
@@ -34,7 +34,7 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item label="身份证号:" prop="idCardNum">
+                <el-form-item label="身份证号:" prop="idCardNum" id="formData_idCardNum">
                   <el-col :span="12">
                     <el-input v-model="formData.info.idCardNum" @change="idCardNumFn"></el-input>
                   </el-col>
@@ -52,9 +52,10 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item label="性别:" prop="gender">
+                <el-form-item label="性别:" prop="gender" id="formData_gender">
                   <el-radio-group v-model="formData.info.gender">
-                    <el-radio v-for="(gender,index) in genderList" :key="index" :label="gender.seiValue">{{gender.seiName}}
+                    <el-radio v-for="(gender,index) in genderList" :key="index" :label="gender.seiValue">
+                      {{gender.seiName}}
                     </el-radio>
                   </el-radio-group>
                   <!--错误信息-->
@@ -93,83 +94,81 @@
                     </el-col>
                   </el-row>
                 </el-form-item>
-              </el-form>
-            </div>
-            <div class="user-info-table">
-              <div class="table-item">
-                <label>监护人:</label>
-                <table class="table">
-                  <thead>
-                  <tr>
-                    <th>姓名</th>
-                    <th>手机</th>
-                    <th>学历</th>
-                    <th>工作单位</th>
-                    <th>职务</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="item in formData.info.guardianInfo">
-                    <td><input type="text" v-model="item.name"></td>
-                    <td><input type="text" v-model="item.tel"></td>
-                    <td><input type="text" v-model="item.education"></td>
-                    <td><input type="text" v-model="item.workPlace"></td>
-                    <td><input type="text" v-model="item.post"></td>
-                  </tr>
-                  </tbody>
-                </table>
               </div>
-              <div class="table-item">
-                <label>获奖信息:</label>
-                <div>
+              <div class="user-info-table">
+                <div class="table-item">
+                  <label>监护人:</label>
                   <table class="table">
                     <thead>
                     <tr>
-                      <th>获奖时间</th>
-                      <th>奖项名称</th>
-                      <th>奖项等级</th>
+                      <th>姓名</th>
+                      <th>手机</th>
+                      <th>学历</th>
+                      <th>工作单位</th>
+                      <th>职务</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="item in formData.info.guardianInfo">
-                      <td>
-                        <el-date-picker v-model="item.name" type="date" placeholder="年-月-日"></el-date-picker>
-                      </td>
+                      <td><input type="text" v-model="item.name"></td>
                       <td><input type="text" v-model="item.tel"></td>
-                      <td><input type="text" v-model="item.tel"></td>
+                      <td><input type="text" v-model="item.education"></td>
+                      <td><input type="text" v-model="item.workPlace"></td>
+                      <td><input type="text" v-model="item.post"></td>
                     </tr>
                     </tbody>
                   </table>
-                  <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖</div>
+                </div>
+                <div class="table-item">
+                  <label>获奖信息:</label>
+                  <div>
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>获奖时间</th>
+                        <th>奖项名称</th>
+                        <th>奖项等级</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr v-for="item in formData.info.guardianInfo">
+                        <td>
+                          <el-date-picker v-model="item.name" type="date" placeholder="年-月-日"></el-date-picker>
+                        </td>
+                        <td><input type="text" v-model="item.tel"></td>
+                        <td><input type="text" v-model="item.tel"></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖</div>
+                  </div>
+                </div>
+                <div class="table-item">
+                  <label>获奖附件:</label>
+                  <div class="up_idcard">
+                    <template v-if="!formData.enrollFileId">
+                      <img src="@/imgs/upload.png">上传证件
+                    </template>
+                    <img v-if="formData.enrollFileId" :src="imgUrl+formData.enrollFileId" class="card">
+                  </div>
+                  <div class="hint">证明您的获奖情况</div>
                 </div>
               </div>
-              <div class="table-item">
-                <label>获奖附件:</label>
-                <div class="up_idcard">
-                  <template v-if="!formData.enrollFileId">
-                    <img src="@/imgs/upload.png">上传证件
-                  </template>
-                  <img v-if="formData.enrollFileId" :src="imgUrl+formData.enrollFileId" class="card">
-                </div>
-                <div class="hint">证明您的获奖情况</div>
+            </div>
+            <!--间隔线-->
+            <div class="line"></div>
+            <!--登录密码-->
+            <div class="sign-pwd" id="pwd">
+              <p class="item-tit">登录密码</p>
+              <div class="sign-pwd-tit">
+                请设置密码，建议使用数字、字母、字符的组合密码且长度超过6位
+                <p>若未设置密码，下次登录的密码为“身份证号后六位”</p>
               </div>
-            </div>
-          </div>
-          <!--间隔线-->
-          <div class="line"></div>
-          <!--登录密码-->
-          <div class="sign-pwd" id="pwd">
-            <p class="item-tit">登录密码</p>
-            <div class="sign-pwd-tit">
-              请设置密码，建议使用数字、字母、字符的组合密码且长度超过6位
-              <p>若未设置密码，下次登录的密码为“身份证号后六位”</p>
-            </div>
-            <el-row>
-              <el-col :span="16" :offset="6">
-                <el-form :model="loginForm" :rules="rules" ref="ruleForm" label-width="100px">
+              <el-row>
+                <el-col :span="16" :offset="4">
                   <el-form-item label="登录名:" prop="username">
                     <el-col :span="18">
-                      <el-input v-model="loginForm.username" placeholder="请输入手机号"></el-input>
+                      <el-input v-model="formData.info.username" placeholder="请输入手机号"></el-input>
                     </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
@@ -178,13 +177,13 @@
                   </el-form-item>
                   <el-form-item label="设置密码:" prop="pwd">
                     <el-col :span="18">
-                      <el-input v-if="!isPwd" type="password" v-model="loginForm.pwd" placeholder="默认密码 (身份证号后六位)">
+                      <el-input v-if="!isPwd" type="password" v-model="formData.info.pwd" placeholder="默认密码 (身份证号后六位)">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
                           <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
                         </template>
                       </el-input>
-                      <el-input v-if="isPwd" type="text" v-model="loginForm.pwd">
+                      <el-input v-if="isPwd" type="text" v-model="formData.info.pwd">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
                           <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
@@ -194,13 +193,13 @@
                   </el-form-item>
                   <el-form-item label="确认密码:" prop="repwd">
                     <el-col :span="18">
-                      <el-input v-if="!isRePwd" type="password" v-model="loginForm.repwd" placeholder="默认密码 (身份证号后六位)">
+                      <el-input v-if="!isRePwd" type="password" v-model="formData.info.repwd" placeholder="默认密码 (身份证号后六位)">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
                           <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
                         </template>
                       </el-input>
-                      <el-input v-if="isRePwd" type="text" v-model="loginForm.repwd">
+                      <el-input v-if="isRePwd" type="text" v-model="formData.info.repwd">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
                           <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
@@ -208,16 +207,16 @@
                       </el-input>
                     </el-col>
                   </el-form-item>
-                </el-form>
-              </el-col>
+                </el-col>
+              </el-row>
 
-            </el-row>
-
-          </div>
+            </div>
+          </el-form>
           <div class="sign-btn">
             <button class="save" @click="save('ruleForm')">保存</button>
             <button class="cancel" @click="cancel('ruleForm')">取消</button>
           </div>
+
           <!--间隔线-->
           <div class="line"></div>
           <div class="sign-btn">
@@ -275,16 +274,22 @@
                 workPlace: '',
                 post: ''
               }
-            ]
+            ],
+            username:'',
+            pwd:'',
+            repwd:''
           }
         },
         // 表单验证
         rules: {
           name: [{required: true, message: '必填项', trigger: 'blur'}],
-          idCardNum: [{required: true, message: '必填项', trigger: 'blur'}],
+          idCardNum: [
+            {required: true, message: '必填项', trigger: 'blur'},
+            { min: 15, max: 18, message: '格式有误', trigger: 'blur' }
+            ],
           username: [{required: true, message: '必填项', trigger: 'blur'}],
-          birthDate: [{required: true, message: '必填项', trigger: 'blur'}],
-          gender: [{required: true, message: '必填项', trigger: 'blur'}]
+          birthDate: [{required: true, message: '必填项', trigger: 'change'}],
+          gender: [{required: true, message: '必填项', trigger: 'change'}]
         },
         // 性别数据
         genderList: [],
@@ -342,11 +347,17 @@
         });
       },
       // 保存
-      save(formName){
+      save(formName) {
+        let vm = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
             alert('submit!');
           } else {
+            if(!vm.formData.info.name) return document.getElementById('formData_name').scrollIntoView();
+
+            if(!vm.formData.info.idCardNum)return document.getElementById('formData_idCardNum').scrollIntoView();
+
+            if(!vm.formData.info.gender) return document.getElementById('formData_gender').scrollIntoView();
             console.log('error submit!!');
             return false;
           }
@@ -357,7 +368,7 @@
         this.$refs[formName].resetFields();
       },
       // 提交报名
-      submitForm(){
+      submitForm() {
 
       }
 
