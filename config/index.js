@@ -18,7 +18,7 @@ module.exports = {
         secure: false
       },
       '/gateway': {
-        target: 'http://1.119.192.249:8090',
+        target: 'http://42.159.92.238',
         changeOrigin: true,
         secure: false
       },
