@@ -1,27 +1,29 @@
 <template>
     <div class="comm_item float_right">
         <div class="campus_tit">全部校区</div>
-        <div v-for="(item,index) in campusList" :key="index" class="campus_list">{{item.name}}</div>
+        <div v-for="(item,index) in campusList" :key="index" class="campus_list">{{item.campusName}}</div>
         <div class="no_data" v-if="!campusList || campusList.length == 0"></div>
     </div>
 </template>
 <script>
 export default {
-    data(){
-        return{
-            campusList:[
-                {
-                    name:'接口文档发货就开始对方sdfdshf啊可见度发挥的空间符合可是大家'
-                },
-                {
-                    name:'接口文档发货就开始对方'
-                },
-                {
-                    name:'接口文档发货就开始对方'
-                }
-            ]
-        }
+  data() {
+    return {
+      campusList: []
     }
+  },
+  mounted() {
+    this.queryCampus();
+  },
+  methods: {
+    //获取校区
+    queryCampus() {
+      let vm = this;
+      http.get("/gateway/campus/list").then(function (xhr) {
+        vm.campusList = xhr.data.data
+      })
+    }
+  }
 }
 </script>
 <style lang="less" scoped>

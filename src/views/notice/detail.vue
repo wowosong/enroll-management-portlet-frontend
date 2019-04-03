@@ -1,15 +1,14 @@
 <template>
     <div class="comm_main clearfix">
         <div class="comm_item float_left">
-            <h6 class="detail_tit">{{datail.tit}}</h6>
+            <h6 class="detail_tit">{{datail.noticeTitle}}</h6>
             <div class="notice_about">
-                <span>发布时间：2019-6-25</span>
-                <span>发布单位：都江堰嘉祥</span>
-                <span>浏览量：20</span>
+                <span v-if="datail.publishTime">发布时间：{{datail.publishTime | dateFormatYmdHms}}</span>
+                <span>发布单位：{{datail.orgName}}</span>
             </div>
             <div class="cont">
-                <div v-html="datail.content"></div>
-                <div class="files" v-if="datail.files.length > 0">
+                <div v-html="datail.noticeContent"></div>
+                <div class="files" v-if="datail && datail.files">
                     <strong>附件：</strong>
                     <div class="file_ceil" v-for="(file,index) in datail.files" :key="index">
                         <div class="file_name">{{file.fileName}}</div>
@@ -17,7 +16,7 @@
                     </div>
                 </div>
             </div>
-            <div class="no_data" v-if="!datail || datail.content == ''"></div>
+            <div class="no_data" v-if="!datail || datail.noticeContent == ''"></div>
         </div>
         <campus></campus>
     </div>
@@ -31,15 +30,14 @@
         data(){
             return{
                 datail:{
-                    tit:'按时艰苦了飞机迪斯科付款',
-                    content:'安科技孵化打卡时间发货多少空间粉红色的水电开发技术对抗速度飞快，士大夫的技术开发水电开发的数据库速度飞快收到回复可见电话反馈。',
-                    files:[
-                        {fileName:'sajfasdkjfdjdk.png'},
-                        {fileName:'sajfasdkjfdjdk.png'}
-                    ]
+                  files:[]
                 }
             }
-        }
+        },
+      mounted() {
+        let vm = this;
+        vm.datail = vm.$route.query.datail
+      },
     }
 </script>
 

@@ -5,9 +5,9 @@
             <div class="plan_cont">
                 <div class="plan_list" v-for="(item,index) in planList" :key="index">
                     <i class="ico"></i>
-                    <div class="plan_tit text_one">卡机是否回家看电视附近开始的恢复会计师电话费看见当时方会计师电话费看见当时附近开始的恢复会计师对方还看电视剧符号看电视剧</div>
-                    <span class="btn color1" :class="{dis_click:item.isSign == 0}">立即报名</span>
-                    <span class="btn color2">招生简章</span>
+                    <div class="plan_tit text_one">{{item.campusName}} {{item.planName}}</div>
+                    <span class="btn color1" :class="{dis_click:item.publishStatus != 1}" @click="signUp()">立即报名</span>
+                    <span class="btn color2" @click="enrollmentGuide(item)">招生简章</span>
                 </div>
                 <div class="no_data" v-if="!planList || planList.length == 0"></div>
             </div>
@@ -23,20 +23,41 @@
         },
         data(){
             return{
-                planList:[
-                    {
-                        id:1,
-                        title:'看见爱上发挥的教科书福建省的看法和圣诞节开发速度快',
-                        isSign:0
-                    },
-                    {
-                        id:1,
-                        title:'看见爱上发挥的教科书福建省的看法和圣诞节开发速度快',
-                        isSign:1
-                    }
-                ]
+                planList:[],
+                filter:{
+                  campusId: '',
+                },
             }
+        },
+        mounted() {
+            //初始化数据
+            let vm = this;
+            http.get("/enroll/api/erEnrollPlan/portalQuery", {params: vm.filter}).then(function (xhr) {
+              vm.planList = xhr.data.data;
+            })
+        },
+      methods: {
+        signUp() {
+          this.$router.push({path:'/signup'});
+        },
+        enrollmentGuide(item) {
+          if( item.auditStatus != 3 && item.erEnrollmentGuide.publishStatus != 1) {
+            this.$message({
+              message: '请选择审批通过和招生简章发布了的招生计划！',
+              type: "warning"
+            })
+            return;
+          }
+          if(item.erEnrollmentGuide == null) {
+            this.$message({
+              message: '还没填写招生简章！',
+              type: "warning"
+            })
+            return;
+          }
+          this.$router.push({path:'/plan/detail',query:{erEnrollmentGuide:item.erEnrollmentGuide}});
         }
+      }
     }
 </script>
 
