@@ -45,7 +45,7 @@ Vue.prototype.errorImg = function (e, type) {
 }
 /* vue-resource 统一请求处理
  *-------------------------------------------------------------------------------*/
-window.http = Vue.http
+window.http = Vue.http;
 Vue.config.productionTip = false;
 Vue.http.options.credentials = false;
 // Vue.http.options.emulateJSON = true;
@@ -117,12 +117,17 @@ Vue.http.interceptors.push(function (request, next) {
       }
     }
 
-  })
+  });
+  //加headers
+  if (!request.headers.map.Authorization) {
+    let localtoken = localStorage.getItem('accesstoken') ? JSON.parse(localStorage.getItem('accesstoken')) : '';
+    if (localtoken) {
+      request.headers.set('Authorization', 'Bearer ' + localtoken.access_token);
+    }
+  }
 });
 /* vue-resource 统一请求处理
  *-------------------------------------------------------------------------------end*/
-
-
 
 
 /* 初始化路由 并挂载到vue
@@ -131,10 +136,11 @@ Vue.http.interceptors.push(function (request, next) {
 const router = new Router({
   mode: 'hash',
   routes: router_list,
-})
-window.userInfo = {
-  id:''
-}
+});
+// window 自定义
+// 文件系统地址 本地使用
+window.systemParameter = {};
+window.systemParameter.FILE_SYSTEM_URL = '/gateway/zuul/filesystem';
 
 /**
  *
@@ -144,51 +150,18 @@ window.userInfo = {
 
 // 只生成一层 a=b;c=d
 window.eduFilterParam = function (obj) {
-  let rs = []
+  let rs = [];
   for (let ii in obj) {
     rs.push(ii + '=' + obj[ii])
   }
   return rs.join(';');
-}
+};
 
 
-window.setCookie = function (name, value, time) {
-  let exp = new Date()
-
-  if(time){
-    exp.setTime(exp.getTime()-10000)
-  }else{
-    exp.setTime(exp.getTime() +  12 * 60 * 60 * 1000)
-  }
-  // console.log('exp',exp)
-  document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString()
-}
-
-window.getCookie = function (name) {
-  var arr = [],
-    reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)")
-  if (arr = document.cookie.match(reg))
-    return unescape(arr[2])
-  else
-    return null
-}
-
-//清除所有cookie
-window.clearAllCookie = function () {
-  let keys = document.cookie.match(/[^ =;]+(?=\=)/g);
-  if (keys) {
-    for (let i = keys.length; i--;)
-      document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString()
-  }
-}
 window.logout = function () {
   //清除本地缓存重新登陆
   localStorage.clear();
-  clearAllCookie();
-  window.userInfo = {
-    id:''
-  };
-  let localtoken = getCookie('accesstoken') ? JSON.parse(getCookie('accesstoken')) : null
+  let localtoken = localStorage.getItem('accesstoken') ? JSON.parse(localStorage.getItem('accesstoken')):null
   if (localtoken && localtoken.access_token) {
     http.get('/gateway/auth/logout', {
       headers: { Authorization: 'Bearer ' + localtoken.access_token },
@@ -200,17 +173,23 @@ window.logout = function () {
   }
 }
 
-// 初始化整个app
+let localtoken = localStorage.getItem('accesstoken') ? JSON.parse(localStorage.getItem('accesstoken')) : '';
+// 初始化 store
 const store = new Vuex.Store({
   state: {
-    // count: 0,
+    isLogin: localtoken ? true : false,
+    userInfo:{}
   },
   mutations: {
-    // increment(state) {
-    //   state.count++
-    // },
+    changeLogin(state,value) {
+      state.isLogin = value
+    },
+    getUserInfo(state,obj) {
+      state.userInfo = obj
+    },
   }
-})
+});
+// 初始化整个app
 let app = new Vue({
   router,
   store,
@@ -221,8 +200,8 @@ let app = new Vue({
       }
     }, [h('router-view')]);
   }
-})
-app.$mount('#app')
+});
+app.$mount('#app');
 
 /* 初始化路由 并挂载到vue
  *-------------------------------------------------------------------------------end*/
@@ -264,15 +243,15 @@ http.get('/gateway/platform/api/systemTool/config/PORTLET_ICONS_URL').then(respo
       }
     })
   }
-})
+});
 
 
 window.eduFilterParam = function (obj) {
-  let rs = []
+  let rs = [];
   for (let ii in obj) {
     rs.push(ii + '=' + obj[ii])
   }
   return rs.join(';');
-}
+};
 
 
