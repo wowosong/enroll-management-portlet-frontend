@@ -5,7 +5,7 @@
         <div class="logo clearfix">
           <img src="@/imgs/logo.png" @click="goHome">
           <a v-if="!isLogin" @click="goPlan"><i class="iconfont">&#xe619;</i>首次报名</a>
-          <a v-if="isLogin"><img :src="avatar_url+userInfo.accountAvatar" @error="errorImg($event,'avatar')">{{userInfo.userName}}</a>
+          <a v-if="isLogin" @click="goCenter"><img :src="avatar_url+userInfo.accountAvatar" @error="errorImg($event,'avatar')">{{userInfo.userName}}</a>
         </div>
       </div>
     </header>
@@ -37,6 +37,10 @@
       //首次报名 跳转计划列表
       goPlan() {
         this.$router.push({path: '/plan'})
+      },
+      // 头像 跳转个人中心
+      goCenter() {
+        this.$router.push({path: '/center'})
       }
     }
   }
