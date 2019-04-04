@@ -3,9 +3,9 @@
     <header>
       <div class="main-wrap">
         <div class="logo clearfix">
-          <img src="@/imgs/logo.png">
-          <a v-if="isLogin"><i class="iconfont">&#xe619;</i>首次报名</a>
-          <a v-if="!isLogin"><img src="" @error="errorImg($event,'avatar')">赵御瞳</a>
+          <img src="@/imgs/logo.png" @click="goHome">
+          <a v-if="!isLogin" @click="goPlan"><i class="iconfont">&#xe619;</i>首次报名</a>
+          <a v-if="isLogin" @click="goCenter"><img :src="avatar_url+userInfo.accountAvatar" @error="errorImg($event,'avatar')">{{userInfo.userName}}</a>
         </div>
       </div>
     </header>
@@ -17,55 +17,30 @@
   export default {
     data() {
       return {
-        userId: '',
-        isShowNav: true,
-        isLogin:false
+        avatar_url: window.systemParameter.FILE_SYSTEM_URL + "/file/thumbnail/",
       }
     },
-    mounted() {
-      let vm = this;
-      if (window.isPhone) {
-        vm.isShowNav = false
+    mounted() {},
+    computed: {
+      userInfo:function () {
+        return this.$store.state.userInfo
+      },
+      isLogin:function () {
+        return this.$store.state.isLogin
       }
     },
     methods: {
-      navFn(menu) {
-        this.$store.commit('setMenu', menu.name);
-        this.$router.push(menu.path)
-      },
+      // logo 跳转首页
       goHome() {
-        this.$store.commit('setMenu', '/');
         this.$router.push('/')
       },
-      bind(type) {
-        this.$store.commit('setMenu', type);
-        if (type == '退出') {
-          logout()
-          this.userId = ''
-        }
-        else if (type == '个人中心') {
-          this.$router.push('center')
-        } else {
-          this.$router.push({path: '/signin', query: {type: type}})
-        }
+      //首次报名 跳转计划列表
+      goPlan() {
+        this.$router.push({path: '/plan'})
       },
-      navShowFn() {
-        this.isShowNav = !this.isShowNav
-      },
-      closeNavFn() {
-        this.isShowNav = !this.isShowNav
-      }
-    },
-    computed: {
-      getPhoneInfo() {
-        return this.$store.state.isShowPhoneStyle;
-      }
-    },
-    watch: {
-      getPhoneInfo(val) {
-        // console.log(val)
-        this.isShowNav = !val
-        // console.log(this.isShowNav)
+      // 头像 跳转个人中心
+      goCenter() {
+        this.$router.push({path: '/center'})
       }
     }
   }
@@ -88,7 +63,7 @@
       i {
         margin-right: 5px;
       }
-      img{
+      img {
         width: 41px;
         height: 38px;
         border-radius: 50%;

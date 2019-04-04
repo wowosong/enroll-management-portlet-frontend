@@ -18,14 +18,20 @@ module.exports = {
         secure: false
       },
       '/gateway': {
-        target: 'http://1.119.192.249:8090',
+        target: 'http://42.159.92.238',
+        changeOrigin: true,
+        secure: false
+      },
+      '/enroll': {
+        // target:'http://microtest.hanboard.com.cn:8084',
+        target: 'http://127.0.0.1:8140',
         changeOrigin: true,
         secure: false
       },
     },
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
-    port: 7076, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,

@@ -3,12 +3,12 @@
         <div class="comm_item float_left">
             <div class="item_tit">通知公告</div>
             <div class="plan_cont">
-                <div class="plan_list" v-for="(item,index) in planList" :key="index">
+                <div class="plan_list" v-for="(item,index) in noticeList" :key="index">
                     <i class="ico"></i>
-                    <div class="plan_tit text_one" @click="noticeDetail(item)">卡机是否回家看电视附近开始的恢复会计师电话费看见当时方会计师电话费看见当时附近开始的恢复会计师对方还看电视剧符号看电视剧</div>
-                    <span class="time">2019-09-09</span>
+                    <div class="plan_tit text_one" @click="noticeDetail(item)">{{item.campusName}} {{item.noticeTitle}}</div>
+                    <span class="time">{{item.createTime | dateFormatYmdHms}}</span>
                 </div>
-                <div class="no_data" v-if="!planList || planList.length == 0"></div>
+                <div class="no_data" v-if="!noticeList || noticeList.length == 0"></div>
             </div>
         </div>
         <campus></campus>
@@ -22,27 +22,20 @@
         },
         data(){
             return{
-                planList:[
-                    {
-                        id:1,
-                        title:'看见爱上发挥的教科书福建省的看法和圣诞节开发速度快',
-                        isSign:0
-                    },
-                    {
-                        id:1,
-                        title:'看见爱上发挥的教科书福建省的看法和圣诞节开发速度快',
-                        isSign:1
-                    }
-                ],
+                noticeList:[],
                 
             }
         },
-        mounted(){
-
-        },
+      mounted() {
+        //初始化数据
+        let vm = this;
+        http.get("/enroll/api/erNotice/portalQuery", {params: vm.filter}).then(function (xhr) {
+          vm.noticeList = xhr.data.data;
+        })
+      },
         methods:{
             noticeDetail(item){
-                this.$router.push('/notice/detail')
+              this.$router.push({path:'/notice/detail',query:{datail:item}});
             }
         }
     }
