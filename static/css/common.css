@@ -26,11 +26,6 @@ body{
 .comm_item{
   background: #fff;
 }
-.clearfix::after{
-  content:'';
-  display: block;
-  clear: both;
-}
 .float_left{
   float: left;
   width: 900px;

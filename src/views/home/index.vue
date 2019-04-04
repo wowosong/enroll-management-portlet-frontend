@@ -332,27 +332,6 @@
   .fr {
     float: right;
   }
-
-  ::-webkit-input-placeholder {
-    /* WebKit browsers */
-    color: #c5c5c5;
-  }
-
-  :-moz-placeholder {
-    /* Mozilla Firefox 4 to 18 */
-    color: #c5c5c5;
-  }
-
-  ::-moz-placeholder {
-    /* Mozilla Firefox 19+ */
-    color: #c5c5c5;
-  }
-
-  :-ms-input-placeholder {
-    /* Internet Explorer 10+ */
-    color: #c5c5c5;
-  }
-
   .notice-wrap {
     width: 1120px;
     margin: 40px auto;

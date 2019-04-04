@@ -16,7 +16,7 @@ import notice from '@/views/notice/index'
 //通知详情
 import noticeDetail from '@/views/notice/detail'
 
-// 招生计划
+// 报名填写
 import signup from '@/views/sign_up/index'
 
 import page404 from '../views/error/404'
