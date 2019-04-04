@@ -6,7 +6,7 @@
                 <div class="plan_list" v-for="(item,index) in planList" :key="index">
                     <i class="ico"></i>
                     <div class="plan_tit text_one">{{item.campusName}} {{item.planName}}</div>
-                    <span class="btn color1" :class="{dis_click:item.publishStatus != 1}" @click="signUp()">立即报名</span>
+                    <span class="btn color1" :class="{dis_click:item.publishStatus != 1}" @click="signUp(item)">立即报名</span>
                     <span class="btn color2" @click="enrollmentGuide(item)">招生简章</span>
                 </div>
                 <div class="no_data" v-if="!planList || planList.length == 0"></div>
@@ -37,8 +37,8 @@
             })
         },
       methods: {
-        signUp() {
-          this.$router.push({path:'/signup'});
+        signUp(item) {
+          this.$router.push({path:'/fillInstructions',query:item});
         },
         enrollmentGuide(item) {
           if( item.auditStatus != 3 && item.erEnrollmentGuide.publishStatus != 1) {
