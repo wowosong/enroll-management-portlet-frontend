@@ -69,6 +69,7 @@
             roleTypeId: vm.roles
           }
         }).then(xhr => {
+          window.userInfo = xhr.data.data;
           vm.$store.commit('getUserInfo', xhr.data.data);
           vm.getSystemParam();
         })

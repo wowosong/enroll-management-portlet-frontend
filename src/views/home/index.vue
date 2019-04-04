@@ -152,10 +152,10 @@
         let vm = this;
         let mobileRes = /^1[34578]\d{9}$/;
         vm.msgError = '';
-        if (!mobileRes.test(vm.loginForm.username)) {
-          vm.msgError = '请输入正确格式的手机号码';
-          return false
-        }
+        // if (!mobileRes.test(vm.loginForm.username)) {
+        //   vm.msgError = '请输入正确格式的手机号码';
+        //   return false
+        // }
         if (!vm.loginForm.username) {
           vm.msgError = '请输入手机号码';
           return false
