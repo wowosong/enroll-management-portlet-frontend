@@ -19,7 +19,7 @@
                     <el-form-item label="出生日期:" required style="margin-bottom:5px">{{formData.birth}}</el-form-item>
                     <el-form-item label="性别:" required style="margin-bottom:5px">{{formData.gender}}</el-form-item>
                     <el-form-item label="户籍所在地:">
-                        
+                        <cityPicker :selectedFn="getArea" class="area_margin"></cityPicker>
                     </el-form-item>
                     <el-form-item label="现就读学校:">
                         <el-input v-model="formData.address" style="width:200px"></el-input>
@@ -186,7 +186,11 @@
     </div>
 </template>
 <script>
+    import cityPicker from '@/components/cityPicker'
     export default {
+        components:{
+            cityPicker
+        },
         data(){
             return{
                 idEdit:false,
@@ -223,7 +227,11 @@
             },
             uploaddDutyFile(){
 
-            }
+            },
+            //省市区组件method
+            getArea(e){
+
+            },
         }
     }
 </script>
@@ -388,6 +396,9 @@
         padding-left: 18px;
         display: inline-block;
         margin-top: 70px;
+    }
+    .area_margin{
+        margin: 0!important;
     }
 </style>
 <style lang="less">
