@@ -35,9 +35,10 @@
     <div class="dialog_bg"></div>
     <div class="dialog_main">
       <div class="dialog_tit">{{config.title}}<span class="close" @click="close"></span></div>
-        <file_upload v-if="fileConfig.userId"
-        @handleUpload="handleUpload"
-        :fileConfig="fileConfig"></file_upload>
+        <!--<file_upload v-if="fileConfig.userId"-->
+        <!--@handleUpload="handleUpload"-->
+        <!--:fileConfig="fileConfig"></file_upload>-->
+      <file_upload @handleUpload="handleUpload" :fileConfig="fileConfig"></file_upload>
     </div>
   </div>
   <!-- <el-dialog :visible.sync="is_show"

@@ -378,6 +378,7 @@
       vm.getGradeList();
       vm.getPlanInfo();
       vm.getReg();
+      // this.queryGender();
     },
     methods: {
       saveInfo() {
