@@ -38,9 +38,7 @@
         <!--<file_upload v-if="fileConfig.userId"-->
         <!--@handleUpload="handleUpload"-->
         <!--:fileConfig="fileConfig"></file_upload>-->
-      <file_upload v-if="fileConfig.userId"
-                   @handleUpload="handleUpload"
-                   :fileConfig="fileConfig"></file_upload>
+      <file_upload @handleUpload="handleUpload" :fileConfig="fileConfig"></file_upload>
     </div>
   </div>
   <!-- <el-dialog :visible.sync="is_show"

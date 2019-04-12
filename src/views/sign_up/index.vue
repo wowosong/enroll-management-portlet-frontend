@@ -306,7 +306,7 @@
     },
     mounted() {
       // 查询性别
-      this.queryGender();
+      // this.queryGender();
     },
     methods: {
       pointFn(type) {
