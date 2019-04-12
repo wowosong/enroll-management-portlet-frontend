@@ -394,15 +394,21 @@
         }
         vm.regInfo.localStr = "";
         let al = vm.addList;
-        for (let key of vm.regInfo.stuAdds) {
-          let obj = al[key];
-          vm.regInfo.localStr += obj.label;
-          if (obj.children && obj.children.length) {
-            al = obj.children;
-          }
-        }
         if (vm.regInfo.stuAdds && vm.regInfo.stuAdds.length) {
           vm.regInfo.stuAdd = vm.regInfo.stuAdds.join(",");
+          for (let key of vm.regInfo.stuAdds) {
+            let obj = {};
+            for (let addObj of al){
+              if (addObj.value == key){
+                obj = addObj;
+                break;
+              }
+            }
+            vm.regInfo.localStr += obj.label;
+            if (obj.children && obj.children.length) {
+              al = obj.children;
+            }
+          }
         }
         for (let i = 0; i < 3; i++) {
           let reward = vm.regInfo.rewards[i];
