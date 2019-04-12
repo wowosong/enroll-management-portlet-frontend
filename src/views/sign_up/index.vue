@@ -1,58 +1,58 @@
 <template>
   <div class="container sign-wrap">
-    <div class="comm_main">
+    <div class="comm_main" v-loading="saving">
       <div class="sign-left">
-        <h6 class="sign-tit">[{{formData.campusName}}]{{formData.planYear}}小升初招生计划</h6>
+        <h6 class="sign-tit">[{{planInfo.campusName}}]{{planInfo.yearName}}{{planInfo.planName}}</h6>
         <div class="sign-subttit">
-          报名校区：<span>{{formData.campusName}}</span> 报名年级：<span>{{formData.className}}</span>
-          <span class="update-txt" v-if="formData.info.status" @click="formData.info.status = !formData.info.status">修改</span>
+          报名校区：<span>{{planInfo.campusName}}</span> 报名年级：<span>{{planInfo.gradeName}}</span>
+          <span class="update-txt" v-if="regInfo.regStatus==0" @click="editFlag=true;">修改</span>
         </div>
         <!--基本信息-->
         <div class="sign-main" id="info">
           <p class="item-tit">基本信息</p>
-          <template v-if="!formData.info.status">
-            <el-form :model="formData.info" :rules="rules" ref="ruleForm" label-width="170px">
+          <template v-if="!saveFlag">
+            <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="170px">
               <div class="basic-info">
                 <div class="user-img">
                   <div class="user_photo">
-                    <img :src="imgUrl+formData.info.pictureFileId" v-if="formData.info.pictureFileId">
+                    <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
                   </div>
                   <div class='img_null' v-if="userImgErr">证件照不能为空</div>
-                  <div class="up_suerphoto" v-if="!isShow" @click="uploadPicture">
-                    <img src="@/imgs/upload.png">上传证件
+                  <div class="up_suerphoto" v-if="!regInfo.photoId" @click="uploadPicture">
+                    <img src="@/imgs/upload.png">上传证件照
                   </div>
-                  <p v-if="!formData.info.status">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
+                  <p v-if="!regInfo.photoId">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
                 </div>
                 <div class="user-info">
-                  <el-form-item label="学生姓名:" prop="name" id="formData_name">
+                  <el-form-item label="学生姓名:" prop="stuName" id="formData_name">
                     <el-col :span="12">
-                      <el-input v-model="formData.info.name"></el-input>
+                      <el-input v-model="regInfo.stuName"></el-input>
                     </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
                       <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                     </template>
                   </el-form-item>
-                  <el-form-item label="身份证号:" prop="idCardNum" id="formData_idCardNum">
+                  <el-form-item label="身份证号:" prop="idCard" id="formData_idCardNum">
                     <el-col :span="12">
-                      <el-input v-model="formData.info.idCardNum" @change="idCardNumFn"></el-input>
+                      <el-input v-model="regInfo.idCard" @change="idCardNumFn"></el-input>
                     </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
                       <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                     </template>
                   </el-form-item>
-                  <el-form-item label="出生日期:" prop="birthDate">
+                  <el-form-item label="出生日期:" prop="stuBirthday">
                     <el-col :span="12">
-                      <el-input v-model="formData.info.birthDate" readonly></el-input>
+                      <el-input v-model="regInfo.stuBirthday" readonly></el-input>
                     </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
                       <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                     </template>
                   </el-form-item>
-                  <el-form-item label="性别:" prop="gender" id="formData_gender">
-                    <el-radio-group v-model="formData.info.gender">
+                  <el-form-item label="性别:" prop="stuGender" id="formData_gender">
+                    <el-radio-group v-model="regInfo.stuGender">
                       <el-radio v-for="(gender,index) in genderList" :key="index" :label="gender.seiValue">
                         {{gender.seiName}}
                       </el-radio>
@@ -65,33 +65,37 @@
                   <el-form-item label="户籍所在地:">
                     <el-col :span="22">
                       <!--省市区县(传省市区id)-->
-                      <cityPicker :selectedFn="getArea"></cityPicker>
+                      <!--<cityPicker :selectedFn="getArea"></cityPicker>-->
+                      <el-cascader
+                        style="width: 100%"
+                        filterable
+                        :options="addList"
+                        v-model="regInfo.stuAdds"/>
                     </el-col>
                   </el-form-item>
                   <el-form-item label="现就读学校:">
                     <el-col :span="12">
-                      <el-input v-model="formData.info.nowSchoolName"></el-input>
+                      <el-input v-model="regInfo.nowSchool"></el-input>
                     </el-col>
                   </el-form-item>
-                  <el-form-item label="现就读年级:" prop="nowClassName">
+                  <el-form-item label="现就读年级:" prop="nowGrade">
                     <el-col :span="12">
-                      <el-select v-model="formData.info.nowClassName" placeholder="请选择">
-                        <!--<el-option-->
-                        <!--v-for="item in options"-->
-                        <!--:key="item.value"-->
-                        <!--:label="item.label"-->
-                        <!--:value="item.value">-->
-                        <!--</el-option>-->
+                      <el-select clearable v-model="regInfo.nowGrade">
+                        <el-option
+                          v-for="item in gradeList"
+                          :key="item.id"
+                          :label="item.gradeName"
+                          :value="item.id"/>
                       </el-select>
                     </el-col>
                   </el-form-item>
                   <el-form-item label="总分年级排名/年级人数:">
                     <el-row>
                       <el-col :span="6" class="m-r-12">
-                        <el-input v-model="formData.info.ranking"></el-input>
+                        <el-input type="number" min="1" step="1" v-model="regInfo.otherData['s_a']"></el-input>
                       </el-col>
                       <el-col :span="6">
-                        <el-input v-model="formData.info.personCount"></el-input>
+                        <el-input type="number" min="1" step="1" v-model="regInfo.otherData['s_b']"></el-input>
                       </el-col>
                     </el-row>
                   </el-form-item>
@@ -110,12 +114,22 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <tr v-for="item in formData.info.guardianInfo">
-                        <td><input type="text" v-model="item.name"></td>
-                        <td><input type="text" v-model="item.tel"></td>
-                        <td><input type="text" v-model="item.education"></td>
-                        <td><input type="text" v-model="item.workPlace"></td>
-                        <td><input type="text" v-model="item.post"></td>
+                      <tr v-for="i in 2" :key="i">
+                        <td>
+                          <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
+                        </td>
+                        <td>
+                          <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
+                        </td>
+                        <td>
+                          <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
+                        </td>
+                        <td>
+                          <el-input :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
+                        </td>
+                        <td>
+                          <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
+                        </td>
                       </tr>
                       </tbody>
                     </table>
@@ -132,12 +146,26 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="item in formData.info.guardianInfo">
+                        <tr v-for="i in 3" :key="i">
                           <td>
-                            <el-date-picker v-model="item.name" type="date" placeholder="年-月-日"></el-date-picker>
+                            <el-date-picker
+                              placeholder="年/月/日"
+                              @change="changeDate"
+                              v-model="regInfo.rewards[i-1]['s_c']"
+                              type="date"/>
                           </td>
-                          <td><input type="text" v-model="item.tel"></td>
-                          <td><input type="text" v-model="item.tel"></td>
+                          <td>
+                            <el-input
+                              placeholder="奖项名称（限20字）"
+                              :maxlength="20"
+                              v-model="regInfo.rewards[i-1]['s_d']"/>
+                          </td>
+                          <td>
+                            <el-input
+                              placeholder="奖项等级（限10字）"
+                              :maxlength="10"
+                              v-model="regInfo.rewards[i-1]['s_e']"/>
+                          </td>
                         </tr>
                         </tbody>
                       </table>
@@ -145,12 +173,11 @@
                     </div>
                   </div>
                   <div class="table-item">
-                    <label>获奖附件:</label>
                     <div class="up_idcard" @click="uploadEnclosure">
-                      <template v-if="!formData.enrollFileId">
+                      <template v-if="!fileList || !fileList.length">
                         <img src="@/imgs/upload.png">上传证件
                       </template>
-                      <img v-if="formData.enrollFileId" :src="imgUrl+formData.enrollFileId" class="card">
+                      <img v-else :src="imgUrl+fileList[0].fileId" class="card">
                     </div>
                     <div class="hint">证明您的获奖情况</div>
                   </div>
@@ -167,9 +194,9 @@
                 </div>
                 <el-row>
                   <el-col :span="16" :offset="4">
-                    <el-form-item label="登录名:" prop="username">
+                    <el-form-item label="登录名:" prop="phoneNum">
                       <el-col :span="18">
-                        <el-input v-model="formData.info.username" placeholder="请输入手机号"></el-input>
+                        <el-input v-model="regInfo.phoneNum" placeholder="请输入手机号"></el-input>
                       </el-col>
                       <!--错误信息-->
                       <template slot="error" slot-scope="scope">
@@ -178,14 +205,14 @@
                     </el-form-item>
                     <el-form-item label="设置密码:" prop="pwd">
                       <el-col :span="18">
-                        <el-input v-if="!isPwd" type="password" v-model="formData.info.pwd"
+                        <el-input v-if="!isPwd" type="password" v-model="regInfo.pwd"
                                   placeholder="默认密码 (身份证号后六位)">
                           <template slot="suffix">
                             <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
                             <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
                           </template>
                         </el-input>
-                        <el-input v-if="isPwd" type="text" v-model="formData.info.pwd">
+                        <el-input v-if="isPwd" type="text" v-model="regInfo.pwd">
                           <template slot="suffix">
                             <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
                             <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
@@ -195,14 +222,14 @@
                     </el-form-item>
                     <el-form-item label="确认密码:" prop="repwd">
                       <el-col :span="18">
-                        <el-input v-if="!isRePwd" type="password" v-model="formData.info.repwd"
+                        <el-input v-if="!isRePwd" type="password" v-model="regInfo.repwd"
                                   placeholder="默认密码 (身份证号后六位)">
                           <template slot="suffix">
                             <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
                             <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
                           </template>
                         </el-input>
-                        <el-input v-if="isRePwd" type="text" v-model="formData.info.repwd">
+                        <el-input v-if="isRePwd" type="text" v-model="regInfo.repwd">
                           <template slot="suffix">
                             <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
                             <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
@@ -220,14 +247,15 @@
             </div>
           </template>
           <!--预览信息-->
-          <baseInfo v-else :formData="formData"></baseInfo>
-          <!--间隔线-->
-          <div class="line"></div>
-          <div class="sign-btn">
-            <button class="submit" @click="submitForm">提交报名</button>
+          <div v-else>
+            <baseInfo :formData="regInfo"></baseInfo>
+            <!--间隔线-->
+            <div class="line"></div>
+            <div class="sign-btn">
+              <button class="submit" @click="submitForm">提交报名</button>
+            </div>
           </div>
         </div>
-
       </div>
       <!--nav-->
       <div class="sign-right">
@@ -244,11 +272,42 @@
 <script>
   import baseInfo from './comp/baseInfo'
   import cityPicker from '@/components/cityPicker'
+
   export default {
     name: "index",
-    components: {baseInfo,cityPicker},
+    components: {baseInfo, cityPicker},
     data() {
       return {
+        // 绑数据
+        planInfo: {},
+        regInfo: {
+          photoId: "",
+          regStatus: 0,
+          otherData: {},
+          parents: [
+            {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""},
+            {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""},
+          ],
+          rewards: [
+            {s_c: "", s_d: "", s_e: ""},
+            {s_c: "", s_d: "", s_e: ""},
+            {s_c: "", s_d: "", s_e: ""}
+          ],
+        },
+        editFlag: false,
+        addList: [],
+        gradeList: [],
+        fileList: [],
+        planId: "",
+        regId: "",
+        saveFlag: false,
+        gradeMap: {},
+        operation: "",
+        otherEnum: "",
+        enumMap: {},
+        saving: false,
+
+        // 原始
         current: 'info',
         isShow: false,
         userImgErr: false,
@@ -289,52 +348,264 @@
         },
         // 表单验证
         rules: {
-          name: [{required: true, message: '必填项', trigger: 'blur'}],
-          idCardNum: [
+          stuName: [{required: true, message: '必填项', trigger: 'blur'}],
+          idCard: [
             {required: true, message: '必填项', trigger: 'blur'},
             {min: 15, max: 18, message: '格式有误', trigger: 'blur'}
           ],
-          username: [{required: true, message: '必填项', trigger: 'blur'}],
-          birthDate: [{required: true, message: '必填项', trigger: 'change'}],
-          gender: [{required: true, message: '必填项', trigger: 'change'}]
+          phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
+          stuBirthday: [{required: true, message: '必填项', trigger: 'change'}],
+          stuGender: [{required: true, message: '必填项', trigger: 'change'}]
         },
         // 性别数据
-        genderList: [],
+        genderList: [{
+          seiValue: 0,
+          seiName: "男"
+        }, {
+          seiValue: 1,
+          seiName: "女"
+        }],
         // 登录信息
         loginForm: {},
       }
     },
     mounted() {
+      const vm = this;
+      vm.planId = this.$route.query.id
       // 查询性别
-      this.queryGender();
+      vm.getEnum();
+      vm.getAddList();
+      vm.getGradeList();
+      vm.getPlanInfo();
+      vm.getReg();
     },
     methods: {
+      saveInfo() {
+        const vm = this;
+        vm.saving = true;
+        vm.regInfo.planId = vm.planId;
+        vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade]
+        vm.regInfo.rewardFile = [];
+        if (vm.fileList && vm.fileList.length) {
+          for (let file of vm.fileList) {
+            vm.regInfo.rewardFile.push({fieldText: file.fileName, fieldValue: file.fileId});
+          }
+        }
+        vm.regInfo.localStr = "";
+        let al = vm.addList;
+        for (let key of vm.regInfo.stuAdds) {
+          let obj = al[key];
+          vm.regInfo.localStr += obj.label;
+          if (obj.children && obj.children.length) {
+            al = obj.children;
+          }
+        }
+        if (vm.regInfo.stuAdds && vm.regInfo.stuAdds.length) {
+          vm.regInfo.stuAdd = vm.regInfo.stuAdds.join(",");
+        }
+        for (let i = 0; i < 3; i++) {
+          let reward = vm.regInfo.rewards[i];
+          for (let key in reward) {
+            let value = reward[key];
+            if (value) {
+              if (key == "s_c") {
+                value = vm.enrollCommon.dateFormatYmd(value);
+              }
+              vm.$set(reward, key, value + "#," + value);
+            }
+          }
+          if (i < 2) {
+            let parent = vm.regInfo.parents[i];
+            for (let key in parent) {
+              let value = parent[key];
+              if (value) {
+                vm.$set(parent, key, value + "#," + value);
+              }
+            }
+          }
+        }
+        if (vm.regInfo.otherData) {
+          for (let key in vm.regInfo.otherData) {
+            let value = vm.regInfo.otherData[key];
+            if (value) {
+              if (vm.enumMap[key]) {
+                let items = vm.enumMap[key];
+                let text = "";
+                for (let item of items) {
+                  if (item.seiValue == value) {
+                    text = item.seiName;
+                    break;
+                  }
+                }
+                vm.$set(vm.regInfo.otherData, key, value + "#," + text);
+              } else {
+                vm.$set(vm.regInfo.otherData, key, value + "#," + value);
+              }
+            }
+          }
+        }
+        vm.regInfo.createId = "00001111000011110000111100001111"
+        http.post("/enroll/api/erRegister", vm.regInfo).then((xhr) => {
+          vm.saving = false;
+          if (xhr.data.code) {
+            return;
+          }
+          vm.saveFlag = true;
+        })
+      },
+      getReg() {
+        const vm = this;
+        vm.planFlag = true;
+        http.get("/enroll/erRegister/empty").then((xhr) => {
+          if (xhr.code) {
+            return;
+          }
+          let data = xhr.data;
+          for (let i = 0; i < 3; i++) {
+            if (!data.rewards[i]) {
+              let obj = {s_c: "", s_d: "", s_e: ""};
+              data.rewards[i] = obj;
+            } else {
+              // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
+            }
+            if (i != 2 && !data.parents[i]) {
+              data.parents[i] = {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""};
+            }
+          }
+          vm.regInfo = data;
+          if (!vm.regInfo.otherData) {
+            vm.regInfo.otherData = {}
+          }
+          vm.fileList = [];
+          if (vm.regInfo.erFields && vm.regInfo.erFields.length) {
+            let map = {};
+            for (let field of vm.regInfo.erFields) {
+              if (field.dicUri) {
+                map[field.fieldCode] = field.dicUri;
+              }
+            }
+            if (map && map != {}) {
+              vm.getOtherEnum(map);
+            }
+          }
+        });
+      },
+      getOtherEnum(fieldMap) {
+        const vm = this;
+        let pam = {};
+        let dicUris = [];
+        vm.enumMap = {};
+        for (let key in fieldMap) {
+          if (!pam[fieldMap[key]]) {
+            pam[fieldMap[key]] = key;
+          } else {
+            pam[fieldMap[key]] = pam[fieldMap[key]] + "," + key;
+          }
+          dicUris.push(fieldMap[key]);
+        }
+        Promise.all([
+          http.get("/gateway/platform/api/enum/queryByCodes/" + dicUris.join(","))
+        ]).then(function (list) {
+          for (let key in pam) {
+            let codes = [];
+            let enums = [];
+            let fieldCode = pam[key];
+            if (fieldCode.indexOf(",")) {
+              for (let code of fieldCode.split(",")) {
+                codes.push(code);
+              }
+            } else {
+              codes.push(fieldCode);
+            }
+            for (let enumItem of list[0].data) {
+              if (enumItem.code == key) {
+                enums.push(enumItem);
+              }
+            }
+            for (let c of codes) {
+              vm.enumMap[c] = enums;
+            }
+          }
+        });
+      },
+      getEnum() {
+        let vm = this;
+        var enumCodes = "studentsType,xsbq";
+        Promise.all([
+          http.get("/gateway/platform/mobile/enum/queryByCodes/" + enumCodes)
+        ]).then(function (list) {
+          vm.stuTypes = _.filter(list[0].data, function (i) {
+            return i.code == "studentsType";
+          });
+          vm.tagList = _.filter(list[0].data, function (i) {
+            return i.code == "xsbq";
+          });
+        });
+      },
+      getAddList() {
+        const vm = this;
+        vm.addList = [];
+        http.get("/enroll/erRegister/locals").then((xhr) => {
+          if (xhr.data.code) {
+            return;
+          }
+          if (!xhr.data.data || !xhr.data.data.length) {
+            return;
+          }
+          vm.addList = xhr.data.data;
+        });
+      },
+      getGradeList() {
+        const vm = this;
+        http.get('/gateway/platform/grade/param').then((xhr) => {
+          if (xhr.data.code) {
+            return;
+          }
+          vm.gradeList = xhr.data.data;
+          if (vm.gradeList.length) {
+            for (let grade of vm.gradeList) {
+              vm.gradeMap[grade.id] = grade.gradeName;
+            }
+          }
+        });
+      },
+      getPlanInfo() {
+        const vm = this;
+        vm.planFlag = true;
+        http.get("/enroll/erEnrollPlan/" + vm.planId).then((xhr) => {
+          if (xhr.data.code) {
+            return;
+          }
+          vm.planInfo = xhr.data.data;
+        });
+      },
+
       pointFn(type) {
         document.getElementById(type).scrollIntoView();
         this.current = type
       },
       // 查询性别
-      queryGender() {
-        let vm = this;
-        http.get('/gateway/platform/mobile/enum/queryByCodes/XingBie').then(function (xhr) {
-          let arr = [];
-          _.each(xhr.data, function (v) {
-            if (v.seiValue != 3)
-              arr.push(v)
-          });
-          vm.genderList = arr;
-        })
-      },
+      // queryGender() {
+      //   let vm = this;
+      //   http.get('/gateway/platform/mobile/enum/queryByCodes/XingBie').then(function (xhr) {
+      //     let arr = [];
+      //     _.each(xhr.data, function (v) {
+      //       if (v.seiValue != 3)
+      //         arr.push(v)
+      //     });
+      //     vm.genderList = arr;
+      //   })
+      // },
       // 根据身份证号码识别出生日期
       idCardNumFn() {
         let vm = this;
-        vm.formData.info.idCardNum = $.trim(vm.formData.info.idCardNum);
-        let idCardNum = vm.formData.info.idCardNum;
+        vm.regInfo.idCard = $.trim(vm.regInfo.idCard);
+        let idCardNum = vm.regInfo.idCard;
         let pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if (pattern.test(idCardNum)) {
-          vm.formData.info.birthDate = idCardNum.substring(6, 10) + "-" + idCardNum.substring(10, 12) + "-" + idCardNum.substring(12, 14);
+          vm.regInfo.stuBirthday = idCardNum.substring(6, 10) + "-" + idCardNum.substring(10, 12) + "-" + idCardNum.substring(12, 14);
         } else {
-          vm.formData.info.birthDate = ''
+          vm.regInfo.stuBirthday = ''
         }
       },
       // 上传证件
@@ -343,11 +614,10 @@
         fileUpload({
           title: '上传证件照片',
           uploadFileMaxNum: 1,
-          formats: 'png,jpg,jpeg',
-          extensions: 'png,jpg,jpeg',
+          mimeTypes: '.png,.jpg,.jpeg',
           confirm: function (files) {
-            vm.formData.info.pictureFileId = files[0].id;
-            if (vm.formData.info.pictureFileId) {
+            vm.regInfo.photoId = files[0].id;
+            if (vm.regInfo.photoId) {
               vm.userImgErr = false
             }
           }
@@ -359,15 +629,19 @@
         fileUpload({
           title: '上传获奖附件',
           uploadFileMaxNum: 1,
-          formats: 'png,jpg,jpeg',
-          extensions: 'png,jpg,jpeg',
+          mimeTypes: '.png,.jpg,.jpeg,.pdf',
           confirm: function (files) {
-           // 成功回调
+            // 成功回调
+            let f = files[0];
+            vm.fileList.push({
+              fileName: f.filename,
+              fileId: _.trim(f.id),
+            });
           }
         });
       },
       //省市区组件method
-      getArea(e){
+      getArea(e) {
 
       },
       // 保存
@@ -375,7 +649,7 @@
         let vm = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            vm.saveInfo();
           } else {
             if (!vm.formData.info.name) return document.getElementById('formData_name').scrollIntoView();
 
@@ -389,9 +663,10 @@
       },
       //取消
       cancel(formName) {
-        let vm = this;
-        vm.$refs[formName].resetFields();
-        vm.formData.info.status = !vm.formData.info.status
+        // let vm = this;
+        // vm.$refs[formName].resetFields();
+        // vm.formData.info.status = !vm.formData.info.status
+        // todo 返回首页
       },
       // 提交报名
       submitForm() {

@@ -2,18 +2,39 @@
   <div>
     <div class="base-header">
       <div class="head">
-        <img src="" @error="errorImg($event,'avatar')">
+        <img :src="imgUrl+regInfo.photoId" @error="errorImg($event,'avatar')">
       </div>
       <div>
         <el-row>
-          <el-col :span="12" class="col"><span><label>*</label>学生姓名：</span>{{formData.info.name}}</el-col>
-          <el-col :span="12" class="col"><span><label>*</label>身份证号：</span>00000000000000000</el-col>
-          <el-col :span="12" class="col"><span><label>*</label>出生日期：</span>00000000000000000</el-col>
-          <el-col :span="12" class="col"><span><label>*</label>性别：</span>女</el-col>
-          <el-col :span="12" class="col"><span>户籍所在地：</span>四川省成都市成华区</el-col>
-          <el-col :span="12" class="col"><span>现就读学校：</span>六年级</el-col>
-          <el-col :span="12" class="col"><span>现就读年级：</span>六年级</el-col>
-          <el-col :span="12" class="col"><span>总分年级排名/年级人数：</span>020/30</el-col>
+          <el-col :span="12" class="col">
+            <span><label>*</label>学生姓名：</span>
+            {{formData.stuName}}
+          </el-col>
+          <el-col :span="12" class="col">
+            <span><label>*</label>身份证号：</span>
+            {{formData.idCard}}
+          </el-col>
+          <el-col :span="12" class="col">
+            <span><label>*</label>出生日期：</span>
+            {{formData.stuBirthday}}
+          </el-col>
+          <el-col :span="12" class="col">
+            <span><label>*</label>性别：</span>
+            {{genderMap[formData.stuGender]}}
+          </el-col>
+          <el-col :span="12" class="col">
+            <span>户籍所在地：</span>{{formData.localStr}}
+          </el-col>
+          <el-col :span="12" class="col">
+            <span>现就读学校：</span>{{formData.nowSchool}}
+          </el-col>
+          <el-col :span="12" class="col">
+            <span>现就读年级：</span>{{formData.nowGradeName}}
+          </el-col>
+          <el-col :span="12" class="col">
+            <span>总分年级排名/年级人数：</span>
+            {{formData.otherData.s_a}}/{{formData.otherData.s_b}}
+          </el-col>
         </el-row>
       </div>
     </div>
@@ -31,28 +52,52 @@
           </tr>
           </thead>
           <tbody>
-          <!--<tr v-for="item in formData.info.guardianInfo">-->
-          <!--<td><input type="text" v-model="item.name"></td>-->
-          <!--<td><input type="text" v-model="item.tel"></td>-->
-          <!--<td><input type="text" v-model="item.education"></td>-->
-          <!--<td><input type="text" v-model="item.workPlace"></td>-->
-          <!--<td><input type="text" v-model="item.post"></td>-->
-          <!--</tr>-->
+          <tr v-for="i in 2" :key="i">
+            <td>
+              {{regInfo.parents[i-1]['s_g']}}
+            </td>
+            <td>
+              {{regInfo.parents[i-1]['s_h']}}
+            </td>
+            <td>
+              {{regInfo.parents[i-1]['s_i']}}
+            </td>
+            <td>
+              {{regInfo.parents[i-1]['s_j']}}
+            </td>
+            <td>
+              {{regInfo.parents[i-1]['s_k']}}
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
       <div class="table-item">
-        <label>获奖附件:</label>
-        <div class="up_idcard" @click="showBig">
-          <img src="" @error="errorImg($event,'image')">
-          <i class="el-icon-zoom-in"></i>
+        <div v-if="formData.rewards && formData.rewards.length">
+          <label>获奖信息:</label>
+          <div v-for="(item, idx) in formData.rewards" :key="idx">
+            {{item['s_c']}} {{item['s_d']}} {{item['s_e']}}
+          </div>
+          <div v-if="formData.rewardFile && formData.rewardFile.length ">
+            <label>获奖附件:</label>
+            <div class="up_idcard" @click="showBig">
+              <img
+                v-if="formData.rewardFile[0].fieldValue"
+                :src="imgUrl+formData.rewardFile[0].fieldValue"
+                @error="errorImg($event,'image')">
+              <i class="el-icon-zoom-in"></i>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="line"></div>
     <div class="login-wrap">
       <p class="login-title">登录密码</p>
-      <div class="login-content"><label>*</label><span>登录名：</span>余小云</div>
+      <div class="login-content">
+        <label>*</label><span>登录名：</span>
+        {{formData.phoneNum}}
+      </div>
     </div>
     <div v-if="isShowBig">
       <div class="modal" @click="isShowBig = false"></div>
@@ -67,14 +112,19 @@
 <script>
   export default {
     name: "baseInfo",
-    props:{
-      formData:{
-        type:Object,
-        default:{}
+    props: {
+      formData: {
+        type: Object,
+        default: {}
       }
     },
     data() {
       return {
+        imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
+        genderMap: {
+          1: "女",
+          0: "男"
+        },
         isShowBig: false
       }
     },
@@ -214,12 +264,13 @@
     z-index: 9999;
     cursor: pointer;
   }
-  .login-wrap{
-    .login-title{
+
+  .login-wrap {
+    .login-title {
       color: #666;
       margin-bottom: 30px;
     }
-    .login-content{
+    .login-content {
       text-align: center;
       label {
         color: #eb2727;
@@ -228,11 +279,11 @@
       }
       span {
         color: #666;
-    }
+      }
     }
   }
 
-  .line{
+  .line {
     border-bottom: 1px solid #e2e1e1;
     margin: 30px 0;
   }
