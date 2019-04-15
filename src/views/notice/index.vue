@@ -35,11 +35,11 @@
           vm.noticeList = xhr.data.data;
         })
       },
-        methods:{
-            noticeDetail(item){
-              this.$router.push({path:'/notice/detail',query:{datail:item}});
-            }
-        }
+      methods:{
+          noticeDetail(item){
+            this.$router.push({path:'/notice/detail',query:{datail:item}});
+          }
+      }
     }
 </script>
 
