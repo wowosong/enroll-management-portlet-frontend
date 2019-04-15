@@ -10,7 +10,7 @@
         <!--基本信息-->
         <div class="sign-main" id="info">
           <p class="item-tit">基本信息</p>
-          <template v-if="!saveFlag">
+          <template>
             <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="170px">
               <div class="basic-info">
                 <div class="user-img">
@@ -105,13 +105,13 @@
                     <label>监护人:</label>
                     <table class="table">
                       <thead>
-                        <tr>
-                          <th>姓名</th>
-                          <th>手机</th>
-                          <th>学历</th>
-                          <th>工作单位</th>
-                          <th>职务</th>
-                        </tr>
+                      <tr>
+                        <th>姓名</th>
+                        <th>手机</th>
+                        <th>学历</th>
+                        <th>工作单位</th>
+                        <th>职务</th>
+                      </tr>
                       </thead>
                       <tbody>
                       <tr v-for="i in 2" :key="i" class="input-no-border">
@@ -150,7 +150,6 @@
                           <td>
                             <el-date-picker
                               placeholder="年/月/日"
-                              @change="changeDate"
                               v-model="regInfo.rewards[i-1]['s_c']"
                               type="date"/>
                           </td>
@@ -242,19 +241,10 @@
               </div>
             </el-form>
             <div class="sign-btn">
-              <button class="save" @click="save('ruleForm')">保存</button>
+              <button class="save" @click="save('ruleForm')">提交报名</button>
               <button class="cancel" @click="cancel('ruleForm')">取消</button>
             </div>
           </template>
-          <!--预览信息-->
-          <div v-else>
-            <baseInfo :formData="regInfo"></baseInfo>
-            <!--间隔线-->
-            <div class="line"></div>
-            <div class="sign-btn">
-              <button class="submit" @click="submitForm">提交报名</button>
-            </div>
-          </div>
         </div>
       </div>
       <!--nav-->
@@ -264,18 +254,40 @@
           <div class="point" :class="{active:current == 'pwd'}" @click="pointFn('pwd')">登录密码</div>
         </div>
       </div>
+      <el-dialog title="警告" :visible.sync="saveFlag">
+        <div>
+          确定提交报名？提交后以下信息将<span style="color: red">不支持修改</span>：
+        </div>
+        <!--todo 分割线 -->
+        <el-row>
+          <el-col :span="10">
+            * 学生姓名：{{regInfo.stuName}}
+          </el-col>
+          <el-col :span="10">
+            * 身份证号：{{regInfo.idCard}}
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="10">
+            * 出生日期：{{regInfo.stuBirthday | dateFormatYmd}}
+          </el-col>
+          <el-col :span="10">
+            * 性别：{{genderMap[regInfo.stuGender]}}
+          </el-col>
+        </el-row>
+        <div slot="footer">
+          <el-button @click="saveFlag=false">取消</el-button>
+          <el-button @click="saveInfo" type="primary">保存</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 
 </template>
 
 <script>
-  import baseInfo from './comp/baseInfo'
-  import cityPicker from '@/components/cityPicker'
-
   export default {
     name: "index",
-    components: {baseInfo, cityPicker},
     data() {
       return {
         // 绑数据
@@ -300,12 +312,21 @@
         fileList: [],
         planId: "",
         regId: "",
-        saveFlag: false,
         gradeMap: {},
         operation: "",
         otherEnum: "",
         enumMap: {},
         saving: false,
+        saveFlag: false,
+        // 性别数据
+        genderList: [{
+          seiValue: 0,
+          seiName: "男"
+        }, {
+          seiValue: 1,
+          seiName: "女"
+        }],
+        genderMap: {1: "女", 0: "男"},
 
         // 原始
         current: 'info',
@@ -357,14 +378,6 @@
           stuBirthday: [{required: true, message: '必填项', trigger: 'change'}],
           stuGender: [{required: true, message: '必填项', trigger: 'change'}]
         },
-        // 性别数据
-        genderList: [{
-          seiValue: 0,
-          seiName: "男"
-        }, {
-          seiValue: 1,
-          seiName: "女"
-        }],
         // 登录信息
         loginForm: {},
       }
@@ -392,23 +405,23 @@
             vm.regInfo.rewardFile.push({fieldText: file.fileName, fieldValue: file.fileId});
           }
         }
-        vm.regInfo.localStr = "";
+        // vm.regInfo.localStr = "";
         let al = vm.addList;
         if (vm.regInfo.stuAdds && vm.regInfo.stuAdds.length) {
           vm.regInfo.stuAdd = vm.regInfo.stuAdds.join(",");
-          for (let key of vm.regInfo.stuAdds) {
-            let obj = {};
-            for (let addObj of al) {
-              if (addObj.value == key) {
-                obj = addObj;
-                break;
-              }
-            }
-            vm.regInfo.localStr += obj.label;
-            if (obj.children && obj.children.length) {
-              al = obj.children;
-            }
-          }
+          // for (let key of vm.regInfo.stuAdds) {
+          //   let obj = {};
+          //   for (let addObj of al) {
+          //     if (addObj.value == key) {
+          //       obj = addObj;
+          //       break;
+          //     }
+          //   }
+          //   vm.regInfo.localStr += obj.label;
+          //   if (obj.children && obj.children.length) {
+          //     al = obj.children;
+          //   }
+          // }
         }
         for (let i = 0; i < 3; i++) {
           let reward = vm.regInfo.rewards[i];
@@ -416,7 +429,7 @@
             let value = reward[key];
             if (value) {
               if (key == "s_c") {
-                value = vm.enrollCommon.dateFormatYmd(value);
+                value = moment(value).format('YYYY-MM-DD');
               }
               vm.$set(reward, key, value + "#," + value);
             }
@@ -451,19 +464,22 @@
             }
           }
         }
-        vm.regInfo.createId = "00001111000011110000111100001111"
-        http.post("/enroll/api/erRegister", vm.regInfo).then((xhr) => {
+        vm.regInfo.creatorId = "00001111000011110000111100001111"
+        http.post("/gateway/enroll/api/erRegister", vm.regInfo).then((xhr) => {
           vm.saving = false;
           if (xhr.data.code) {
             return;
           }
-          vm.saveFlag = true;
+          vm.regId = xhr.data.data;
+          vm.saveFlag = false;
+          vm.$router.push({path: '/'})
+          // todo 跳转到个人中心页面 or 登录页面
         })
       },
       getReg() {
         const vm = this;
         vm.planFlag = true;
-        http.get("/enroll/erRegister/empty").then((xhr) => {
+        http.get("/gateway/enroll/erRegister/empty").then((xhr) => {
           if (xhr.code) {
             return;
           }
@@ -539,7 +555,7 @@
         let vm = this;
         var enumCodes = "studentsType,xsbq";
         Promise.all([
-          http.get("/gateway/platform/mobile/enum/queryByCodes/" + enumCodes)
+          http.get("/gateway/platform/api/enum/queryByCodes/" + enumCodes)
         ]).then(function (list) {
           vm.stuTypes = _.filter(list[0].data, function (i) {
             return i.code == "studentsType";
@@ -552,7 +568,7 @@
       getAddList() {
         const vm = this;
         vm.addList = [];
-        http.get("/enroll/erRegister/locals").then((xhr) => {
+        http.get("/gateway/enroll/erRegister/locals").then((xhr) => {
           if (xhr.data.code) {
             return;
           }
@@ -579,7 +595,7 @@
       getPlanInfo() {
         const vm = this;
         vm.planFlag = true;
-        http.get("/enroll/erEnrollPlan/" + vm.planId).then((xhr) => {
+        http.get("/gateway/enroll/erEnrollPlan/" + vm.planId).then((xhr) => {
           if (xhr.data.code) {
             return;
           }
@@ -591,18 +607,7 @@
         document.getElementById(type).scrollIntoView();
         this.current = type
       },
-      // 查询性别
-      // queryGender() {
-      //   let vm = this;
-      //   http.get('/gateway/platform/mobile/enum/queryByCodes/XingBie').then(function (xhr) {
-      //     let arr = [];
-      //     _.each(xhr.data, function (v) {
-      //       if (v.seiValue != 3)
-      //         arr.push(v)
-      //     });
-      //     vm.genderList = arr;
-      //   })
-      // },
+
       // 根据身份证号码识别出生日期
       idCardNumFn() {
         let vm = this;
@@ -647,16 +652,13 @@
           }
         });
       },
-      //省市区组件method
-      getArea(e) {
 
-      },
       // 保存
       save(formName) {
         let vm = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            vm.saveInfo();
+            vm.saveFlag = true;
           } else {
             if (!vm.formData.info.name) return document.getElementById('formData_name').scrollIntoView();
 
@@ -677,7 +679,18 @@
       },
       // 提交报名
       submitForm() {
-
+        const vm = this;
+        if (!vm.regId) {
+          vm.$message.warning("注册账号失败，无法提交，请重试！");
+          return;
+        }
+        vm.saving = true;
+        http.put("/gateway/enroll/api/erRegister/confirm", {id: vm.regId}).then((xhr) => {
+          vm.saving = false;
+          if (xhr.data.code) {
+            return;
+          }
+        })
       }
 
     }

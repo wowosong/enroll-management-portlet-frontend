@@ -2,7 +2,7 @@
   <div>
     <div class="base-header">
       <div class="head">
-        <img :src="imgUrl+regInfo.photoId" @error="errorImg($event,'avatar')">
+        <img :src="imgUrl+formData.photoId" @error="errorImg($event,'avatar')">
       </div>
       <div>
         <el-row>
@@ -16,7 +16,7 @@
           </el-col>
           <el-col :span="12" class="col">
             <span><label>*</label>出生日期：</span>
-            {{formData.stuBirthday}}
+            {{formData.stuBirthday | dateFormatYmd}}
           </el-col>
           <el-col :span="12" class="col">
             <span><label>*</label>性别：</span>
@@ -41,7 +41,7 @@
     <div class="user-info-table">
       <div class="table-item">
         <label>监护人:</label>
-        <table class="table">
+        <table class="table" v-if="formData.parents && formData.parents.length">
           <thead>
           <tr>
             <th>姓名</th>
@@ -54,19 +54,19 @@
           <tbody>
           <tr v-for="i in 2" :key="i">
             <td>
-              {{regInfo.parents[i-1]['s_g']}}
+              {{formData.parents[i-1]['s_g']}}
             </td>
             <td>
-              {{regInfo.parents[i-1]['s_h']}}
+              {{formData.parents[i-1]['s_h']}}
             </td>
             <td>
-              {{regInfo.parents[i-1]['s_i']}}
+              {{formData.parents[i-1]['s_i']}}
             </td>
             <td>
-              {{regInfo.parents[i-1]['s_j']}}
+              {{formData.parents[i-1]['s_j']}}
             </td>
             <td>
-              {{regInfo.parents[i-1]['s_k']}}
+              {{formData.parents[i-1]['s_k']}}
             </td>
           </tr>
           </tbody>
