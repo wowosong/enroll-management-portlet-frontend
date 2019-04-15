@@ -5,16 +5,19 @@
         <div class="logo clearfix">
           <img src="@/imgs/logo.png" @click="goHome">
           <a v-if="!isLogin" @click="goPlan"><i class="iconfont">&#xe619;</i>首次报名</a>
-          <a v-if="isLogin" @click="goCenter">
-            <img :src="avatar_url+userInfo.accountAvatar" @error="errorImg($event,'avatar')">
-            {{userInfo.userName}}
-            <span class="logout">退出</span>
-          </a>
+          <template v-else>
+            <a>
+              <label @click="goCenter">
+                <img :src="avatar_url+userInfo.accountAvatar" @error="errorImg($event,'avatar')">
+                {{userInfo.userName}}
+              </label>
+              <span class="logout" @click="logout">退出</span>
+            </a>
+          </template>
         </div>
       </div>
     </header>
   </div>
-
 </template>
 
 <script>
@@ -46,6 +49,15 @@
       // 头像 跳转个人中心
       goCenter() {
         this.$router.push({path: '/center'})
+      },
+      //  退出
+      logout() {
+        // 清除token
+        localStorage.removeItem('accesstoken');
+        // 清空用户信息
+        this.$store.commit('getUserInfo', {});
+        // 重置登录状态
+        this.$store.commit('changeLogin', false);
       }
     }
   }
@@ -65,6 +77,9 @@
     a {
       color: #fff;
       float: right;
+      label {
+        cursor: pointer;
+      }
       i {
         margin-right: 5px;
       }
@@ -80,7 +95,7 @@
     }
     .logout {
       margin-left: 16px;
-      &:hover{
+      &:hover {
         color: #aa2f33;
       }
     }

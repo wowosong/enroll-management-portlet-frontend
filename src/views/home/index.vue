@@ -394,6 +394,9 @@
           font-size: 12px;
           float: right;
         }
+        &:hover{
+          color: #aa2f33;
+        }
       }
     }
   }
