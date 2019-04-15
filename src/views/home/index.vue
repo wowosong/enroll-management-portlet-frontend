@@ -43,7 +43,7 @@
         <div class="swiper-button-prev swiper-button-white"></div>
       </div>
       <div class="notice-main">
-        <div class="notice-title">通知公告<a>更多 <i class="iconfont">&#xe6e9;</i></a></div>
+        <div class="notice-title">通知公告<a @click="moreNotice()">更多 <i class="iconfont">&#xe6e9;</i></a></div>
         <ul class="notice-list">
           <li v-for="(item,index) in noticeList" :key="index" v-if="index<5">
             {{item.noticeTitle}}
@@ -127,6 +127,9 @@
           this.loginForm.password = temp[1];
         }
 
+      },
+      moreNotice() {
+        this.$router.push({path:'/notice'});
       },
       // 验证登陆信息是否可以提交
       vaildFn() {
