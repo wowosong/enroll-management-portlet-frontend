@@ -306,6 +306,14 @@
         otherEnum: "",
         enumMap: {},
         saving: false,
+        // 性别数据
+        genderList: [{
+          seiValue: 0,
+          seiName: "男"
+        }, {
+          seiValue: 1,
+          seiName: "女"
+        }],
 
         // 原始
         current: 'info',
@@ -357,14 +365,6 @@
           stuBirthday: [{required: true, message: '必填项', trigger: 'change'}],
           stuGender: [{required: true, message: '必填项', trigger: 'change'}]
         },
-        // 性别数据
-        genderList: [{
-          seiValue: 0,
-          seiName: "男"
-        }, {
-          seiValue: 1,
-          seiName: "女"
-        }],
         // 登录信息
         loginForm: {},
       }
@@ -451,12 +451,13 @@
             }
           }
         }
-        vm.regInfo.createId = "00001111000011110000111100001111"
+        vm.regInfo.creatorId = "00001111000011110000111100001111"
         http.post("/enroll/api/erRegister", vm.regInfo).then((xhr) => {
           vm.saving = false;
           if (xhr.data.code) {
             return;
           }
+          vm.regId = xhr.data.data;
           vm.saveFlag = true;
         })
       },
@@ -539,7 +540,7 @@
         let vm = this;
         var enumCodes = "studentsType,xsbq";
         Promise.all([
-          http.get("/gateway/platform/mobile/enum/queryByCodes/" + enumCodes)
+          http.get("/gateway/platform/api/enum/queryByCodes/" + enumCodes)
         ]).then(function (list) {
           vm.stuTypes = _.filter(list[0].data, function (i) {
             return i.code == "studentsType";
@@ -591,18 +592,7 @@
         document.getElementById(type).scrollIntoView();
         this.current = type
       },
-      // 查询性别
-      // queryGender() {
-      //   let vm = this;
-      //   http.get('/gateway/platform/mobile/enum/queryByCodes/XingBie').then(function (xhr) {
-      //     let arr = [];
-      //     _.each(xhr.data, function (v) {
-      //       if (v.seiValue != 3)
-      //         arr.push(v)
-      //     });
-      //     vm.genderList = arr;
-      //   })
-      // },
+
       // 根据身份证号码识别出生日期
       idCardNumFn() {
         let vm = this;
@@ -647,10 +637,7 @@
           }
         });
       },
-      //省市区组件method
-      getArea(e) {
 
-      },
       // 保存
       save(formName) {
         let vm = this;
@@ -677,7 +664,18 @@
       },
       // 提交报名
       submitForm() {
-
+        const vm = this;
+        if (!vm.regId) {
+          vm.$message.warning("注册账号失败，无法提交，请重试！");
+          return;
+        }
+        vm.saving = true;
+        http.put("/enroll/api/erRegister/confirm", {id: vm.regId}).then((xhr) => {
+          vm.saving = false;
+          if (xhr.data.code) {
+            return;
+          }
+        })
       }
 
     }
