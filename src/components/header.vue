@@ -5,7 +5,11 @@
         <div class="logo clearfix">
           <img src="@/imgs/logo.png" @click="goHome">
           <a v-if="!isLogin" @click="goPlan"><i class="iconfont">&#xe619;</i>首次报名</a>
-          <a v-if="isLogin" @click="goCenter"><img :src="avatar_url+userInfo.accountAvatar" @error="errorImg($event,'avatar')">{{userInfo.userName}}</a>
+          <a v-if="isLogin" @click="goCenter">
+            <img :src="avatar_url+userInfo.accountAvatar" @error="errorImg($event,'avatar')">
+            {{userInfo.userName}}
+            <span class="logout">退出</span>
+          </a>
         </div>
       </div>
     </header>
@@ -20,12 +24,13 @@
         avatar_url: window.systemParameter.FILE_SYSTEM_URL + "/file/thumbnail/",
       }
     },
-    mounted() {},
+    mounted() {
+    },
     computed: {
-      userInfo:function () {
+      userInfo: function () {
         return this.$store.state.userInfo
       },
-      isLogin:function () {
+      isLogin: function () {
         return this.$store.state.isLogin
       }
     },
@@ -72,6 +77,12 @@
     }
     img {
       vertical-align: middle;
+    }
+    .logout {
+      margin-left: 16px;
+      &:hover{
+        color: #aa2f33;
+      }
     }
   }
 </style>

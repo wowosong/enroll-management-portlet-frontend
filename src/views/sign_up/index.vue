@@ -63,7 +63,7 @@
                     </template>
                   </el-form-item>
                   <el-form-item label="户籍所在地:">
-                    <el-col :span="22">
+                    <el-col :span="12">
                       <!--省市区县(传省市区id)-->
                       <!--<cityPicker :selectedFn="getArea"></cityPicker>-->
                       <el-cascader
@@ -105,16 +105,16 @@
                     <label>监护人:</label>
                     <table class="table">
                       <thead>
-                      <tr>
-                        <th>姓名</th>
-                        <th>手机</th>
-                        <th>学历</th>
-                        <th>工作单位</th>
-                        <th>职务</th>
-                      </tr>
+                        <tr>
+                          <th>姓名</th>
+                          <th>手机</th>
+                          <th>学历</th>
+                          <th>工作单位</th>
+                          <th>职务</th>
+                        </tr>
                       </thead>
                       <tbody>
-                      <tr v-for="i in 2" :key="i">
+                      <tr v-for="i in 2" :key="i" class="input-no-border">
                         <td>
                           <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
                         </td>
@@ -146,7 +146,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="i in 3" :key="i">
+                        <tr v-for="i in 3" :key="i" class="input-no-border">
                           <td>
                             <el-date-picker
                               placeholder="年/月/日"
@@ -190,7 +190,7 @@
                 <p class="item-tit">登录密码</p>
                 <div class="sign-pwd-tit">
                   请设置密码，建议使用数字、字母、字符的组合密码且长度超过6位
-                  <p>若未设置密码，下次登录的密码为“身份证号后六位”</p>
+                  <p>注：若未设置密码，下次登录的密码为“身份证号后六位”</p>
                 </div>
                 <el-row>
                   <el-col :span="16" :offset="4">
@@ -385,7 +385,7 @@
         const vm = this;
         vm.saving = true;
         vm.regInfo.planId = vm.planId;
-        vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade]
+        vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade];
         vm.regInfo.rewardFile = [];
         if (vm.fileList && vm.fileList.length) {
           for (let file of vm.fileList) {
@@ -398,8 +398,8 @@
           vm.regInfo.stuAdd = vm.regInfo.stuAdds.join(",");
           for (let key of vm.regInfo.stuAdds) {
             let obj = {};
-            for (let addObj of al){
-              if (addObj.value == key){
+            for (let addObj of al) {
+              if (addObj.value == key) {
                 obj = addObj;
                 break;
               }
@@ -810,32 +810,26 @@
               width: 620px;
               border-top: 1px solid #ccc;
               border-right: 1px solid #ccc;
-            }
-            .table input {
-              width: 100%;
-              border: none;
-              outline: none;
-              padding: 0 15px;
-              color: #606266;
-            }
-            .table thead,
-            .table tbody tr.tit {
-              background: #f7f7f7;
-            }
-            .table td.tit {
-              background: #f7f7f7;
-            }
-            .table th {
-              border-bottom: 1px solid #ccc;
-              border-left: 1px solid #ccc;
-              height: 40px;
-              color: #999;
-            }
-            .table > tbody > tr > td {
-              height: 40px;
-              border-bottom: 1px solid #ccc;
-              border-left: 1px solid #ccc;
               text-align: center;
+              th, td {
+                border-bottom: 1px solid #ccc;
+                border-left: 1px solid #ccc;
+                height: 36px;
+              }
+              th {
+                font-weight: normal;
+                color: #999;
+              }
+              input {
+                width: 100%;
+                border: none;
+                outline: none;
+                padding: 0 15px;
+                color: #606266;
+              }
+              thead tr th {
+                background: #f7f7f7;
+              }
             }
           }
         }
@@ -847,6 +841,7 @@
           color: #999;
           p {
             color: #aa2f33;
+            margin-top: 8px;
           }
         }
 
@@ -914,6 +909,16 @@
 </style>
 <style lang="less">
   .sign-wrap {
+    .el-input__inner {
+      height: 36px;
+      line-height: 36px;
+    }
+    .input-no-border {
+      .el-input__inner {
+        border: none !important;
+      }
+    }
+
     .el-radio__input.is-checked + .el-radio__label {
       color: #2f3861;
     }
