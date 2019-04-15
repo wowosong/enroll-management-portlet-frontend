@@ -47,7 +47,7 @@
         <div class="notice-title">通知公告<a>更多 <i class="iconfont">&#xe6e9;</i></a></div>
         <ul class="notice-list">
           <li v-for="(item,index) in noticeList" :key="index" v-if="index<5">
-            {{item.title}}
+            {{item.noticeTitle}}
             <span>{{item.createTime | dateFormatYmd}}</span>
           </li>
         </ul>
@@ -83,31 +83,9 @@
           password: '',
           grant_type: 'password'
         },
-        //通知公告列表
-        noticeList: [{
-          title: '2019春季锦江校区小升初报到通知',
-          createTime: 1553702400000
-        }, {
-          title: '2019春季锦江校区小升初报到通知',
-          createTime: 1553702400000
-        }, {
-          title: '2019春季锦江校区小升初报到通知',
-          createTime: 1553702400000
-        }, {
-          title: '2019春季锦江校区小升初面试成绩公告',
-          createTime: 1553702400000
-        }, {
-          title: '2019春季锦江校区小升初报到通知',
-          createTime: 1553702400000
-        }, {
-          title: '2019春季锦江校区小升初报到通知',
-          createTime: 1553702400000
-        }, {
-          title: '2019春季锦江校区小升初面试录取通知',
-          createTime: 1553702400000
-        }],
-        //通知公告slide
-        noticeSlide: [
+
+        noticeList: [],
+        noticeSlide:[
           {
             desc: '校园景观1',
             imgUrl: slide1
@@ -125,6 +103,8 @@
     },
     mounted() {
       this.init();
+      //初始化公告数据
+      this.initNotice();
     },
     computed: {
       isLogin: function () {
@@ -173,6 +153,13 @@
           return false
         }
         return true
+      },
+      initNotice() {
+        //初始化数据
+        let vm = this;
+        http.get("/enroll/api/erNotice/portalQuery", {params: vm.filter}).then(function (xhr) {
+          vm.noticeList = xhr.data.data;
+        })
       },
       // 登录
       login() {
