@@ -7,11 +7,11 @@
 </template>
 <script>
     export default {
-        data(){
-            return{
-                datail:{}
-            }
-        },
+      data(){
+        return{
+            datail:{}
+        }
+      },
       mounted() {
         let vm = this;
         vm.datail = vm.$route.query.erEnrollmentGuide

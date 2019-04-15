@@ -22,8 +22,10 @@
         },
         data(){
             return{
-                noticeList:[],
-                
+              noticeList:[],
+              filter:{
+                campusId: '',
+              },
             }
         },
       mounted() {
