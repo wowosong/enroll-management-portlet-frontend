@@ -81,7 +81,7 @@
             <tr>
               <td>
                 <el-date-picker type="date" placeholder="选择日期"></el-date-picker>
-                </el-input></td>
+              </td>
               <td>
                 <el-input placeholder="限20个字"></el-input>
               </td>
@@ -344,8 +344,11 @@
       background: #f7f7f7;
       color: #999;
     }
+    th{
+      font-weight: normal;
+    }
     td, th {
-      height: 48px;
+      height: 36px;
       border: 1px solid #ddd;
       text-align: center;
     }

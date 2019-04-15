@@ -8,7 +8,8 @@
         </div>
         <div class="login" v-if="!isLogin">
           <h1>已报名登录</h1>
-          <div class="msg-error" v-if="msgError">{{msgError}}</div>
+          <div class="user-error" v-if="userError">{{userError}}</div>
+          <div class="pwd-error" v-if="pwdError">{{pwdError}}</div>
           <div class="login-item m-b">
             <i class="iconfont">&#xe618;</i>
             <input v-model="loginForm.username" placeholder="请输入手机号"/>
@@ -22,7 +23,7 @@
           </div>
           <div class="pwd-wrap clearfix">
             <el-checkbox v-model="isRemember">记住密码</el-checkbox>
-            <a>忘记密码</a>
+            <a @click="showResetPwd = true">找回密码</a>
           </div>
           <div class="login-btn" @click="login">
             <a>登录</a>
@@ -52,17 +53,19 @@
         </ul>
       </div>
     </div>
-
+    <!--找回密码-->
+    <reset_pwd v-if="showResetPwd" @cancelFn="cancelResetPwd"></reset_pwd>
   </div>
 
 </template>
 
 <script>
+  import reset_pwd from './comp/reset_pwd'
   import slide1 from '@/imgs/notice1.jpg'
-  import slide2 from '@/imgs/notice1.jpg'
-  import slide3 from '@/imgs/notice1.jpg'
+
   export default {
     name: "index",
+    components: {reset_pwd},
     data() {
       return {
         // 是否记住密码
@@ -70,7 +73,10 @@
         // 是否明文密码
         isPwd: true,
         // 登录错误提示
-        msgError: '',
+        userError: '',
+        pwdError: '',
+        //是否显示找回密码
+        showResetPwd: false,
         // 登录信息
         loginForm: {
           username: '',
@@ -81,16 +87,16 @@
         noticeList: [],
         noticeSlide:[
           {
-            desc:'校园景观1',
-            imgUrl:slide1,
+            desc: '校园景观1',
+            imgUrl: slide1
           },
           {
-            desc:'校园景观2',
-            imgUrl:slide1,
+            desc: '校园景观2',
+            imgUrl: slide1
           },
           {
-            desc:'校园景观3',
-            imgUrl:slide1,
+            desc: '校园景观3',
+            imgUrl: slide1
           }
         ]
       }
@@ -100,8 +106,8 @@
       //初始化公告数据
       this.initNotice();
     },
-    computed:{
-      isLogin:function () {
+    computed: {
+      isLogin: function () {
         return this.$store.state.isLogin
       }
     },
@@ -135,17 +141,18 @@
       vaildFn() {
         let vm = this;
         let mobileRes = /^1[34578]\d{9}$/;
-        vm.msgError = '';
+        vm.userError = '';
+        vm.pwdError = '';
         // if (!mobileRes.test(vm.loginForm.username)) {
-        //   vm.msgError = '请输入正确格式的手机号码';
+        //   vm.userError = '请输入正确格式的手机号码';
         //   return false
         // }
         if (!vm.loginForm.username) {
-          vm.msgError = '请输入手机号码';
+          vm.userError = '请输入手机号码';
           return false
         }
         if (!vm.loginForm.password) {
-          vm.msgError = '请输入密码';
+          vm.pwdError = '请输入密码';
           return false
         }
         return true
@@ -203,6 +210,11 @@
       // 查看报名 跳转个人中心
       goCenter() {
         this.$router.push({path: '/center'})
+      },
+      // 取消找回密码
+      cancelResetPwd(){
+        let vm =  this;
+        vm.showResetPwd = false
       }
     }
   }
@@ -252,13 +264,15 @@
       padding: 24px;
       box-sizing: border-box;
       position: relative;
-      .msg-error {
+      .pwd-error, .user-error {
         position: absolute;
-        top: 55px;
-        width: calc(~"100% - 55px");
         color: #f40002;
-        border: 1px solid #f40002;
-        padding-left: 12px;
+      }
+      .pwd-error {
+        top: 190px;
+      }
+      .user-error {
+        top: 125px;
       }
       h1 {
         padding-left: 16px;
@@ -323,6 +337,7 @@
   .fr {
     float: right;
   }
+
   .notice-wrap {
     width: 1120px;
     margin: 40px auto;
@@ -381,6 +396,9 @@
           color: #999;
           font-size: 12px;
           float: right;
+        }
+        &:hover{
+          color: #aa2f33;
         }
       }
     }
