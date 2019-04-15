@@ -45,12 +45,14 @@
       </div>
       <div class="notice-main">
         <div class="notice-title">通知公告<a>更多 <i class="iconfont">&#xe6e9;</i></a></div>
-        <ul class="notice-list">
+        <ul class="notice-list" v-if="noticeList && noticeList.length > 0">
           <li v-for="(item,index) in noticeList" :key="index" v-if="index<5">
             {{item.noticeTitle}}
             <span>{{item.createTime | dateFormatYmd}}</span>
           </li>
         </ul>
+        <!--暂无数据-->
+        <div class="no_data" v-else></div>
       </div>
     </div>
     <!--找回密码-->

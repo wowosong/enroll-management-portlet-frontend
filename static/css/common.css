@@ -69,6 +69,6 @@ body{
   padding: 50px 0;
 }
 .no_data::before{
-  content: '暂无数据'
+  content: '~ 暂无数据 ~'
 }
 
