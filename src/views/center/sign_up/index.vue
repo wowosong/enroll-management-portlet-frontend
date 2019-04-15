@@ -1,16 +1,17 @@
 <template>
-  <div class="user_info">
+  <div class="user_info" v-loading="saving">
     <div class="user_school">
       <span class="school_item">报名校区：{{planInfo.campusName}}</span>
       <span class="school_item">报名年级：{{planInfo.gradeName}}</span>
-      <span v-if="!idEdit" class="float_r edit_btn" @click="idEdit = !idEdit">修改</span>
+      <span v-if="!idEdit && regInfo.regStatus == 0" class="float_r edit_btn" @click="idEdit = true">修改</span>
       <span v-if="idEdit" class="import_hint float_r">提示：报名提交后不支持修改"必填项"，只支持修改"非必填项</span>
     </div>
     <div class="show_edit" v-if="idEdit">
       <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="172px">
         <div class="user_img">
-          <img src="@/imgs/404.png">
-          <div class="upload_btn">上传照片</div>
+          <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
+          <img src="@/imgs/404.png" v-else>
+          <div class="upload_btn" @click="uploadPicture">上传照片</div>
           <p class="upload_hint">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
         </div>
         <div class="basic_info clearfix">
@@ -73,6 +74,7 @@
               <th>职务</th>
             </tr>
             </thead>
+            <tbody>
             <tr v-for="i in 2" :key="i">
               <td>
                 <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
@@ -90,6 +92,7 @@
                 <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
               </td>
             </tr>
+            </tbody>
           </table>
         </el-form-item>
         <el-form-item label="获奖信息:" label-width="82px">
@@ -101,11 +104,11 @@
               <th>奖项等级</th>
             </tr>
             </thead>
+            <tbody>
             <tr v-for="i in 3" :key="i">
               <td>
                 <el-date-picker
                   placeholder="年/月/日"
-                  @change="changeDate"
                   v-model="regInfo.rewards[i-1]['s_c']"
                   type="date"/>
               </td>
@@ -122,27 +125,34 @@
                   v-model="regInfo.rewards[i-1]['s_e']"/>
               </td>
             </tr>
+            </tbody>
           </table>
         </el-form-item>
         <el-form-item label="获奖附件:" label-width="82px">
           <div class="img_thumbnail">
-            <img src="@/imgs/404.png">
+            <img v-if="!fileList || !fileList.length" src="@/imgs/404.png">
+            <img v-else :src="imgUrl+fileList[0].fileId">
             <div class="big_btn_l" @click="showBigImg()"></div>
           </div>
           <div class="upload_item">
-            <div class="up_idcard" @click="uploaddDutyFile">
+            <div class="up_idcard" @click="uploadEnclosure">
               <template><img src="@/imgs/upload.png">上传证件</template>
             </div>
             <div class="hint prove">证明您的获奖情况</div>
           </div>
         </el-form-item>
       </el-form>
+      <button class="save" @click="saveInfo">保存</button>
+      <button class="cancel" @click="cancel">取消</button>
     </div>
     <div class="show_info" v-if="!idEdit">
       <table>
         <tbody>
         <tr>
-          <td rowspan="4" width="30%"><img src="@/imgs/404.png" class="user_img"></td>
+          <td rowspan="4" width="30%">
+            <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
+            <img src="@/imgs/404.png" class="user_img" v-else>
+          </td>
           <td width="84px" align="right">学生姓名：</td>
           <td width="130px">{{regInfo.stuName}}</td>
           <td width="162px" align="right">身份证号：</td>
@@ -228,18 +238,14 @@
     <div class="big_img" v-if="isShowBigImg">
       <div class="img_main">
         <span class="close_btn" @click="isShowBigImg = false"></span>
-        <img :src="imgUrl+regInfo.rewardFile[0].fieldValue">
+        <img :src="imgUrl+fileList[0].fileId">
       </div>
     </div>
   </div>
 </template>
 <script>
-  import cityPicker from '@/components/cityPicker'
 
   export default {
-    components: {
-      cityPicker
-    },
     data() {
       return {
         // 绑数据
@@ -313,7 +319,7 @@
       vm.getEnum();
       vm.getAddList();
       vm.getGradeList();
-      http.get("/enroll/api/erRegister/byPhone", {params: {phoneNum: vm.userInfo.logonName}}).then((xhr) => {
+      http.get("/gateway/enroll/api/erRegister/byPhone", {params: {phoneNum: vm.userInfo.logonName}}).then((xhr) => {
         if (xhr.data.code) {
           return;
         }
@@ -322,9 +328,13 @@
         vm.getPlanInfo();
         vm.getReg();
       })
-
     },
     methods: {
+      cancel() {
+        const vm = this;
+        vm.getReg();
+        vm.idEdit = false;
+      },
       saveInfo() {
         const vm = this;
         vm.saving = true;
@@ -360,7 +370,7 @@
             let value = reward[key];
             if (value) {
               if (key == "s_c") {
-                value = vm.enrollCommon.dateFormatYmd(value);
+                value = moment(value).format('YYYY-MM-DD');
               }
               vm.$set(reward, key, value + "#," + value);
             }
@@ -396,18 +406,19 @@
           }
         }
         // vm.regInfo.creatorId = "00001111000011110000111100001111"
-        http.put("/enroll/api/erRegister", vm.regInfo).then((xhr) => {
+        http.put("/gateway/enroll/api/erRegister", vm.regInfo).then((xhr) => {
           vm.saving = false;
           if (xhr.data.code) {
             return;
           }
-          vm.saveFlag = true;
+          vm.getReg();
+          vm.idEdit = false;
         })
       },
       getReg() {
         const vm = this;
         vm.planFlag = true;
-        http.get("/enroll/api/erRegister/" + vm.regId).then((xhr) => {
+        http.get("/gateway/enroll/api/erRegister/" + vm.regId).then((xhr) => {
           if (xhr.code) {
             return;
           }
@@ -504,7 +515,7 @@
       getAddList() {
         const vm = this;
         vm.addList = [];
-        http.get("/enroll/erRegister/locals").then((xhr) => {
+        http.get("/gateway/enroll/erRegister/locals").then((xhr) => {
           if (xhr.data.code) {
             return;
           }
@@ -531,7 +542,7 @@
       getPlanInfo() {
         const vm = this;
         vm.planFlag = true;
-        http.get("/enroll/erEnrollPlan/" + vm.planId).then((xhr) => {
+        http.get("/gateway/enroll/erEnrollPlan/" + vm.planId).then((xhr) => {
           if (xhr.data.code) {
             return;
           }
