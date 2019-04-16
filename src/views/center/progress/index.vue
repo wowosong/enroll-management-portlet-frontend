@@ -1,123 +1,141 @@
 <template>
     <div class="progress" >
         <div class="rate_hint">
-            <img src="@/imgs/pass.png" v-if="stempInfo.isPass == 0">
-            <img src="@/imgs/sh.png" v-if="stempInfo.isPass == 1">
+            <img src="@/imgs/pass.png" v-if="stempInfo.ifEnter == 1">
+            <img src="@/imgs/sh.png" v-if="stempInfo.ifEnter != 1">
             <div class="hint_info">
-                <template v-if="stempInfo.status == 0">报名<span class="color1">成功</span>，请按学校通知时间到校现场确认，并参加面试（笔试）~</template>
-                <template v-if="stempInfo.status == 1 && stempInfo.isPass == 0">
-                    <div>您<span class="color1">已被录取</span><span class="btn">查看成绩</span></div>
+                <template v-if="stempInfo.ifEnter == null">报名<span class="color1">成功</span>，请按学校通知时间到校现场确认，并参加面试（笔试）~</template>
+                <div v-if="stempInfo.ifPayment != 1">
+                  <template v-if="stempInfo.ifEnter == 1">
+                    <div>您<span class="color1">已被录取</span><span class="btn" @click="viewScore()">查看成绩</span></div>
                     <div>请在截止时间前完成缴费~</div><div>缴费截止时间：2019-06-10</div>
-                </template>
-                <template v-if="stempInfo.status == 1 && stempInfo.isPass == 1">
-                    <div>您<span class="color1">未已被录取</span><span class="btn">查看成绩</span></div>
+
+                      <el-form v-if="stempInfo.paymentReserve == ''" :model="formData" :rules="rules" ref="ruleForm" label-width="172px">
+                        <el-form-item label="预约缴费时间段:" prop="dataTime" required>
+                          <el-date-picker
+                            v-model="formData.dataTime"
+                            type="date"
+                            placeholder="选择日期" style="width:180px">
+                          </el-date-picker>
+                          <el-time-picker
+                            is-range
+                            v-model="formData.timeRang"
+                            range-separator="至"
+                            start-placeholder="开始时间"
+                            end-placeholder="结束时间"
+                            placeholder="选择时间范围" style="width:360px">
+                          </el-time-picker>
+                        </el-form-item>
+                        <el-button @click="submit()" type="primary">提交</el-button>
+                      </el-form>
+                    <template v-if="stempInfo.paymentReserve && stempInfo.paymentReserve != '' ">
+                      <p>请在预约时间段前往学校缴费{{stempInfo.paymentReserve}}</p>
+                    </template>
+                  </template>
+                  <template v-if="stempInfo.ifEnter == 0">
+                    <div>您<span class="color1">未已被录取</span><span class="btn" @click="viewScore()">查看成绩</span></div>
                     <div>人生的机会还有很多哦...</div>
+                  </template>
+                </div>
+                <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null">
+                  恭喜您，缴费成功！<span>{{stempInfo.payAmount}} 元</span>
+                  <table class="table_list">
+                    <thead>
+                    <tr>
+                      <th>报名卡号</th>
+                      <th>姓名</th>
+                      <th>身份证号</th>
+                      <th>奖学金（元）</th>
+                      <th>应缴费（元）</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                      <td>{{stempInfo.signCardCode}}</td>
+                      <td>{{stempInfo.stuName}}</td>
+                      <td>{{stempInfo.idCard}}</td>
+                      <td>{{stempInfo.scholarship}}</td>
+                      <td>{{stempInfo.payAmount}}</td>
+                    </tr>
+                  </table>
+                  <p class="pay_hint">友情提示：若需要退学退费，请线下联系学校财务。</p>
+
                 </template>
-                <template v-if="stempInfo.status == 2">请在预约时间段前往学校缴费<p>2019-06-01  14:00~16:00</p></template>
-                <template v-if="stempInfo.status == 3">恭喜您，缴费成功！<span>6500元</span></template>
-                <template v-if="stempInfo.status == 4">分班与寝室分配已公布~</template>
-                <template v-if="stempInfo.status == 5">请按学校通知时间到校报到，并填写报到信息~</template>
+                <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport == null">分班与寝室分配已公布~
+                  <table class="table_list">
+                    <thead>
+                    <tr>
+                      <th>报名卡编号</th>
+                      <th>姓名</th>
+                      <th>身份证号</th>
+                      <th>校区</th>
+                      <th>年级</th>
+                      <th>所属班级</th>
+                      <th>所属寝室</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                      <td>{{stempInfo.signCardCode}}</td>
+                      <td>{{stempInfo.stuName}}</td>
+                      <td>{{stempInfo.idCard}}</td>
+                      <td>{{stempInfo.campusName}}</td>
+                      <td>{{stempInfo.gradeName}}</td>
+                      <td>{{stempInfo.className}}</td>
+                      <td>{{stempInfo.dormitoryName}}</td>
+                    </tr>
+                  </table>
+                </template>
+                <template v-if="stempInfo.ifReport == 1">请按学校通知时间到校报到，并填写报到信息~
+                  <div class="btn sub_btn">填写报到信息</div>
+                </template>
             </div>
         </div>
-        <template v-if="stempInfo.status == 1 && stempInfo.isPass == 0">
-            <table class="table_list">
-                <thead>
-                    <tr>
-                        <th>姓名</th>
-                        <th>手机</th>
-                        <th>学历</th>
-                        <th>工作单位</th>
-                        <th>职务</th>
-                    </tr>
-                </thead>
-                <tr>
-                    <td>sds</td>
-                    <td>1828702541999</td>
-                    <td>水电费水电费</td>
-                    <td>师傅的说法是的发生的</td>
-                    <td>时代大厦多所</td>
-                </tr>
-            </table>
-            <el-form :model="formData" :rules="rules" ref="ruleForm" label-width="172px">
-                <el-form-item label="预约缴费时间段:" prop="dataTime" required>
-                    <el-date-picker
-                        v-model="formData.dataTime"
-                        type="date"
-                        placeholder="选择日期" style="width:180px">
-                    </el-date-picker>
-                    <el-time-picker
-                        is-range
-                        v-model="formData.timeRang"
-                        range-separator="至"
-                        start-placeholder="开始时间"
-                        end-placeholder="结束时间"
-                        placeholder="选择时间范围" style="width:390px">
-                    </el-time-picker>
-                </el-form-item>
-            </el-form>
-        </template>
-        <template v-if="stempInfo.status == 3">
-            <table class="table_list">
-                <thead>
-                    <tr>
-                        <th>报名卡号</th>
-                        <th>姓名</th>
-                        <th>身份证号</th>
-                        <th>奖学金（元）</th>
-                        <th>应缴费（元）</th>
-                    </tr>
-                </thead>
-                <tr>
-                    <td>33333</td>
-                    <td>zhangsanasan</td>
-                    <td>510923199205815</td>
-                    <td>343</td>
-                    <td>5600</td>
-                </tr>
-            </table>
-            <p class="pay_hint">友情提示：若需要退学退费，请线下联系学校财务。</p>
-        </template>
-        <template v-if="stempInfo.status == 4">
-            <table class="table_list">
-                <thead>
-                    <tr>
-                        <th>报名卡编号</th>
-                        <th>姓名</th>
-                        <th>身份证号</th>
-                        <th>校区</th>
-                        <th>年级</th>
-                        <th>所属班级</th>
-                        <th>所属寝室</th>
-                    </tr>
-                </thead>
-                <tr>
-                    <td>33333</td>
-                    <td>zhangsanasan</td>
-                    <td>510923199205815</td>
-                    <td>343</td>
-                    <td>5600</td>
-                    <td>343</td>
-                    <td>5600</td>
-                </tr>
-            </table>
-        </template>
-        <template v-if="stempInfo.status == 5">
-            <div class="btn sub_btn">填写报到信息</div>
-        </template>
+      <!--成绩-->
+
+      <el-dialog title="查看成绩" :visible.sync="scoreDialogVisible" width="800px">
+        <table class="my-table">
+          <thead>
+          <tr>
+            <th>报名卡编号</th>
+            <th>姓名</th>
+            <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
+          </tr>
+          </thead>
+          <tr>
+            <td>{{nowStuInfo.signCardCode}}</td>
+            <td>{{nowStuInfo.stuName}}</td>
+            <td
+              v-for="stuScore in nowStuInfo.scores"><span>{{stuScore.testScore}}</span>
+            </td>
+          </tr>
+        </table>
+        <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="scoreDialogVisible = false">关 闭</el-button>
+            </span>
+      </el-dialog>
     </div>
 </template>
 <script>
 export default {
     data(){
         return{
-            stempInfo:{
-                status:5,
-                isPass:0
-            },
+            stempInfo:{},
             formData:{
                 dataTime:'',
                 timeRang:''
             },
+          erRegister:{
+              id:'',
+            paymentReserve:''
+          },
+          tableQuery: {
+            page: 1,
+            size: 10,
+            filter: {
+              regId: ""
+            }
+          },
+          scoreDialogVisible:false,
+          nowStuInfo: {},
             rules:{
                 dataTime:[]
             }
@@ -128,8 +146,51 @@ export default {
     },
     methods:{
         query(){
+          let vm = this;
+          let idCard = window.userInfo.idCard;
+          http.get("/gateway/enroll/api/erRegister/admissionsProgress/" + idCard).then((xhr) => {
+            if (xhr.code) {
+              return;
+            }
+            vm.stempInfo = xhr.data
+          });
+        },
+      submit() {
+        let vm = this;
+        if(vm.formData.dataTime != '' && vm.formData.timeRang != '') {
 
+          vm.erRegister.id = vm.stempInfo.id;
+          vm.erRegister.paymentReserve = moment(vm.formData.dataTime).format('YYYY-MM-DD')
+            +'  ' + moment(vm.formData.timeRang[0]).format('HH:mm:ss') +'~' +  moment(vm.formData.timeRang[1]).format('HH:mm:ss');
+
+          http.put("/gateway/enroll/api/erRegister/updatePayTime", vm.erRegister).then((xhr) => {
+            if (xhr.data.code) {
+              return;
+            }
+            vm.query();
+          })
+        } else {
+          vm.$message({
+            message: "请填写缴费时间!",
+            type: "warning"
+          });
         }
+      },
+      viewScore() {
+        let vm = this;
+        vm.scoreDialogVisible = true;
+        vm.tableQuery.filter.regId = vm.stempInfo.id;
+        let obj = $.extend({}, vm.tableQuery, {
+          filter: eduFilterParam(vm.tableQuery.filter)
+        });
+
+        http.get("/gateway/enroll/api/erEnter/page", { params: obj}).then(function(xhr) {
+          vm.tableData = xhr.data;
+          if(vm.tableData.aaData && vm.tableData.aaData.length > 0) {
+            vm.nowStuInfo = vm.tableData.aaData[0];
+          }
+        });
+      }
     }
 }
 </script>
@@ -189,5 +250,43 @@ export default {
     .pay_hint{
         text-align: right;
         color: #666;
+    }
+    .my-table {
+      width: 100%;
+      max-width: 100%;
+      border: 1px solid #e5e7ea;
+      font-size: 12px;
+      table-layout: fixed;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-all;
+      text-align: center;
+    }
+
+    .my-table {
+      border-bottom: none;
+      border-right: none;
+    }
+    .my-table td, th {
+      border-right: 1px solid #e5e7ea;
+      border-bottom: 1px solid #e5e7ea;
+    }
+
+    .my-table thead th {
+      background-color: #f0f4fa;
+      font-size: 14px;
+      color: rgb(51, 51, 51);
+    }
+
+    .my-table th {
+      padding: 10px;
+    }
+
+    .my-table td {
+      padding: 12px;
+    }
+    .my-table tr:nth-child(2n) td {
+      background: #fafafa;
     }
 </style>
