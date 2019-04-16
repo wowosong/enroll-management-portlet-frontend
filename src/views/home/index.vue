@@ -2,11 +2,11 @@
   <div class="container">
     <div :class="['banner',{'banner-after':isLogin}]">
       <div :class="['main-wrap', 'clearfix',{'banner-after':isLogin,'no-p-t':isLogin}]">
-        <div :class="['sign-btn',{'isSign-btn':isLogin}]">
+        <div :class="['sign-btn',{'isSign-btn':isLogin && !isPhone}]">
           <a v-if="!isLogin" @click="goPlan">首次报名</a>
           <a v-if="isLogin" @click="goCenter">查看报名</a>
         </div>
-        <div class="login" v-if="!isLogin">
+        <div class="login" v-if="!isLogin && !isPhone">
           <h1>已报名登录</h1>
           <div class="user-error" v-if="userError">{{userError}}</div>
           <div class="pwd-error" v-if="pwdError">{{pwdError}}</div>
@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="notice-wrap clearfix">
-      <div class="swiper-container">
+      <div class="swiper-container" v-if="!isPhone">
         <div class="swiper-wrapper">
           <div class="swiper-slide" v-for="(i,index) in noticeSlide" :key="index"
                :style="{backgroundImage:'url('+i.imgUrl+')'}">
@@ -44,7 +44,8 @@
         <div class="swiper-button-prev swiper-button-white"></div>
       </div>
       <div class="notice-main">
-        <div class="notice-title">通知公告<a @click="moreNotice()">更多 <i class="iconfont">&#xe6e9;</i></a></div>
+        <div class="notice-title">通知公告<a @click="moreNotice()"><span>更多</span> <i class="iconfont">&#xe6e9;</i></a>
+        </div>
         <ul class="notice-list" v-if="noticeList && noticeList.length > 0">
           <li v-for="(item,index) in noticeList" :key="index" v-if="index<5">
             {{item.noticeTitle}}
@@ -87,7 +88,7 @@
         },
 
         noticeList: [],
-        noticeSlide:[
+        noticeSlide: [
           {
             desc: '校园景观1',
             imgUrl: slide1
@@ -111,6 +112,9 @@
     computed: {
       isLogin: function () {
         return this.$store.state.isLogin
+      },
+      isPhone: function () {
+        return this.$store.state.isPhone
       }
     },
     methods: {
@@ -137,7 +141,7 @@
 
       },
       moreNotice() {
-        this.$router.push({path:'/notice'});
+        this.$router.push({path: '/notice'});
       },
       // 验证登陆信息是否可以提交
       vaildFn() {
@@ -214,8 +218,8 @@
         this.$router.push({path: '/center'})
       },
       // 取消找回密码
-      cancelResetPwd(){
-        let vm =  this;
+      cancelResetPwd() {
+        let vm = this;
         vm.showResetPwd = false
       }
     }
@@ -230,11 +234,13 @@
   .banner {
     height: 420px;
     background: url(~css_img/banner.jpg) no-repeat center;
+    background-size: cover;
   }
 
   .main-wrap {
     padding-top: 58px;
     background: url(~css_img/banner.jpg) no-repeat center;
+    background-size: cover;
     position: relative;
     height: 100%;
     .sign-btn {
@@ -242,6 +248,7 @@
       height: 73px;
       line-height: 73px;
       background: url(~css_img/btn.png) no-repeat center;
+      background-size: cover;
       text-align: center;
       position: absolute;
       left: 50%;
@@ -399,15 +406,69 @@
           font-size: 12px;
           float: right;
         }
-        &:hover{
+        &:hover {
           color: #aa2f33;
         }
       }
     }
   }
-
-
 </style>
+<style lang="less" scoped>
+  @media screen and (max-width: 750px) {
+    .banner {
+      height: 211px;
+      background: url(~css_img/wrap/banner.jpg) no-repeat center;
+
+    }
+
+    .main-wrap {
+      padding-top: 0;
+      background: url(~css_img/wrap/banner.jpg) no-repeat center;
+      background-size: cover;
+      .sign-btn {
+        width: 124px;
+        height: 40px;
+        line-height: 40px;
+        bottom: -20px;
+        a {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .notice-wrap {
+      width: 100%;
+      .notice-main {
+        margin-left: 0;
+        .notice-title {
+          border-bottom: none;
+          border-left: 3px solid #aa2f33;
+          line-height: 14px;
+          font-size: 14px;
+          color: #333;
+          padding-bottom: 0;
+          padding-left: 8px;
+          font-weight: bold;
+          a {
+            span {
+              display: none;
+            }
+          }
+        }
+        .notice-list{
+          li::before{
+            content:"●";
+            color:#bebebe;
+            font-size:12px;
+            vertical-align: top;
+            padding-right: 12px;
+          }
+        }
+      }
+    }
+  }
+</style>
+
 <style lang="less">
   .login {
     .el-checkbox__input.is-checked + .el-checkbox__label {

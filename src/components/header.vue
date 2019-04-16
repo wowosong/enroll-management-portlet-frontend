@@ -2,14 +2,17 @@
   <div class="container">
     <header>
       <div class="main-wrap">
-        <div class="logo clearfix">
-          <img src="@/imgs/logo.png" @click="goHome">
-          <a v-if="!isLogin" @click="goPlan"><i class="iconfont">&#xe619;</i>首次报名</a>
+        <div class="logo-wrap clearfix">
+          <img src="@/imgs/logo.png" @click="goHome" class="logo">
+          <template v-if="!isLogin">
+            <a v-if="!isPhone" @click="goPlan"><i class="iconfont">&#xe619;</i>首次报名</a>
+            <a v-else @click="goLogin">登录</a>
+          </template>
           <template v-else>
             <a>
               <label @click="goCenter">
                 <img :src="avatar_url+userInfo.accountAvatar" @error="errorImg($event,'avatar')">
-                {{userInfo.userName}}
+                <span class="user-name">{{userInfo.userName}}</span>
               </label>
               <span class="logout" @click="logout">退出</span>
             </a>
@@ -35,7 +38,10 @@
       },
       isLogin: function () {
         return this.$store.state.isLogin
-      }
+      },
+      isPhone: function () {
+        return this.$store.state.isPhone
+      },
     },
     methods: {
       // logo 跳转首页
@@ -49,6 +55,10 @@
       // 头像 跳转个人中心
       goCenter() {
         this.$router.push({path: '/center'})
+      },
+      //登录
+      goLogin() {
+
       },
       //  退出
       logout() {
@@ -72,9 +82,13 @@
     border-bottom: 3px solid #aa2f33;
   }
 
-  .logo {
+  .logo-wrap {
     cursor: pointer;
     box-sizing: border-box;
+    .logo {
+      width: 277px;
+      height: 58px;
+    }
     a {
       color: #fff;
       float: right;
@@ -100,5 +114,35 @@
         color: #aa2f33;
       }
     }
+  }
+
+  @media screen and (max-width: 750px) {
+    header {
+      height: 42px;
+      line-height: 42px;
+      border-bottom: none;
+    }
+
+    .logo-wrap {
+      .logo {
+        width: 138px;
+        height: 29px;
+      }
+      a {
+        img {
+          width: 21px;
+          height: 21px;
+          vertical-align: middle;
+        }
+        .user-name {
+          display: none;
+        }
+      }
+      .logout{
+        margin-left: 0;
+        vertical-align: middle;
+      }
+    }
+
   }
 </style>

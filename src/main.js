@@ -8,14 +8,18 @@ import _ from 'lodash'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+
 Vue.use(ElementUI)
 
 import moment from 'moment'
+
 moment().format();
 
 import Router from 'vue-router'
+
 Vue.use(Router)
 import VueResource from 'vue-resource'
+
 Vue.use(VueResource)
 import router_list from './router'
 
@@ -24,6 +28,7 @@ import './components/fileUpload/index.js'
 
 import default_avatar from '@/imgs/avatar.png'
 import default_img from '@/imgs/default_image_small.png'
+
 Vue.prototype.errorImg = function (e, type) {
   // e.target.src=default_avatar_url;
   if (type) {
@@ -100,12 +105,12 @@ Vue.http.interceptors.push(function (request, next) {
           default:
             msg = '未处理的其它 level: ' + data.level
         }
-          Vue.prototype.$message({
-            message: msg,
-            type: type,
-            duration: time,
-            showClose: true,
-          })
+        Vue.prototype.$message({
+          message: msg,
+          type: type,
+          duration: time,
+          showClose: true,
+        })
       }
     }
 
@@ -142,7 +147,7 @@ const router = new Router({
 window.systemParameter = {};
 window.systemParameter.FILE_SYSTEM_URL = '/gateway/zuul/filesystem';
 window.userInfo = {
-  id:''
+  id: ''
 };
 
 /**
@@ -164,10 +169,10 @@ window.eduFilterParam = function (obj) {
 window.logout = function () {
   //清除本地缓存重新登陆
   localStorage.clear();
-  let localtoken = localStorage.getItem('accesstoken') ? JSON.parse(localStorage.getItem('accesstoken')):null
+  let localtoken = localStorage.getItem('accesstoken') ? JSON.parse(localStorage.getItem('accesstoken')) : null
   if (localtoken && localtoken.access_token) {
     http.get('/gateway/auth/logout', {
-      headers: { Authorization: 'Bearer ' + localtoken.access_token },
+      headers: {Authorization: 'Bearer ' + localtoken.access_token},
     }).then((xhr) => {
       router.push('/')
     })
@@ -175,21 +180,35 @@ window.logout = function () {
     router.push('/')
   }
 }
+// 判断是否为手机浏览器
+const isPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
+// 修改meta viewport
+function getBrowser() {
+  $("meta[name='viewport']").attr('content',"width=device-width, initial-scale=1");
+}
+if(isPhone){
+  getBrowser();
+}
+
 
 let localtoken = localStorage.getItem('accesstoken') ? JSON.parse(localStorage.getItem('accesstoken')) : '';
 // 初始化 store
 const store = new Vuex.Store({
   state: {
     isLogin: localtoken ? true : false,
-    userInfo:{}
+    userInfo: {},
+    isPhone: isPhone
   },
   mutations: {
-    changeLogin(state,value) {
+    changeLogin(state, value) {
       state.isLogin = value
     },
-    getUserInfo(state,obj) {
+    getUserInfo(state, obj) {
       state.userInfo = obj
     },
+    setPhoneStyle(state, value) {
+      state.isPhone = value
+    }
   }
 });
 // 初始化整个app
