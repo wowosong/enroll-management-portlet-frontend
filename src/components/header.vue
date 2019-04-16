@@ -58,6 +58,7 @@
         this.$store.commit('getUserInfo', {});
         // 重置登录状态
         this.$store.commit('changeLogin', false);
+        this.$router.push('/')
       }
     }
   }
