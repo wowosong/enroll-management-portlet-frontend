@@ -28,18 +28,18 @@
               },
             }
         },
-      mounted() {
-        //初始化数据
-        let vm = this;
-        http.get("/enroll/api/erNotice/portalQuery", {params: vm.filter}).then(function (xhr) {
-          vm.noticeList = xhr.data.data;
-        })
-      },
-      methods:{
-          noticeDetail(item){
-            this.$router.push({path:'/notice/detail',query:{datail:item}});
-          }
-      }
+        mounted() {
+          //初始化数据
+          let vm = this;
+          http.get("/enroll/api/erNotice/portalQuery", {params: vm.filter}).then(function (xhr) {
+            vm.noticeList = xhr.data.data;
+          })
+        },
+        methods:{
+            noticeDetail(item){
+              this.$router.push({path:'/notice/detail',query:{datail:item}});
+            }
+        }
     }
 </script>
 

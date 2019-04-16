@@ -45,14 +45,14 @@
             this.$message({
               message: '请选择审批通过和招生简章发布了的招生计划！',
               type: "warning"
-            })
+            });
             return;
           }
           if(item.erEnrollmentGuide == null) {
             this.$message({
               message: '还没填写招生简章！',
               type: "warning"
-            })
+            });
             return;
           }
           this.$router.push({path:'/plan/detail',query:{erEnrollmentGuide:item.erEnrollmentGuide}});
