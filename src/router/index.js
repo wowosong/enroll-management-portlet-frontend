@@ -21,6 +21,12 @@ import signup from '@/views/sign_up/index'
 
 import page404 from '../views/error/404'
 
+/**********wrap start****************/
+// 登录
+import login from '../views/wrap/login'
+// 忘记密码
+import reset from '../views/wrap/reset_pwd'
+
 const list = [{
   path: '',
   component: main,
@@ -72,6 +78,16 @@ const list = [{
     path: '*',
     name: '404', // 用于显示没有匹配到的页面
     component: page404,
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: login,
+  },
+  {
+    path: '/reset',
+    name: 'reset',
+    component: reset,
   }
 ];
 

@@ -6,6 +6,7 @@
           <a v-if="!isLogin" @click="goPlan">首次报名</a>
           <a v-if="isLogin" @click="goCenter">查看报名</a>
         </div>
+        <!--登录框-->
         <div class="login" v-if="!isLogin && !isPhone">
           <h1>已报名登录</h1>
           <div class="user-error" v-if="userError">{{userError}}</div>
@@ -23,7 +24,7 @@
           </div>
           <div class="pwd-wrap clearfix">
             <el-checkbox v-model="isRemember">记住密码</el-checkbox>
-            <a @click="showResetPwd = true">找回密码</a>
+            <a @click="showResetPwd = true">忘记密码</a>
           </div>
           <div class="login-btn" @click="login">
             <a>登录</a>
@@ -198,7 +199,7 @@
             }]
           }).then(function (xhr) {
             if (xhr.data.code == '20001') {
-              vm.msgError = xhr.data.message;
+              vm.userError = xhr.data.message;
             } else {
               let dataToken = xhr.data;
               localStorage.setItem('accesstoken', JSON.stringify(dataToken));
@@ -425,16 +426,6 @@
   }
 </style>
 <style lang="less">
-  .login {
-    .el-checkbox__input.is-checked + .el-checkbox__label {
-      color: #333333;
-    }
-    .el-checkbox__input.is-checked .el-checkbox__inner {
-      background-color: #2f3861;
-      border-color: #2f3861;
-    }
-  }
-
   .swiper-container {
     .swiper-button-next, .swiper-button-prev {
       background-color: rgba(0, 0, 0, 0.5);

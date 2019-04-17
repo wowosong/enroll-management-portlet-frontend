@@ -58,7 +58,7 @@
       },
       //登录
       goLogin() {
-
+        this.$router.push({path: '/login'})
       },
       //  退出
       logout() {

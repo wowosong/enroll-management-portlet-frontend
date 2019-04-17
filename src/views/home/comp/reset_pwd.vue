@@ -2,11 +2,11 @@
   <div>
     <el-dialog title="找回密码" :visible.sync="isdialog" width="460px" @close="handleClose">
       <div class="pro_tit clearfix">
-        <div class="pro_item active">
+        <div :class="['pro_item',{'active':stempNum==1}]">
           <i></i>
           <p>验证身份</p>
         </div>
-        <div class="pro_item">
+        <div :class="['pro_item',{'active':stempNum==2}]">
           <i></i>
           <p>找回密码</p>
         </div>
@@ -144,10 +144,6 @@
 </script>
 
 <style lang="less" scoped>
-  .edit {
-
-  }
-
   .pro_tit {
     border-top: 1px solid #ccc;
     width: 200px;

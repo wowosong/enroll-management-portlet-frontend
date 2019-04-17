@@ -75,7 +75,10 @@
                   </el-form-item>
                   <el-form-item label="现就读学校:">
                     <el-col :span="12">
-                      <el-input v-model="regInfo.nowSchool"></el-input>
+                      <el-autocomplete
+                        v-model="regInfo.nowSchool"
+                        :fetch-suggestions="querySearch"
+                        placeholder="请输入内容"/>
                     </el-col>
                   </el-form-item>
                   <el-form-item label="现就读年级:" prop="nowGrade">
@@ -320,13 +323,14 @@
         saveFlag: false,
         // 性别数据
         genderList: [{
-          seiValue: 0,
+          seiValue: 1,
           seiName: "男"
         }, {
-          seiValue: 1,
+          seiValue: 2,
           seiName: "女"
         }],
-        genderMap: {1: "女", 0: "男"},
+        genderMap: {2: "女", 1: "男"},
+        schoolList: [],
 
         // 原始
         current: 'info',
@@ -394,6 +398,17 @@
       // this.queryGender();
     },
     methods: {
+      querySearch(queryString, cb) {
+        let restaurants = this.schoolList;
+        let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (restaurant) => {
+          return (restaurant.seiName.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
+        };
+      },
       saveInfo() {
         const vm = this;
         vm.saving = true;
@@ -553,7 +568,7 @@
       },
       getEnum() {
         let vm = this;
-        var enumCodes = "studentsType,xsbq";
+        var enumCodes = "studentsType,xsbq,XXLB";
         Promise.all([
           http.get("/gateway/platform/api/enum/queryByCodes/" + enumCodes)
         ]).then(function (list) {
@@ -562,6 +577,12 @@
           });
           vm.tagList = _.filter(list[0].data, function (i) {
             return i.code == "xsbq";
+          });
+          vm.schoolList = _.filter(list[0].data, function (i) {
+            if (i.code == "XXLB") {
+              vm.$set(i, "value", i.seiName);
+            }
+            return i.code == "XXLB";
           });
         });
       },
