@@ -1,5 +1,6 @@
 <template>
     <div class="comm_main clearfix">
+        <campus @query="queryCampus"></campus>
         <div class="comm_item float_left">
             <div class="item_tit">招生计划<span>ENROLLMENT PLAN</span></div>
             <div class="plan_cont">
@@ -12,7 +13,6 @@
                 <div class="no_data" v-if="!planList || planList.length == 0"></div>
             </div>
         </div>
-        <campus></campus>
     </div>
 </template>
 <script>
@@ -36,28 +36,31 @@
               vm.planList = xhr.data.data;
             })
         },
-      methods: {
-        signUp(item) {
-          this.$router.push({path:'/fillInstructions',query:item});
-        },
-        enrollmentGuide(item) {
-          if( item.auditStatus != 3 && item.erEnrollmentGuide.publishStatus != 1) {
-            this.$message({
-              message: '请选择审批通过和招生简章发布了的招生计划！',
-              type: "warning"
-            });
-            return;
-          }
-          if(item.erEnrollmentGuide == null) {
-            this.$message({
-              message: '还没填写招生简章！',
-              type: "warning"
-            });
-            return;
-          }
-          this.$router.push({path:'/plan/detail',query:{erEnrollmentGuide:item.erEnrollmentGuide}});
+        methods: {
+            signUp(item) {
+                this.$router.push({path:'/fillInstructions',query:item});
+            },
+            enrollmentGuide(item) {
+                if( item.auditStatus != 3 && item.erEnrollmentGuide.publishStatus != 1) {
+                    this.$message({
+                    message: '请选择审批通过和招生简章发布了的招生计划！',
+                    type: "warning"
+                    });
+                    return;
+                }
+                if(item.erEnrollmentGuide == null) {
+                    this.$message({
+                    message: '还没填写招生简章！',
+                    type: "warning"
+                    });
+                    return;
+                }
+                this.$router.push({path:'/plan/detail',query:{erEnrollmentGuide:item.erEnrollmentGuide}});
+            },
+            queryCampus(data){
+                //校区查询
+            }
         }
-      }
     }
 </script>
 
@@ -124,6 +127,51 @@
             background: #eee;
             color: #999;
             border:1px solid #bbb;
+        }
+    }
+
+    //warp版本
+    .is_phone{
+        .plan_cont{
+            padding-top:0;
+        }
+        .item_tit{
+            display: none;
+        }
+        .plan_list{
+            background: #fff;
+            border-radius: 4px;
+            position: relative;
+            padding: 20px;
+            height: auto;
+            .plan_tit{
+                width: auto;
+                display: block;
+                margin-top: 0;
+            }
+            .ico{
+                background: #aa2f33;
+                height: 20px;
+                border-radius: 0;
+                position: absolute;
+                top: 20px;
+                left:0;
+                margin: 0;
+            }
+            .btn{
+                float: none;
+                width: 100%;
+                display: block;
+                margin-left: 0;
+                color: #2f3861;
+                border:1px solid #2f3861;
+                text-align: center;
+                margin-top: 10px;
+                background: none;
+            }
+            .color2{
+                display: none;
+            }
         }
     }
 </style>
