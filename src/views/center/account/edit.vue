@@ -91,7 +91,7 @@
           if(vm.type == 'password') {
             vm.formData.id = window.userInfo.id;
           }
-          http.post(`/platform/jiaXiangUser`, vm.formData).then(xhr => {
+          http.post(`/gateway/platform/jiaXiangUser`, vm.formData).then(xhr => {
             if (xhr.data.code){}
             if(xhr.data.data) {
               vm.stempNum = 2
@@ -110,7 +110,7 @@
                 vm.$message('密码不一致!');
                 return;
               } else {
-                http.post(`/platform/jiaXiangUser/resetPassWord`, vm.formData).then(xhr => {
+                http.post(`/gateway/platform/jiaXiangUser/resetPassWord`, vm.formData).then(xhr => {
                   if (xhr.data.code){
                     window.hint(
                       {
