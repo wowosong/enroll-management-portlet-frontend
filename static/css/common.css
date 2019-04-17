@@ -72,3 +72,10 @@ body{
   content: '~ 暂无数据 ~'
 }
 
+.el-checkbox__input.is-checked + .el-checkbox__label {
+  color: #333333 !important;
+}
+.el-checkbox__input.is-checked .el-checkbox__inner {
+  background-color: #2f3861 !important;
+  border-color: #2f3861 !important;
+}
