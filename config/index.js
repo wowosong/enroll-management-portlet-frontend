@@ -13,7 +13,7 @@ module.exports = {
     // proxyTable: {},
     proxyTable: {
       '/platform': {
-        target: 'http://clouddev.myedu.gov.cn',
+        target: 'http://127.0.0.1:8086',
         changeOrigin: true,
         secure: false
       },

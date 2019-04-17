@@ -219,7 +219,8 @@ let app = new Vue({
   render(h) {
     return h('div', {
       attrs: {
-        id: 'app'
+        id: 'app',
+        class: isPhone ? 'is_phone' :''
       }
     }, [h('router-view')]);
   }
