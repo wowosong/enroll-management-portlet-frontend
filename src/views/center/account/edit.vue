@@ -14,20 +14,20 @@
         <div class="edit_cont">
             <el-form :model="formData" :rules="rules" ref="ruleForm" label-width="120px">
                 <template v-if="stempNum == 1">
-                    <el-form-item label="当前登录名:">ssssssssss</el-form-item>
+                    <el-form-item label="当前登录名:">{{logonName}}</el-form-item>
                     <el-form-item label="身份证号:" required>
                         <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
                     <el-form-item label="姓名:" required>
-                        <el-input v-model="formData.name" style="width:260px;" placeholder="请输入"></el-input>
+                        <el-input v-model="formData.userName" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <div class="btn">下一步</div>
+                        <div class="btn" @click="nextStep()">下一步</div>
                     </el-form-item>
                 </template>
 
                 <template v-if="stempNum == 2 && type == 'name'">
-                    <el-form-item label="当前登录名:">ssssssssss</el-form-item>
+                    <el-form-item label="当前登录名:">{{logonName}}</el-form-item>
                     <el-form-item label="新登录名:" required>
                         <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
@@ -36,18 +36,18 @@
                     </el-form-item>
                 </template>
 
-                <template v-if="stempNum == 2 && type == 'password'">
-                    <el-form-item label="当前登录名:">ssssssssss</el-form-item>
-                    <el-form-item label="新密码:" required>
-                        <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入"></el-input>
+                <div v-if="stempNum == 2 && type == 'password'">
+                    <el-form-item label="当前登录名:">{{logonName}}</el-form-item>
+                    <el-form-item label="新密码:" prop="newPass">
+                        <el-input v-model="formData.newPass" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
-                    <el-form-item label="确认新密码:" required>
-                        <el-input v-model="formData.name" style="width:260px;" placeholder="请输入"></el-input>
+                    <el-form-item label="确认新密码:" prop="newCheckPass">
+                        <el-input v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <div class="btn">确定</div>
+                        <div class="btn" @click="submit">确定</div>
                     </el-form-item>
-                </template>
+                </div>
             </el-form>
         </div>
     </div>
@@ -62,16 +62,73 @@
         },
         data(){
             return{
-                formData:{
-                    idCard:'',
-                    name:''
-                },
-                rules:{
-
-                },
-                stempNum:1
+              formData:{
+                  idCard:'',
+                  userName:'',
+                  id:'',
+                  newPass: '',
+                  newCheckPass: '',
+                  loginName:''
+              },
+              logonName:window.userInfo.logonName,
+              rules:{
+                newPass: [
+                  { required: true, message: "新密码不能为空!", trigger: "blur" }
+                ],
+                newCheckPass: [
+                  { required: true, message: "确认密码不能为空!", trigger: "blur" }
+                ],
+              },
+              stempNum:1
             }
+        },
+        mounted () {
+
+      },
+      methods: {
+        nextStep() {
+          let vm = this;
+          if(vm.type == 'password') {
+            vm.formData.id = window.userInfo.id;
+          }
+          http.post(`/platform/jiaXiangUser`, vm.formData).then(xhr => {
+            if (xhr.data.code){}
+            if(xhr.data.data) {
+              vm.stempNum = 2
+            } else {
+              vm.$message('用户信息验证失败!');
+              return
+            }
+          })
+        },
+        submit(){
+          let vm = this;
+          vm.formData.loginName = window.userInfo.logonName;
+          vm.$refs["ruleForm"].validate((valid) => {
+            if (valid) {
+              if(vm.formData.newPass != vm.formData.newCheckPass) {
+                vm.$message('密码不一致!');
+                return;
+              } else {
+                http.post(`/platform/jiaXiangUser/resetPassWord`, vm.formData).then(xhr => {
+                  if (xhr.data.code){
+                    window.hint(
+                      {
+                        msg:xhr.data.message,
+                        type:'fail'
+                      }
+                    )
+                  }else{
+                    //todo 需要登出并清除cookies
+                  }
+                })
+              }
+            } else {
+              return false;
+            }
+          });
         }
+      }
     }
 </script>
 
