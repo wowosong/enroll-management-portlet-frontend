@@ -45,8 +45,7 @@
         <div class="swiper-button-prev swiper-button-white"></div>
       </div>
       <div class="notice-main">
-        <div class="notice-title">通知公告<a @click="moreNotice()"><span>更多</span> <i class="iconfont">&#xe6e9;</i></a>
-        </div>
+        <div class="notice-title">通知公告<a @click="moreNotice()"><span>更多</span> <i class="iconfont">&#xe6e9;</i></a></div>
         <ul class="notice-list" v-if="noticeList && noticeList.length > 0">
           <li v-for="(item,index) in noticeList" :key="index" v-if="index<5" >
             <p>{{item.noticeTitle}}</p>
@@ -392,6 +391,9 @@
         color: #666;
         font-size: 14px;
         cursor: pointer;
+        &:hover{
+          color: #aa2f33;
+        }
         i {
           font-size: 12px;
         }

@@ -1,7 +1,7 @@
 .container{
   min-width: 100%;
 }
-.main-wrap{
+.main-wrap,.comm_main{
   width: 100% ;
 }
 

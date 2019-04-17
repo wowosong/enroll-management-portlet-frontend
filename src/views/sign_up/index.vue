@@ -9,7 +9,7 @@
         </div>
         <!--基本信息-->
         <div class="sign-main" id="info">
-          <p class="item-tit">基本信息</p>
+          <p class="item-tit tit750">基本信息</p>
           <template>
             <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="170px">
               <div class="basic-info">
@@ -26,7 +26,7 @@
                 <div class="user-info">
                   <el-form-item label="学生姓名:" prop="stuName" id="formData_name">
                     <el-col :span="12">
-                      <el-input v-model="regInfo.stuName"></el-input>
+                      <el-input v-model="regInfo.stuName" placeholder="请填写"></el-input>
                     </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
@@ -35,7 +35,7 @@
                   </el-form-item>
                   <el-form-item label="身份证号:" prop="idCard" id="formData_idCardNum">
                     <el-col :span="12">
-                      <el-input v-model="regInfo.idCard" @change="idCardNumFn"></el-input>
+                      <el-input v-model="regInfo.idCard" placeholder="请填写" @change="idCardNumFn"></el-input>
                     </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
@@ -44,7 +44,7 @@
                   </el-form-item>
                   <el-form-item label="出生日期:" prop="stuBirthday">
                     <el-col :span="12">
-                      <el-input v-model="regInfo.stuBirthday" readonly></el-input>
+                      <el-input v-model="regInfo.stuBirthday" placeholder="0000-00-00" readonly></el-input>
                     </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
@@ -67,6 +67,7 @@
                       <!--省市区县(传省市区id)-->
                       <!--<cityPicker :selectedFn="getArea"></cityPicker>-->
                       <el-cascader
+                        placeholder="请填写"
                         style="width: 100%"
                         filterable
                         :options="addList"
@@ -83,7 +84,7 @@
                   </el-form-item>
                   <el-form-item label="现就读年级:" prop="nowGrade">
                     <el-col :span="12">
-                      <el-select clearable v-model="regInfo.nowGrade">
+                      <el-select clearable v-model="regInfo.nowGrade" placeholder="请填写">
                         <el-option
                           v-for="item in gradeList"
                           :key="item.id"
@@ -92,18 +93,44 @@
                       </el-select>
                     </el-col>
                   </el-form-item>
-                  <el-form-item label="总分年级排名/年级人数:">
-                    <el-row>
-                      <el-col :span="6" class="m-r-12">
-                        <el-input type="number" min="1" step="1" v-model="regInfo.otherData['s_a']"></el-input>
-                      </el-col>
-                      <el-col :span="6">
-                        <el-input type="number" min="1" step="1" v-model="regInfo.otherData['s_b']"></el-input>
-                      </el-col>
-                    </el-row>
-                  </el-form-item>
+                  <!--手机浏览器显示-->
+                  <template v-if="isPhone">
+                    <el-form-item label="总分年级排名">
+                      <el-row>
+                        <el-col :span="12">
+                          <el-input type="number" min="1" step="1" placeholder="请填写"
+                                    v-model="regInfo.otherData['s_a']"></el-input>
+                        </el-col>
+                      </el-row>
+                    </el-form-item>
+                    <el-form-item label="年级人数:">
+                      <el-row>
+                        <el-col :span="12">
+                          <el-input type="number" min="1" step="1" placeholder="请填写"
+                                    v-model="regInfo.otherData['s_b']"></el-input>
+                        </el-col>
+                      </el-row>
+                    </el-form-item>
+                  </template>
+                  <!--pc 显示-->
+                  <template v-else>
+                    <el-form-item label="总分年级排名/年级人数:">
+                      <el-row>
+                        <el-col :span="6" class="m-r-12">
+                          <el-input type="number" min="1" step="1" placeholder="请填写"
+                                    v-model="regInfo.otherData['s_a']"></el-input>
+                        </el-col>
+                        <el-col :span="6">
+                          <el-input type="number" min="1" step="1" placeholder="请填写"
+                                    v-model="regInfo.otherData['s_b']"></el-input>
+                        </el-col>
+                      </el-row>
+                    </el-form-item>
+                  </template>
+
                 </div>
-                <div class="user-info-table">
+                <!--pc 显示-->
+                <div class="user-info-table" v-if="!isPhone">
                   <div class="table-item">
                     <label>监护人:</label>
                     <table class="table">
@@ -175,6 +202,7 @@
                     </div>
                   </div>
                   <div class="table-item">
+                    <label>获奖附件:</label>
                     <div class="up_idcard" @click="uploadEnclosure">
                       <template v-if="!fileList || !fileList.length">
                         <img src="@/imgs/upload.png">上传证件
@@ -182,16 +210,81 @@
                       <img v-else :src="imgUrl+fileList[0].fileId" class="card">
                     </div>
                     <div class="hint">证明您的获奖情况</div>
+
                   </div>
                 </div>
               </div>
+              <!--手机浏览器 显示-->
+              <template v-if="isPhone">
+                <!--间隔线-->
+                <div class="line"></div>
+                <!--监护人信息-->
+                <div class="guardian_info">
+                  <p class="item-tit tit750">
+                    监护人信息
+                    <span v-if="!guardianOpen" @click="guardianOpen = !guardianOpen">展开<i
+                      class="el-icon-arrow-down"></i> </span>
+                    <span v-else @click="guardianOpen = !guardianOpen">收起 <i class="el-icon-arrow-up"></i> </span>
+                  </p>
+                  <template v-for="i in 2" v-if="guardianOpen">
+                    <el-form-item label="姓名:">
+                      <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_g']"/>
+                    </el-form-item>
+                    <el-form-item label="手机:">
+                      <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
+                    </el-form-item>
+                    <el-form-item label="学历:">
+                      <el-input :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
+                    </el-form-item>
+                    <el-form-item label="工作单位:">
+                      <el-input :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
+                    </el-form-item>
+                    <el-form-item label="职务:">
+                      <el-input :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
+                    </el-form-item>
+                    <div class="line-1" v-if="i==1"></div>
+                  </template>
+                </div>
+                <!--间隔线-->
+                <div class="line"></div>
+                <!--获奖信息-->
+                <div class="prize_info">
+                  <p class="item-tit tit750">
+                    获奖信息
+                    <span v-if="!prizeOpen" @click="prizeOpen = !prizeOpen">展开<i
+                      class="el-icon-arrow-down"></i> </span>
+                    <span v-else @click="prizeOpen = !prizeOpen">收起 <i class="el-icon-arrow-up"></i> </span>
+                  </p>
+                  <template v-for="i in 3" v-if="prizeOpen">
+                    <el-form-item label="获奖时间:">
+                      <el-date-picker placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
+                    </el-form-item>
+                    <el-form-item label="奖项名称:">
+                      <el-input placeholder="奖项名称（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
+                    </el-form-item>
+                    <el-form-item label="奖项等级:">
+                      <el-input placeholder="奖项等级（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
+                    </el-form-item>
+                    <div class="line-1" v-if="i == 3"></div>
+                    <el-form-item label="获奖附件:" v-if="i == 3">
+                      <div class="up_idcard" @click="uploadEnclosure">
+                        <template v-if="!fileList || !fileList.length">
+                          <img src="@/imgs/upload.png">上传证件
+                        </template>
+                        <img v-else :src="imgUrl+fileList[0].fileId" class="card">
+                      </div>
+                    </el-form-item>
+                    <div class="line-1" v-if="i == 1 || i == 2"></div>
+                  </template>
+                </div>
+              </template>
               <!--间隔线-->
               <div class="line"></div>
               <!--登录密码-->
               <div class="sign-pwd" id="pwd">
                 <p class="item-tit">登录密码</p>
                 <div class="sign-pwd-tit">
-                  请设置密码，建议使用数字、字母、字符的组合密码且长度超过6位
+                  请设置密码，建议使用字符的组合密码且长度超过6位
                   <p>注：若未设置密码，下次登录的密码为“身份证号后六位”</p>
                 </div>
                 <el-row>
@@ -379,11 +472,18 @@
             {min: 15, max: 18, message: '格式有误', trigger: 'blur'}
           ],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
-          stuBirthday: [{required: true, message: '必填项', trigger: 'change'}],
-          stuGender: [{required: true, message: '必填项', trigger: 'change'}]
+          stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
+          stuGender: [{required: true, message: '必填项', trigger: 'blur'}]
         },
-        // 登录信息
-        loginForm: {},
+        //  监护人信息是否展开
+        guardianOpen: false,
+        // 获奖信息是否展开
+        prizeOpen:false
+      }
+    },
+    computed: {
+      isPhone: function () {
+        return this.$store.state.isPhone
       }
     },
     mounted() {
@@ -728,7 +828,7 @@
     padding: 40px 20px 30px;
     box-sizing: border-box;
     .sign-tit {
-      color: #666;
+      color: #333;
       font-size: 18px;
       text-align: center;
       font-weight: 600;
@@ -806,7 +906,7 @@
               text-align: right;
               color: #606266;
               flex-shrink: 0;
-              margin-right: 15px;
+              padding-right: 12px;
             }
             .table-item-tag {
               color: #999;
@@ -878,7 +978,6 @@
             margin-top: 8px;
           }
         }
-
       }
       .sign-btn {
         text-align: center;
@@ -959,6 +1058,120 @@
     .el-radio__input.is-checked .el-radio__inner {
       border-color: #2f3861;
       background: #2f3861;
+    }
+  }
+</style>
+<style lang="less">
+  @media screen and (max-width: 750px) {
+    #app {
+      .sign-wrap {
+        .comm_main {
+          margin: 0;
+        }
+        .sign-left {
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          .sign-tit {
+            font-size: 16px;
+            padding-top: 24px;
+          }
+          .sign-tit, .sign-subttit {
+            text-align: center;
+          }
+          .sign-subttit {
+            color: #666;
+            margin-top: 16px;
+            padding-bottom: 24px;
+            border-bottom: 10px solid #eff3f5;
+            .update-txt {
+              display: none;
+            }
+            span {
+              color: #333;
+              margin-right: 0;
+            }
+            &::before, span:first-child::after {
+              content: "●";
+              color: #bebebe;
+              font-size: 12px;
+            }
+            &::before {
+              padding-right: 5px;
+            }
+            span:first-child::after {
+              margin-left: 24px;
+            }
+          }
+          .sign-main {
+            .item-tit {
+              font-size: 16px;
+              font-weight: bold;
+              color: #333;
+              border-left: 3px solid #aa2f33;
+              padding-left: 5px;
+              line-height: 16px;
+            }
+            .el-col-12 {
+              width: 68%;
+            }
+            .tit750 {
+              margin-left: 16px;
+              margin-right: 16px;
+              span {
+                float: right;
+                font-size: 12px;
+                font-weight: normal;
+                color: #aa2f33;
+              }
+            }
+            .basic-info, .guardian_info {
+              input {
+                border: none;
+              }
+            }
+            .basic-info, .sign-pwd, .guardian_info, .prize_info {
+              padding: 0 16px;
+            }
+            .user-img {
+              display: none;
+            }
+            .user-info {
+              margin-left: 0;
+            }
+            .el-form-item__label {
+              width: 100px !important;
+            }
+            .el-form-item__content {
+              margin-left: 100px !important;
+            }
+            .sign-pwd {
+              .sign-pwd-tit {
+                font-size: 12px;
+              }
+              .el-col-offset-4{
+                margin-left: 0;
+              }
+              .el-col-16{
+                width: 100%;
+              }
+            }
+            .sign-btn {
+              padding-bottom: 24px;
+            }
+          }
+        }
+        .sign-right {
+          display: none;
+        }
+        .line {
+          border-width: 10px;
+        }
+        .line-1 {
+          border-bottom: 1px solid #e2e1e1;
+          margin-bottom: 24px;
+        }
+      }
     }
   }
 </style>
