@@ -38,7 +38,10 @@
         this.$store.commit('setPhoneStyle', value);
         if (!value) {
           $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=0.1");
-          $("#changeHref").attr('href', '')
+          $("#changeHref").attr('href', '');
+          $("#app").removeClass('is_phone');
+        } else {
+          $("#app").addClass('is_phone');
         }
       }
     },
