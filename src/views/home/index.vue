@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container home-wrap">
     <div :class="['banner',{'banner-after':isLogin}]">
       <div :class="['main-wrap', 'clearfix',{'banner-after':isLogin,'no-p-t':isLogin}]">
         <div :class="['sign-btn',{'isSign-btn':isLogin && !isPhone}]">
@@ -47,8 +47,8 @@
         <div class="notice-title">通知公告<a @click="moreNotice()"><span>更多</span> <i class="iconfont">&#xe6e9;</i></a>
         </div>
         <ul class="notice-list" v-if="noticeList && noticeList.length > 0">
-          <li v-for="(item,index) in noticeList" :key="index" v-if="index<5">
-            {{item.noticeTitle}}
+          <li v-for="(item,index) in noticeList" :key="index" v-if="index<5" >
+            <p>{{item.noticeTitle}}</p>
             <span>{{item.createTime | dateFormatYmd}}</span>
           </li>
         </ul>
@@ -398,13 +398,24 @@
     }
     .notice-list {
       width: 100%;
+      margin-top: 12px;
       li {
-        margin-top: 16px;
         cursor: pointer;
+        position: relative;
+        line-height: 34px;
+        p{
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin-right: 100px;
+        }
         span {
+          display:block;
           color: #999;
           font-size: 12px;
-          float: right;
+          position: absolute;
+          right: 0;
+          top: 0;
         }
         &:hover {
           color: #aa2f33;
@@ -413,62 +424,6 @@
     }
   }
 </style>
-<style lang="less" scoped>
-  @media screen and (max-width: 750px) {
-    .banner {
-      height: 211px;
-      background: url(~css_img/wrap/banner.jpg) no-repeat center;
-
-    }
-
-    .main-wrap {
-      padding-top: 0;
-      background: url(~css_img/wrap/banner.jpg) no-repeat center;
-      background-size: cover;
-      .sign-btn {
-        width: 124px;
-        height: 40px;
-        line-height: 40px;
-        bottom: -20px;
-        a {
-          font-size: 14px;
-        }
-      }
-    }
-
-    .notice-wrap {
-      width: 100%;
-      .notice-main {
-        margin-left: 0;
-        .notice-title {
-          border-bottom: none;
-          border-left: 3px solid #aa2f33;
-          line-height: 14px;
-          font-size: 14px;
-          color: #333;
-          padding-bottom: 0;
-          padding-left: 8px;
-          font-weight: bold;
-          a {
-            span {
-              display: none;
-            }
-          }
-        }
-        .notice-list{
-          li::before{
-            content:"●";
-            color:#bebebe;
-            font-size:12px;
-            vertical-align: top;
-            padding-right: 12px;
-          }
-        }
-      }
-    }
-  }
-</style>
-
 <style lang="less">
   .login {
     .el-checkbox__input.is-checked + .el-checkbox__label {

@@ -115,34 +115,4 @@
       }
     }
   }
-
-  @media screen and (max-width: 750px) {
-    header {
-      height: 42px;
-      line-height: 42px;
-      border-bottom: none;
-    }
-
-    .logo-wrap {
-      .logo {
-        width: 138px;
-        height: 29px;
-      }
-      a {
-        img {
-          width: 21px;
-          height: 21px;
-          vertical-align: middle;
-        }
-        .user-name {
-          display: none;
-        }
-      }
-      .logout{
-        margin-left: 0;
-        vertical-align: middle;
-      }
-    }
-
-  }
 </style>

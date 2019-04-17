@@ -2,7 +2,10 @@
   <div class="container">
     <footer>
       <div class="main-wrap">
-        <p class="edition-wrap">电脑版<span>手机版</span></p>
+        <p class="edition-wrap">
+          <span @click="changeBrowser(false)">电脑版</span>
+          <span @click="changeBrowser(true)">手机版</span>
+        </p>
         <div class="tel-wrap">
           <ul class="clearfix">
             <li>锦江小学招生电话：028-85917541</li>
@@ -27,34 +30,19 @@
     </footer>
   </div>
 </template>
-<script>//page footer
-export default {
-  data() {
-    return {
-      menu: [
-        {name: '青训报名', path: '/signUp'},
-        {name: '填报说明', path: '/explain'},
-        {name: '成绩查询', path: '/score_query'},
-        {name: '选拔公告', path: '/notice'},
-        {name: '关于我们', path: '/aboutus'}
-      ],
-      nowNav: '青训报名',
-      isPhone: window.isPhone
-    }
-  },
-  mounted() {
-    let vm = this;
-  },
-  methods: {
-    navFn(menu) {
-      this.$router.push(menu.path)
-      this.$store.commit('setMenu', menu.name);
+<script>
+  export default {
+    methods: {
+      // 电脑版 / 手机版切换
+      changeBrowser(value) {
+        this.$store.commit('setPhoneStyle', value);
+        if (!value) {
+          $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=0.1");
+          $("#changeHref").attr('href', '')
+        }
+      }
     },
-    isShowPhoneFn(data) {
-      this.$store.commit('setPhoneStyle', data);
-    }
-  },
-}
+  }
 </script>
 <style lang="less" scoped>
   footer {
@@ -107,48 +95,5 @@ export default {
 
   .container {
     background: #323232;
-  }
-
-  @media screen and (max-width: 750px) {
-    footer {
-      background: #eeeeee;
-      color: #666666;
-
-      .main-wrap {
-        padding: 16px;
-      }
-      .edition-wrap {
-        display: block;
-        text-align: center;
-        color: #2f3861;
-        font-size: 12px;
-        span {
-          border-left: 1px solid #cacaca;
-          margin-left: 8px;
-          padding-left: 8px;
-          line-height: 14px;
-          display: inline-block;
-        }
-      }
-      .tel-wrap {
-        font-size: 9px;
-        margin-right: 0;
-        margin-top: 12px;
-        ul li {
-          line-height: 24px;
-        }
-        .copyright {
-          color: #b3b5ba;
-          margin-top: 20px;
-          span{
-            display: block;
-          }
-        }
-      }
-      .qrcode {
-        display: none;
-      }
-    }
-
   }
 </style>

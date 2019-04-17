@@ -182,12 +182,13 @@ window.logout = function () {
 }
 // 判断是否为手机浏览器
 const isPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
+
 // 修改meta viewport
-function getBrowser() {
-  $("meta[name='viewport']").attr('content',"width=device-width, initial-scale=1");
+function getPhone() {
+  $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=1");
 }
-if(isPhone){
-  getBrowser();
+if (isPhone) {
+  getPhone();
 }
 
 

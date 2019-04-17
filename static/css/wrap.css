@@ -1,0 +1,118 @@
+.container{
+  min-width: 100%;
+}
+.main-wrap{
+  width: 100% ;
+}
+
+/*!*header*!*/
+#app .main .container header {
+  height: 42px;
+  line-height: 42px;
+  border-bottom: none;
+}
+#app .main .container header .logo-wrap .logo {
+  width: 138px;
+  height: 29px;
+}
+#app .main .container header .logo-wrap a img {
+  width: 21px;
+  height: 21px;
+  vertical-align: middle;
+}
+#app .main .container header .logo-wrap a .user-name {
+  display: none;
+}
+#app .main .container header .logo-wrap .logout {
+  margin-left: 0;
+  vertical-align: middle;
+}
+
+/*!*footer*!*/
+#app .main .container footer {
+  background: #eeeeee;
+  color: #666666;
+}
+#app .main .container footer .main-wrap {
+  padding: 16px;
+}
+#app .main .container footer .edition-wrap {
+  display: block;
+  text-align: center;
+  color: #2f3861;
+  font-size: 12px;
+}
+#app .main .container footer .edition-wrap span:last-child {
+  border-left: 1px solid #cacaca;
+  margin-left: 8px;
+  padding-left: 8px;
+  line-height: 14px;
+  display: inline-block;
+}
+#app .main .container footer .tel-wrap {
+  font-size: 9px;
+  margin-right: 0;
+  margin-top: 12px;
+}
+#app .main .container footer .tel-wrap ul li {
+  line-height: 24px;
+}
+#app .main .container footer .tel-wrap .copyright {
+  color: #b3b5ba;
+  margin-top: 20px;
+}
+#app .main .container footer .tel-wrap .copyright span {
+  display: block;
+}
+#app .main .container footer .qrcode {
+  display: none;
+}
+
+/*!*首页*!*/
+#app .main .banner {
+  height: 211px;
+  background: url(../images/wrap/banner.jpg) no-repeat center;
+  background-size: cover;
+}
+#app .main .home-wrap .main-wrap {
+  padding-top: 0;
+  background: url(../images/wrap/banner.jpg) no-repeat center;
+  background-size: cover;
+}
+#app .main .home-wrap .main-wrap .sign-btn {
+  width: 124px;
+  height: 40px;
+  line-height: 40px;
+  bottom: -20px;
+}
+#app .main .home-wrap .main-wrap .sign-btn a {
+  font-size: 14px;
+}
+#app .main .home-wrap .notice-wrap {
+  width: 100%;
+}
+#app .main .home-wrap .notice-wrap .notice-main {
+  margin-left: 0;
+}
+#app .main .home-wrap .notice-wrap .notice-main .notice-title {
+  border-bottom: none;
+  border-left: 3px solid #aa2f33;
+  line-height: 14px;
+  font-size: 14px;
+  color: #333;
+  padding-bottom: 0;
+  padding-left: 8px;
+  font-weight: bold;
+}
+#app .main .home-wrap .notice-wrap .notice-main .notice-title a span {
+  display: none;
+}
+#app .main .home-wrap .notice-wrap .notice-main .notice-list p::before {
+  content: "●";
+  color: #bebebe;
+  font-size: 12px;
+  padding-right: 12px;
+}
+
+
+
