@@ -124,7 +124,7 @@
                     }
                   )
                 }else{
-                  //todo 需要登出并清除cookies
+                  logout();
                 }
               })
             }
