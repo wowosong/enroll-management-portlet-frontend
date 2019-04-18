@@ -32,7 +32,7 @@
         mounted() {
             //初始化数据
             let vm = this;
-            http.get("/enroll/api/erEnrollPlan/portalQuery", {params: vm.filter}).then(function (xhr) {
+            http.get("/gateway/enroll/api/erEnrollPlan/portalQuery", {params: vm.filter}).then(function (xhr) {
               vm.planList = xhr.data.data;
             })
         },
