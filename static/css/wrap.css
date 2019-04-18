@@ -1,8 +1,9 @@
-.container{
+.container {
   min-width: 100%;
 }
-.main-wrap,.comm_main{
-  width: 100% ;
+
+.main-wrap, .comm_main {
+  width: 100%;
 }
 
 /*!*header*!*/
@@ -11,18 +12,22 @@
   line-height: 42px;
   border-bottom: none;
 }
+
 #app .main .container header .logo-wrap .logo {
   width: 138px;
   height: 29px;
 }
+
 #app .main .container header .logo-wrap a img {
   width: 21px;
   height: 21px;
   vertical-align: middle;
 }
+
 #app .main .container header .logo-wrap a .user-name {
   display: none;
 }
+
 #app .main .container header .logo-wrap .logout {
   margin-left: 0;
   vertical-align: middle;
@@ -33,27 +38,34 @@
   background: #eeeeee;
   color: #666666;
 }
+
 #app .main .container footer .main-wrap {
   padding: 16px;
 }
+
 #app .main .container footer .edition-wrap {
   color: #2f3861;
 }
+
 #app .main .container footer .tel-wrap {
   font-size: 9px;
   margin-right: 0;
   margin-top: 12px;
 }
+
 #app .main .container footer .tel-wrap ul li {
   line-height: 24px;
 }
+
 #app .main .container footer .tel-wrap .copyright {
   color: #b3b5ba;
   margin-top: 20px;
 }
+
 #app .main .container footer .tel-wrap .copyright span {
   display: block;
 }
+
 #app .main .container footer .qrcode {
   display: none;
 }
@@ -64,26 +76,32 @@
   background: url(../images/wrap/banner.jpg) no-repeat center;
   background-size: cover;
 }
+
 #app .main .home-wrap .main-wrap {
   padding-top: 0;
   background: url(../images/wrap/banner.jpg) no-repeat center;
   background-size: cover;
 }
+
 #app .main .home-wrap .main-wrap .sign-btn {
   width: 124px;
   height: 40px;
   line-height: 40px;
   bottom: -20px;
 }
+
 #app .main .home-wrap .main-wrap .sign-btn a {
   font-size: 14px;
 }
+
 #app .main .home-wrap .notice-wrap {
   width: 100%;
 }
+
 #app .main .home-wrap .notice-wrap .notice-main {
   margin-left: 0;
 }
+
 #app .main .home-wrap .notice-wrap .notice-main .notice-title {
   border-bottom: none;
   border-left: 3px solid #aa2f33;
@@ -94,18 +112,268 @@
   padding-left: 8px;
   font-weight: bold;
 }
+
 #app .main .home-wrap .notice-wrap .notice-main .notice-title a span {
   display: none;
 }
+
 #app .main .home-wrap .notice-wrap .notice-main .notice-list p::before {
   content: "●";
   color: #bebebe;
   font-size: 12px;
   padding-right: 12px;
 }
-.el-picker-panel{
+
+.el-picker-panel {
   left: 28px !important;
 }
+
+/*填写信息 start*/
+#app .sign-wrap .comm_main {
+  margin: 0;
+}
+
+#app .sign-wrap .sign-left {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#app .sign-wrap .sign-left .sign-tit {
+  font-size: 16px;
+  padding-top: 24px;
+}
+
+#app .sign-wrap .sign-left .sign-tit,
+#app .sign-wrap .sign-left .sign-subttit {
+  text-align: center;
+}
+
+#app .sign-wrap .sign-left .sign-subttit {
+  color: #666;
+  margin-top: 16px;
+  padding-bottom: 24px;
+  border-bottom: 10px solid #eff3f5;
+}
+
+#app .sign-wrap .sign-left .sign-subttit .update-txt {
+  display: none;
+}
+
+#app .sign-wrap .sign-left .sign-subttit span {
+  color: #333;
+  margin-right: 0;
+}
+
+#app .sign-wrap .sign-left .sign-subttit::before,
+#app .sign-wrap .sign-left .sign-subttit span:first-child::after {
+  content: "●";
+  color: #bebebe;
+  font-size: 12px;
+}
+
+#app .sign-wrap .sign-left .sign-subttit::before {
+  padding-right: 5px;
+}
+
+#app .sign-wrap .sign-left .sign-subttit span:first-child::after {
+  margin-left: 24px;
+}
+
+#app .sign-wrap .sign-left .tip {
+  font-size: 12px;
+  color: #999;
+  padding: 16px 16px 0;
+}
+
+#app .sign-wrap .sign-left .tip span {
+  color: #f23939;
+}
+
+#app .sign-wrap .sign-left .sign-main .item-tit {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  border-left: 3px solid #aa2f33;
+  padding-left: 5px;
+  line-height: 16px;
+  margin-bottom: 20px;
+}
+
+#app .sign-wrap .sign-left .sign-main .el-col-12 {
+  width: 68%;
+}
+
+#app .sign-wrap .sign-left .sign-main .width_750 {
+  width: 100% !important;
+}
+
+#app .sign-wrap .sign-left .sign-main .tit750 {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+#app .sign-wrap .sign-left .sign-main .open-info span {
+  float: right;
+  font-size: 12px;
+  font-weight: normal;
+  color: #aa2f33;
+}
+
+#app .sign-wrap .sign-left .sign-main .basic-info input,
+#app .sign-wrap .sign-left .sign-main .guardian_info input {
+  border: none;
+}
+
+#app .sign-wrap .sign-left .sign-main .basic-info,
+#app .sign-wrap .sign-left .sign-main .sign-pwd,
+#app .sign-wrap .sign-left .sign-main .guardian_info,
+#app .sign-wrap .sign-left .sign-main .prize_info {
+  padding: 0 16px;
+}
+
+#app .sign-wrap .sign-left .sign-main .prize_info .file-wrap .el-upload--picture-card {
+  border: none;
+  height: auto;
+  float: left;
+}
+
+#app .sign-wrap .sign-left .sign-main .prize_info .file-wrap .file-list {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  float: left;
+}
+
+#app .sign-wrap .sign-left .sign-main .prize_info .file-wrap .file-list span {
+  width: 90px;
+  height: 90px;
+  border: 1px solid #ebebeb;
+  display: inline-block;
+  margin-right: 12px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+#app .sign-wrap .sign-left .sign-main .prize_info .file-wrap .file-list span .cover {
+  position: absolute;
+  top: 0;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+#app .sign-wrap .sign-left .sign-main .prize_info .file-wrap .file-list span .delete-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 100;
+  color: #fff;
+  font-size: 24px;
+}
+
+#app .sign-wrap .sign-left .sign-main .prize_info .file-wrap .file-list span .org-img {
+  width: 50px;
+  height: 50px;
+  vertical-align: top;
+  margin-top: 20px;
+}
+
+#app .sign-wrap .sign-left .sign-main .prize_info .file-wrap .file-list span .new-img {
+  width: 100%;
+  height: 100%;
+}
+
+#app .sign-wrap .sign-left .sign-main .user-img {
+  display: none;
+}
+
+#app .sign-wrap .sign-left .sign-main .user-info {
+  margin-left: 0;
+}
+
+#app .sign-wrap .sign-left .sign-main .user-info .phone-img .el-form-item__content {
+  line-height: 20px;
+  margin-top: 10px;
+}
+
+#app .sign-wrap .sign-left .sign-main .user-info .phone-img .head-tips {
+  color: #999;
+  font-size: 12px;
+}
+
+#app .sign-wrap .sign-left .sign-main .user-info .phone-img .head-wrap {
+  width: 70px;
+  height: 80px;
+  border: 1px solid #ebebeb;
+  position: relative;
+  margin-top: 8px;
+}
+
+#app .sign-wrap .sign-left .sign-main .user-info .phone-img .head-wrap .avatar-uploader .el-upload {
+  width: 70px;
+  height: 80px;
+}
+
+#app .sign-wrap .sign-left .sign-main .user-info .phone-img .head-wrap .org-img {
+  width: 50px;
+  height: 50px;
+  margin-top: 15px;
+}
+
+#app .sign-wrap .sign-left .sign-main .user-info .phone-img .head-wrap .new-img {
+  width: 100%;
+  height: 100%;
+}
+
+#app .sign-wrap .sign-left .sign-main .el-form-item__label {
+  width: 100px !important;
+}
+
+#app .sign-wrap .sign-left .sign-main .el-form-item__content {
+  margin-left: 100px !important;
+}
+
+#app .sign-wrap .sign-left .sign-main .sign-pwd .sign-pwd-tit {
+  font-size: 12px;
+}
+
+#app .sign-wrap .sign-left .sign-main .sign-pwd .el-col-offset-4 {
+  margin-left: 0;
+}
+
+#app .sign-wrap .sign-left .sign-main .sign-pwd .el-col-18 {
+  width: 90%;
+}
+
+#app .sign-wrap .sign-left .sign-main .sign-pwd .el-col-16 {
+  width: 100%;
+}
+
+#app .sign-wrap .sign-left .sign-main .sign-btn {
+  padding-bottom: 24px;
+  margin-top: 12px;
+}
+
+#app .sign-wrap .sign-right {
+  display: none;
+}
+
+#app .sign-wrap .line {
+  border-width: 10px;
+}
+
+#app .sign-wrap .line-1 {
+  border-bottom: 1px solid #e2e1e1;
+  margin-bottom: 24px;
+}
+
+.el-cascader-menu {
+  min-width: 100px !important;
+  max-width: 100px;
+}
+
 
 
 

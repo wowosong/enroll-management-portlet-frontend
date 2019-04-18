@@ -40,13 +40,15 @@
     methods: {
       // 电脑版 / 手机版切换
       changeBrowser(value) {
-        this.$store.commit('setPhoneStyle', value);
+        this.$store.commit('setPhoneStyle', true);
         if (!value) {
           $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=0.1");
           $("#changeHref").attr('href', '');
           $("#app").removeClass('is_phone');
         } else {
           $("#app").addClass('is_phone');
+          $("#changeHref").attr('href', 'static/css/wrap.css');
+          $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=1");
         }
       }
     },
@@ -61,9 +63,9 @@
       padding: 27px 30px 40px 50px;
     }
     .edition-wrap {
-     text-align: center;
+      text-align: center;
       font-size: 12px;
-      span:last-child{
+      span:last-child {
         border-left: 1px solid #cacaca;
         margin-left: 8px;
         padding-left: 8px;
