@@ -5,342 +5,376 @@
         <h6 class="sign-tit">[{{planInfo.campusName}}]{{planInfo.yearName}}{{planInfo.planName}}</h6>
         <div class="sign-subttit">
           报名校区：<span>{{planInfo.campusName}}</span> 报名年级：<span>{{planInfo.gradeName}}</span>
-          <span class="update-txt" v-if="regInfo.regStatus==0" @click="editFlag=true;">修改</span>
         </div>
         <!--基本信息-->
+        <p v-if="isPhone" class="tip">提示：加<span>*</span>为<span>“必须填”</span>，其他项可在现场确认时补充</p>
         <div class="sign-main" id="info">
           <p class="item-tit tit750">基本信息</p>
-          <template>
-            <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="170px">
-              <div class="basic-info">
-                <div class="user-img">
-                  <div class="user_photo">
-                    <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
-                  </div>
-                  <div class='img_null' v-if="userImgErr">证件照不能为空</div>
-                  <div class="up_suerphoto" v-if="!regInfo.photoId" @click="uploadPicture">
-                    <img src="@/imgs/upload.png">上传证件照
-                  </div>
-                  <p v-if="!regInfo.photoId">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
+          <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="170px">
+            <div class="basic-info">
+              <!--pc 显示-->
+              <div class="user-img">
+                <div class="user_photo">
+                  <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
                 </div>
-                <div class="user-info">
-                  <el-form-item label="学生姓名:" prop="stuName" id="formData_name">
-                    <el-col :span="12">
-                      <el-input v-model="regInfo.stuName" placeholder="请填写"></el-input>
-                    </el-col>
-                    <!--错误信息-->
-                    <template slot="error" slot-scope="scope">
-                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
-                    </template>
-                  </el-form-item>
-                  <el-form-item label="身份证号:" prop="idCard" id="formData_idCardNum">
-                    <el-col :span="12">
-                      <el-input v-model="regInfo.idCard" placeholder="请填写" @change="idCardNumFn"></el-input>
-                    </el-col>
-                    <!--错误信息-->
-                    <template slot="error" slot-scope="scope">
-                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
-                    </template>
-                  </el-form-item>
-                  <el-form-item label="出生日期:" prop="stuBirthday">
-                    <el-col :span="12">
-                      <el-input v-model="regInfo.stuBirthday" placeholder="0000-00-00" readonly></el-input>
-                    </el-col>
-                    <!--错误信息-->
-                    <template slot="error" slot-scope="scope">
-                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
-                    </template>
-                  </el-form-item>
-                  <el-form-item label="性别:" prop="stuGender" id="formData_gender">
-                    <el-radio-group v-model="regInfo.stuGender">
-                      <el-radio v-for="(gender,index) in genderList" :key="index" :label="gender.seiValue">
-                        {{gender.seiName}}
-                      </el-radio>
-                    </el-radio-group>
-                    <!--错误信息-->
-                    <template slot="error" slot-scope="scope">
-                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
-                    </template>
-                  </el-form-item>
-                  <el-form-item label="户籍所在地:">
-                    <el-col :span="12">
-                      <!--省市区县(传省市区id)-->
-                      <!--<cityPicker :selectedFn="getArea"></cityPicker>-->
-                      <el-cascader
-                        placeholder="请填写"
-                        style="width: 100%"
-                        filterable
-                        :options="addList"
-                        v-model="regInfo.stuAdds"/>
-                    </el-col>
-                  </el-form-item>
-                  <el-form-item label="现就读学校:">
-                    <el-col :span="12">
-                      <el-autocomplete
-                        v-model="regInfo.nowSchool"
-                        :fetch-suggestions="querySearch"
-                        placeholder="请输入内容"/>
-                    </el-col>
-                  </el-form-item>
-                  <el-form-item label="现就读年级:" prop="nowGrade">
-                    <el-col :span="12">
-                      <el-select clearable v-model="regInfo.nowGrade" placeholder="请填写">
-                        <el-option
-                          v-for="item in gradeList"
-                          :key="item.id"
-                          :label="item.gradeName"
-                          :value="item.id"/>
-                      </el-select>
-                    </el-col>
-                  </el-form-item>
-                  <!--手机浏览器显示-->
-                  <template v-if="isPhone">
-                    <el-form-item label="总分年级排名">
-                      <el-row>
-                        <el-col :span="12">
-                          <el-input type="number" min="1" step="1" placeholder="请填写"
-                                    v-model="regInfo.otherData['s_a']"></el-input>
-                        </el-col>
-                      </el-row>
-                    </el-form-item>
-                    <el-form-item label="年级人数:">
-                      <el-row>
-                        <el-col :span="12">
-                          <el-input type="number" min="1" step="1" placeholder="请填写"
-                                    v-model="regInfo.otherData['s_b']"></el-input>
-                        </el-col>
-                      </el-row>
-                    </el-form-item>
-                  </template>
-                  <!--pc 显示-->
-                  <template v-else>
-                    <el-form-item label="总分年级排名/年级人数:">
-                      <el-row>
-                        <el-col :span="6" class="m-r-12">
-                          <el-input type="number" min="1" step="1" placeholder="请填写"
-                                    v-model="regInfo.otherData['s_a']"></el-input>
-                        </el-col>
-                        <el-col :span="6">
-                          <el-input type="number" min="1" step="1" placeholder="请填写"
-                                    v-model="regInfo.otherData['s_b']"></el-input>
-                        </el-col>
-                      </el-row>
-                    </el-form-item>
-                  </template>
-
+                <div class='img_null' v-if="userImgErr">证件照不能为空</div>
+                <div class="up_suerphoto" v-if="!regInfo.photoId" @click="uploadPicture">
+                  <img src="@/imgs/upload.png">上传证件照
                 </div>
+                <p v-if="!regInfo.photoId">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
+              </div>
+              <div class="user-info">
+                <!--手机浏览器 显示-->
+                <el-form-item label="证件照:" prop="photoId" v-if="isPhone" class="phone-img" id="regInfo_photoId">
+                  <span class="head-tips">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</span>
+                  <div class="head-wrap">
+                    <el-upload
+                      class="avatar-uploader"
+                      :action="uploadUrl"
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess">
+                      <img v-if="!regInfo.photoId" src="@/imgs/warp/head.png" class="org-img"/>
+                      <img v-else :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId" class="new-img">
+                    </el-upload>
+                  </div>
+                  <!--错误信息-->
+                  <template slot="error" slot-scope="scope">
+                    <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                  </template>
+                </el-form-item>
+                <el-form-item label="学生姓名:" prop="stuName" id="regInfo_stuName">
+                  <el-col :span="12">
+                    <el-input v-model="regInfo.stuName" placeholder="请填写"></el-input>
+                  </el-col>
+                  <!--错误信息-->
+                  <template slot="error" slot-scope="scope">
+                    <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                  </template>
+                </el-form-item>
+                <el-form-item label="身份证号:" prop="idCard" id="regInfo_idCard">
+                  <el-col :span="12">
+                    <el-input v-model="regInfo.idCard" placeholder="请填写" @change="idCardNumFn"></el-input>
+                  </el-col>
+                  <!--错误信息-->
+                  <template slot="error" slot-scope="scope">
+                    <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                  </template>
+                </el-form-item>
+                <el-form-item label="出生日期:" prop="stuBirthday">
+                  <el-col :span="12">
+                    <el-input v-model="regInfo.stuBirthday" placeholder="0000-00-00" readonly></el-input>
+                  </el-col>
+                  <!--错误信息-->
+                  <template slot="error" slot-scope="scope">
+                    <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                  </template>
+                </el-form-item>
+                <el-form-item label="性别:" prop="stuGender" id="regInfo_stuGender">
+                  <el-radio-group v-model="regInfo.stuGender">
+                    <el-radio v-for="(gender,index) in genderList" :key="index" :label="gender.seiValue">
+                      {{gender.seiName}}
+                    </el-radio>
+                  </el-radio-group>
+                  <!--错误信息-->
+                  <template slot="error" slot-scope="scope">
+                    <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                  </template>
+                </el-form-item>
+                <el-form-item label="户籍所在地:">
+                  <el-col :span="12" class="width_750">
+                    <!--省市区县(传省市区id)-->
+                    <!--<cityPicker :selectedFn="getArea"></cityPicker>-->
+                    <el-cascader
+                      placeholder="请填写"
+                      style="width: 100%"
+                      filterable
+                      :options="addList"
+                      v-model="regInfo.stuAdds"/>
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="现就读年级:" prop="nowGrade">
+                  <el-col :span="12" class="width_750">
+                    <el-select clearable v-model="regInfo.nowGrade" placeholder="请填写">
+                      <el-option
+                        v-for="item in gradeList"
+                        :key="item.id"
+                        :label="item.gradeName"
+                        :value="item.id"/>
+                    </el-select>
+                  </el-col>
+                </el-form-item>
+                <!--手机浏览器显示-->
+                <template v-if="isPhone">
+                  <el-form-item label="总分年级排名">
+                    <el-row>
+                      <el-col :span="12">
+                        <el-input type="number" min="1" step="1" placeholder="请填写"
+                                  v-model="regInfo.otherData['s_a']"></el-input>
+                      </el-col>
+                    </el-row>
+                  </el-form-item>
+                  <el-form-item label="年级人数:">
+                    <el-row>
+                      <el-col :span="12">
+                        <el-input type="number" min="1" step="1" placeholder="请填写"
+                                  v-model="regInfo.otherData['s_b']"></el-input>
+                      </el-col>
+                    </el-row>
+                  </el-form-item>
+                </template>
                 <!--pc 显示-->
-                <div class="user-info-table" v-if="!isPhone">
-                  <div class="table-item">
-                    <label>监护人:</label>
+                <template v-else>
+                  <el-form-item label="总分年级排名/年级人数:">
+                    <el-row>
+                      <el-col :span="6" class="m-r-12">
+                        <el-input type="number" min="1" step="1" placeholder="请填写"
+                                  v-model="regInfo.otherData['s_a']"></el-input>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-input type="number" min="1" step="1" placeholder="请填写"
+                                  v-model="regInfo.otherData['s_b']"></el-input>
+                      </el-col>
+                    </el-row>
+                  </el-form-item>
+                </template>
+
+              </div>
+              <!--pc 显示-->
+              <div class="user-info-table" v-if="!isPhone">
+                <div class="table-item">
+                  <label>监护人:</label>
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th>姓名</th>
+                      <th>手机</th>
+                      <th>学历</th>
+                      <th>工作单位</th>
+                      <th>职务</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="i in 2" :key="i" class="input-no-border">
+                      <td>
+                        <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
+                      </td>
+                      <td>
+                        <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
+                      </td>
+                      <td>
+                        <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
+                      </td>
+                      <td>
+                        <el-input :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
+                      </td>
+                      <td>
+                        <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="table-item">
+                  <label>获奖信息:</label>
+                  <div>
                     <table class="table">
                       <thead>
                       <tr>
-                        <th>姓名</th>
-                        <th>手机</th>
-                        <th>学历</th>
-                        <th>工作单位</th>
-                        <th>职务</th>
+                        <th>获奖时间</th>
+                        <th>奖项名称</th>
+                        <th>奖项等级</th>
                       </tr>
                       </thead>
                       <tbody>
-                      <tr v-for="i in 2" :key="i" class="input-no-border">
+                      <tr v-for="i in 3" :key="i" class="input-no-border">
                         <td>
-                          <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
+                          <el-date-picker
+                            placeholder="年/月/日"
+                            v-model="regInfo.rewards[i-1]['s_c']"
+                            type="date"/>
                         </td>
                         <td>
-                          <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
+                          <el-input
+                            placeholder="奖项名称（限20字）"
+                            :maxlength="20"
+                            v-model="regInfo.rewards[i-1]['s_d']"/>
                         </td>
                         <td>
-                          <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
-                        </td>
-                        <td>
-                          <el-input :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
-                        </td>
-                        <td>
-                          <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
+                          <el-input
+                            placeholder="奖项等级（限10字）"
+                            :maxlength="10"
+                            v-model="regInfo.rewards[i-1]['s_e']"/>
                         </td>
                       </tr>
                       </tbody>
                     </table>
+                    <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖</div>
                   </div>
-                  <div class="table-item">
-                    <label>获奖信息:</label>
-                    <div>
-                      <table class="table">
-                        <thead>
-                        <tr>
-                          <th>获奖时间</th>
-                          <th>奖项名称</th>
-                          <th>奖项等级</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="i in 3" :key="i" class="input-no-border">
-                          <td>
-                            <el-date-picker
-                              placeholder="年/月/日"
-                              v-model="regInfo.rewards[i-1]['s_c']"
-                              type="date"/>
-                          </td>
-                          <td>
-                            <el-input
-                              placeholder="奖项名称（限20字）"
-                              :maxlength="20"
-                              v-model="regInfo.rewards[i-1]['s_d']"/>
-                          </td>
-                          <td>
-                            <el-input
-                              placeholder="奖项等级（限10字）"
-                              :maxlength="10"
-                              v-model="regInfo.rewards[i-1]['s_e']"/>
-                          </td>
-                        </tr>
-                        </tbody>
-                      </table>
-                      <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖</div>
+                </div>
+                <div class="table-item">
+                  <label>获奖附件:</label>
+                  <div class="up_idcard clearfix">
+                    <template v-if="fileList && fileList.length > 0">
+                      <span v-for="(item,index) in fileList" :key="index">
+                        <div class="cover"><i class="el-icon-circle-close-outline"
+                                              @click="fileList.splice(index, 1)"></i></div>
+                        <img :src="imgUrl+item.fileId" class="card">
+                      </span>
+                    </template>
+                    <div class="up_area">
+                       <span @click="uploadEnclosure">
+                      <img src="@/imgs/upload.png">上传证件
+                      </span>
+                      <div class="hint">证明您的获奖情况</div>
                     </div>
-                  </div>
-                  <div class="table-item">
-                    <label>获奖附件:</label>
-                    <div class="up_idcard" @click="uploadEnclosure">
-                      <template v-if="!fileList || !fileList.length">
-                        <img src="@/imgs/upload.png">上传证件
-                      </template>
-                      <img v-else :src="imgUrl+fileList[0].fileId" class="card">
-                    </div>
-                    <div class="hint">证明您的获奖情况</div>
-
                   </div>
                 </div>
               </div>
-              <!--手机浏览器 显示-->
-              <template v-if="isPhone">
-                <!--间隔线-->
-                <div class="line"></div>
-                <!--监护人信息-->
-                <div class="guardian_info">
-                  <p class="item-tit tit750">
-                    监护人信息
-                    <span v-if="!guardianOpen" @click="guardianOpen = !guardianOpen">展开<i
-                      class="el-icon-arrow-down"></i> </span>
-                    <span v-else @click="guardianOpen = !guardianOpen">收起 <i class="el-icon-arrow-up"></i> </span>
-                  </p>
-                  <template v-for="i in 2" v-if="guardianOpen">
-                    <el-form-item label="姓名:">
-                      <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_g']"/>
-                    </el-form-item>
-                    <el-form-item label="手机:">
-                      <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
-                    </el-form-item>
-                    <el-form-item label="学历:">
-                      <el-input :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
-                    </el-form-item>
-                    <el-form-item label="工作单位:">
-                      <el-input :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
-                    </el-form-item>
-                    <el-form-item label="职务:">
-                      <el-input :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
-                    </el-form-item>
-                    <div class="line-1" v-if="i==1"></div>
-                  </template>
-                </div>
-                <!--间隔线-->
-                <div class="line"></div>
-                <!--获奖信息-->
-                <div class="prize_info">
-                  <p class="item-tit tit750">
-                    获奖信息
-                    <span v-if="!prizeOpen" @click="prizeOpen = !prizeOpen">展开<i
-                      class="el-icon-arrow-down"></i> </span>
-                    <span v-else @click="prizeOpen = !prizeOpen">收起 <i class="el-icon-arrow-up"></i> </span>
-                  </p>
-                  <template v-for="i in 3" v-if="prizeOpen">
-                    <el-form-item label="获奖时间:">
-                      <el-date-picker placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
-                    </el-form-item>
-                    <el-form-item label="奖项名称:">
-                      <el-input placeholder="奖项名称（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
-                    </el-form-item>
-                    <el-form-item label="奖项等级:">
-                      <el-input placeholder="奖项等级（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
-                    </el-form-item>
-                    <div class="line-1" v-if="i == 3"></div>
-                    <el-form-item label="获奖附件:" v-if="i == 3">
-                      <div class="up_idcard" @click="uploadEnclosure">
-                        <template v-if="!fileList || !fileList.length">
-                          <img src="@/imgs/upload.png">上传证件
-                        </template>
-                        <img v-else :src="imgUrl+fileList[0].fileId" class="card">
-                      </div>
-                    </el-form-item>
-                    <div class="line-1" v-if="i == 1 || i == 2"></div>
-                  </template>
-                </div>
-              </template>
+            </div>
+            <!--手机浏览器 显示-->
+            <template v-if="isPhone">
               <!--间隔线-->
               <div class="line"></div>
-              <!--登录密码-->
-              <div class="sign-pwd" id="pwd">
-                <p class="item-tit">登录密码</p>
-                <div class="sign-pwd-tit">
-                  请设置密码，建议使用字符的组合密码且长度超过6位
-                  <p>注：若未设置密码，下次登录的密码为“身份证号后六位”</p>
-                </div>
-                <el-row>
-                  <el-col :span="16" :offset="4">
-                    <el-form-item label="登录名:" prop="phoneNum">
-                      <el-col :span="18">
-                        <el-input v-model="regInfo.phoneNum" placeholder="请输入手机号"></el-input>
-                      </el-col>
-                      <!--错误信息-->
-                      <template slot="error" slot-scope="scope">
-                        <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
-                      </template>
-                    </el-form-item>
-                    <el-form-item label="设置密码:" prop="pwd">
-                      <el-col :span="18">
-                        <el-input v-if="!isPwd" type="password" v-model="regInfo.pwd"
-                                  placeholder="默认密码 (身份证号后六位)">
-                          <template slot="suffix">
-                            <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
-                            <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
-                          </template>
-                        </el-input>
-                        <el-input v-if="isPwd" type="text" v-model="regInfo.pwd">
-                          <template slot="suffix">
-                            <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
-                            <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
-                          </template>
-                        </el-input>
-                      </el-col>
-                    </el-form-item>
-                    <el-form-item label="确认密码:" prop="repwd">
-                      <el-col :span="18">
-                        <el-input v-if="!isRePwd" type="password" v-model="regInfo.repwd"
-                                  placeholder="默认密码 (身份证号后六位)">
-                          <template slot="suffix">
-                            <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
-                            <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
-                          </template>
-                        </el-input>
-                        <el-input v-if="isRePwd" type="text" v-model="regInfo.repwd">
-                          <template slot="suffix">
-                            <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
-                            <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
-                          </template>
-                        </el-input>
-                      </el-col>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
+              <!--监护人信息-->
+              <div class="guardian_info">
+                <p class="item-tit open-info">
+                  监护人信息
+                  <span v-if="!guardianOpen" @click="guardianOpen = !guardianOpen">展开<i
+                    class="el-icon-arrow-down"></i> </span>
+                  <span v-else @click="guardianOpen = !guardianOpen">收起 <i class="el-icon-arrow-up"></i> </span>
+                </p>
+                <template v-for="i in 2" v-if="guardianOpen">
+                  <el-form-item label="姓名:">
+                    <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_g']"/>
+                  </el-form-item>
+                  <el-form-item label="手机:">
+                    <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
+                  </el-form-item>
+                  <el-form-item label="学历:">
+                    <el-input :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
+                  </el-form-item>
+                  <el-form-item label="工作单位:">
+                    <el-input :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
+                  </el-form-item>
+                  <el-form-item label="职务:">
+                    <el-input :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
+                  </el-form-item>
+                  <div class="line-1" v-if="i==1"></div>
+                </template>
               </div>
-            </el-form>
-            <div class="sign-btn">
-              <button class="save" @click="save('ruleForm')">提交报名</button>
-              <button class="cancel" @click="cancel('ruleForm')">取消</button>
+              <!--间隔线-->
+              <div class="line"></div>
+              <!--获奖信息-->
+              <div class="prize_info">
+                <p class="item-tit open-info">
+                  获奖信息
+                  <span v-if="!prizeOpen" @click="prizeOpen = !prizeOpen">展开<i
+                    class="el-icon-arrow-down"></i> </span>
+                  <span v-else @click="prizeOpen = !prizeOpen">收起 <i class="el-icon-arrow-up"></i> </span>
+                </p>
+                <template v-for="i in 3" v-if="prizeOpen">
+                  <el-form-item label="获奖时间:">
+                    <el-date-picker placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
+                  </el-form-item>
+                  <el-form-item label="奖项名称:">
+                    <el-input placeholder="奖项名称（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
+                  </el-form-item>
+                  <el-form-item label="奖项等级:">
+                    <el-input placeholder="奖项等级（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
+                  </el-form-item>
+                  <div class="line-1" v-if="i == 3"></div>
+                  <el-form-item label="获奖附件:" v-if="i == 3" class="file-wrap">
+                    <div class="file-list">
+                      <span v-for="(item,index) in fileList" :key="index">
+                            <div class="cover"></div>
+                             <img :src="imgUrl+item.fileId" class="new-img">
+                              <i class="el-icon-circle-close-outline delete-icon"
+                                 @click="fileList.splice(index, 1)"></i>
+                         </span>
+                    </div>
+                    <el-upload
+                      :action="uploadUrl"
+                      :show-file-list="false"
+                      :file-list="fileList"
+                      :on-success="phoneEnclosure">
+                      <div class="file-list">
+                        <span>
+                           <img src="@/imgs/warp/default.png" class="org-img">
+                        </span>
+                      </div>
+                    </el-upload>
+                    <!--<template v-if="!fileList || !fileList.length">-->
+                    <!--<img src="@/imgs/upload.png">上传证件-->
+                    <!--</template>-->
+                    <!--<img v-else :src="imgUrl+fileList[0].fileId" class="card">-->
+                  </el-form-item>
+                  <div class="line-1" v-if="i == 1 || i == 2"></div>
+                </template>
+              </div>
+            </template>
+            <!--间隔线-->
+            <div class="line"></div>
+            <!--登录密码-->
+            <div class="sign-pwd" id="pwd">
+              <p class="item-tit">登录密码</p>
+              <div class="sign-pwd-tit">
+                请设置密码，建议使用字符的组合密码且长度超过6位
+                <p>注：若未设置密码，下次登录的密码为“身份证号后六位”</p>
+              </div>
+              <el-row>
+                <el-col :span="16" :offset="4">
+                  <el-form-item label="登录名:" prop="phoneNum">
+                    <el-col :span="18">
+                      <el-input v-model="regInfo.phoneNum" style="display: none"></el-input>
+                      <el-input v-model="regInfo.phoneNum" placeholder="请输入手机号"></el-input>
+                    </el-col>
+                    <!--错误信息-->
+                    <template slot="error" slot-scope="scope">
+                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                    </template>
+                  </el-form-item>
+                  <el-form-item label="设置密码:" prop="pwd">
+                    <el-col :span="18">
+                      <el-input v-if="!isPwd" type="password" v-model="regInfo.pwd"
+                                placeholder="默认密码 (身份证号后六位)">
+                        <template slot="suffix">
+                          <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
+                          <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
+                        </template>
+                      </el-input>
+                      <el-input v-if="isPwd" type="text" v-model="regInfo.pwd">
+                        <template slot="suffix">
+                          <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
+                          <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
+                        </template>
+                      </el-input>
+                    </el-col>
+                  </el-form-item>
+                  <el-form-item label="确认密码:" prop="repwd">
+                    <el-col :span="18">
+                      <el-input v-if="!isRePwd" type="password" v-model="regInfo.repwd"
+                                placeholder="默认密码 (身份证号后六位)">
+                        <template slot="suffix">
+                          <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
+                          <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
+                        </template>
+                      </el-input>
+                      <el-input v-if="isRePwd" type="text" v-model="regInfo.repwd">
+                        <template slot="suffix">
+                          <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
+                          <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
+                        </template>
+                      </el-input>
+                    </el-col>
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </div>
-          </template>
+          </el-form>
+          <div class="sign-btn">
+            <button class="save" @click="save('ruleForm')">提交报名</button>
+            <button class="cancel" @click="$router.push('/plan')">取消</button>
+          </div>
         </div>
       </div>
       <!--nav-->
@@ -380,7 +414,6 @@
   </div>
 
 </template>
-
 <script>
   export default {
     name: "index",
@@ -402,7 +435,6 @@
             {s_c: "", s_d: "", s_e: ""}
           ],
         },
-        editFlag: false,
         addList: [],
         gradeList: [],
         fileList: [],
@@ -432,38 +464,6 @@
         isPwd: false,
         isRePwd: false,
         imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
-        // 报名表信息
-        formData: {
-          campusName: '锦江校区',
-          className: '初一',
-          planYear: 2019,
-          auditStatus: -1,
-          enrollFileId: '',
-          info: {
-            status: false,
-            pictureFileId: '',
-            birthDate: '',
-            guardianInfo: [
-              {
-                name: '',
-                tel: '',
-                education: '',
-                workPlace: '',
-                post: ''
-              },
-              {
-                name: '',
-                tel: '',
-                education: '',
-                workPlace: '',
-                post: ''
-              }
-            ],
-            username: '',
-            pwd: '',
-            repwd: ''
-          }
-        },
         // 表单验证
         rules: {
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
@@ -472,13 +472,17 @@
             {min: 15, max: 18, message: '格式有误', trigger: 'blur'}
           ],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
+          repwd: [{required: true, message: '必填项', trigger: 'blur'}],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
-          stuGender: [{required: true, message: '必填项', trigger: 'blur'}]
+          stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
+          photoId: [{required: true, message: '必填项', trigger: 'blur'}]
         },
         //  监护人信息是否展开
         guardianOpen: false,
         // 获奖信息是否展开
-        prizeOpen:false
+        prizeOpen: true,
+        // 上传图片 请求地址
+        uploadUrl: `${window.systemParameter.fileSystemWriteUrl}/api/upload/simpleupload?userId=00000000000000000000000000000000`
       }
     },
     computed: {
@@ -756,24 +760,39 @@
           }
         });
       },
+      // 手机端上传证件照
+      handleAvatarSuccess(res, file) {
+        this.regInfo.photoId = res.data.id;
+      },
       // 上获奖附件
       uploadEnclosure() {
         let vm = this;
         fileUpload({
           title: '上传获奖附件',
-          uploadFileMaxNum: 1,
+          uploadFileMaxNum: 10,
           mimeTypes: '.png,.jpg,.jpeg,.pdf',
           confirm: function (files) {
             // 成功回调
-            let f = files[0];
-            vm.fileList.push({
-              fileName: f.filename,
-              fileId: _.trim(f.id),
-            });
+            let tempList = [];
+            if (files && files.length > 0) {
+              _.map(files, (i) => {
+                tempList.push({
+                  fileName: i.filename,
+                  fileId: _.trim(i.id),
+                })
+              });
+            }
+            vm.fileList = [...vm.fileList, ...tempList];
           }
         });
       },
-
+      //手机上传获奖附件
+      phoneEnclosure(file) {
+        this.fileList.push({
+          fileName: file.data.filename,
+          fileId: _.trim(file.data.id),
+        });
+      },
       // 保存
       save(formName) {
         let vm = this;
@@ -781,22 +800,13 @@
           if (valid) {
             vm.saveFlag = true;
           } else {
-            if (!vm.formData.info.name) return document.getElementById('formData_name').scrollIntoView();
-
-            if (!vm.formData.info.idCardNum) return document.getElementById('formData_idCardNum').scrollIntoView();
-
-            if (!vm.formData.info.gender) return document.getElementById('formData_gender').scrollIntoView();
-            console.log('error submit!!');
+            if (!vm.regInfo.photoId) return document.getElementById('regInfo_photoId').scrollIntoView();
+            if (!vm.regInfo.stuName) return document.getElementById('regInfo_stuName').scrollIntoView();
+            if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
+            if (!vm.regInfo.stuGender) return document.getElementById('regInfo_stuGender').scrollIntoView();
             return false;
           }
         });
-      },
-      //取消
-      cancel(formName) {
-        // let vm = this;
-        // vm.$refs[formName].resetFields();
-        // vm.formData.info.status = !vm.formData.info.status
-        // todo 返回首页
       },
       // 提交报名
       submitForm() {
@@ -914,16 +924,46 @@
               margin-top: 5px;
             }
             .up_idcard {
-              border: 1px solid #ccc;
-              line-height: 80px;
-              height: 80px;
-              border-radius: 2px;
               text-align: center;
-              width: 120px;
               color: #999;
               display: inline-block;
               vertical-align: top;
               cursor: pointer;
+              span {
+                display: inline-block;
+                width: 120px;
+                line-height: 80px;
+                height: 80px;
+                margin-right: 12px;
+                border: 1px solid #ccc;
+                border-radius: 2px;
+                position: relative;
+                float: left;
+                &:hover .cover {
+                  display: block;
+                }
+                .cover {
+                  position: absolute;
+                  top: 0;
+                  z-index: 8;
+                  width: 100%;
+                  height: 100%;
+                  background: rgba(0, 0, 0, 0.5);
+                  display: none;
+                  i {
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    z-index: 100;
+                    color: #fff;
+                    font-size: 24px;
+                  }
+                }
+              }
+              .up_area {
+                float: left;
+                margin-top: 12px
+              }
               .card {
                 width: 100%;
                 height: 100%;
@@ -931,12 +971,11 @@
             }
             .hint {
               line-height: 20px;
-              padding: 5px 0;
+              padding: 5px 0 0 18px;
               font-size: 12px;
               width: 160px;
               background: url(~css_img/hint.png) no-repeat;
               background-size: 100% 100%;
-              padding-left: 18px;
               display: inline-block;
               margin-top: 50px;
             }
@@ -1103,6 +1142,14 @@
               margin-left: 24px;
             }
           }
+          .tip {
+            font-size: 12px;
+            color: #999;
+            padding: 16px 16px 0;
+            span {
+              color: #f23939;
+            }
+          }
           .sign-main {
             .item-tit {
               font-size: 16px;
@@ -1111,13 +1158,20 @@
               border-left: 3px solid #aa2f33;
               padding-left: 5px;
               line-height: 16px;
+              margin-bottom: 20px;
             }
             .el-col-12 {
               width: 68%;
             }
+            .width_750{
+              width: 100% !important;
+            }
             .tit750 {
               margin-left: 16px;
               margin-right: 16px;
+
+            }
+            .open-info {
               span {
                 float: right;
                 font-size: 12px;
@@ -1133,11 +1187,91 @@
             .basic-info, .sign-pwd, .guardian_info, .prize_info {
               padding: 0 16px;
             }
+            .prize_info {
+              .file-wrap {
+                .el-upload--picture-card {
+                  border: none;
+                  height: auto;
+                  float: left;
+                }
+                .file-list {
+                  display: flex;
+                  flex-wrap: wrap;
+                  height: 100%;
+                  float: left;
+                  span {
+                    width: 90px;
+                    height: 90px;
+                    border: 1px solid #ebebeb;
+                    display: inline-block;
+                    margin-right: 12px;
+                    margin-bottom: 12px;
+                    position: relative;
+                    .cover {
+                      position: absolute;
+                      top: 0;
+                      z-index: 99;
+                      width: 100%;
+                      height: 100%;
+                      background: rgba(0, 0, 0, 0.5);
+                    }
+                    .delete-icon {
+                      position: absolute;
+                      top: 5px;
+                      right: 5px;
+                      z-index: 100;
+                      color: #fff;
+                      font-size: 24px;
+                    }
+                    .org-img {
+                      width: 50px;
+                      height: 50px;
+                      vertical-align: top;
+                      margin-top: 20px;
+                    }
+                    .new-img {
+                      width: 100%;
+                      height: 100%;
+                    }
+                  }
+                }
+              }
+            }
             .user-img {
               display: none;
             }
             .user-info {
               margin-left: 0;
+              .phone-img {
+                .el-form-item__content {
+                  line-height: 20px;
+                  margin-top: 10px;
+                }
+                .head-tips {
+                  color: #999;
+                  font-size: 12px;
+                }
+                .head-wrap {
+                  width: 70px;
+                  height: 80px;
+                  border: 1px solid #ebebeb;
+                  position: relative;
+                  margin-top: 8px;
+                  .avatar-uploader .el-upload {
+                    width: 70px;
+                    height: 80px;
+                  }
+                  .org-img {
+                    width: 50px;
+                    height: 50px;
+                    margin-top: 15px;
+                  }
+                  .new-img {
+                    width: 100%;
+                    height: 100%;
+                  }
+                }
+              }
             }
             .el-form-item__label {
               width: 100px !important;
@@ -1149,10 +1283,10 @@
               .sign-pwd-tit {
                 font-size: 12px;
               }
-              .el-col-offset-4{
+              .el-col-offset-4 {
                 margin-left: 0;
               }
-              .el-col-16{
+              .el-col-16 {
                 width: 100%;
               }
             }
@@ -1174,4 +1308,10 @@
       }
     }
   }
+</style>
+<style>
+  /*.el-cascader-menu{*/
+    /*min-width: 100px!important;*/
+    /*max-width: 100px;*/
+  /*}*/
 </style>

@@ -37,17 +37,7 @@
   padding: 16px;
 }
 #app .main .container footer .edition-wrap {
-  display: block;
-  text-align: center;
   color: #2f3861;
-  font-size: 12px;
-}
-#app .main .container footer .edition-wrap span:last-child {
-  border-left: 1px solid #cacaca;
-  margin-left: 8px;
-  padding-left: 8px;
-  line-height: 14px;
-  display: inline-block;
 }
 #app .main .container footer .tel-wrap {
   font-size: 9px;
@@ -112,6 +102,9 @@
   color: #bebebe;
   font-size: 12px;
   padding-right: 12px;
+}
+.el-picker-panel{
+  left: 28px !important;
 }
 
 

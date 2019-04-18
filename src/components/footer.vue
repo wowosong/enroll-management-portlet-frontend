@@ -2,7 +2,7 @@
   <div class="container">
     <footer>
       <div class="main-wrap">
-        <p class="edition-wrap">
+        <p class="edition-wrap" v-if="isPhone">
           <span @click="changeBrowser(false)">电脑版</span>
           <span @click="changeBrowser(true)">手机版</span>
         </p>
@@ -32,6 +32,11 @@
 </template>
 <script>
   export default {
+    computed: {
+      isPhone: function () {
+        return this.$store.state.isPhone
+      },
+    },
     methods: {
       // 电脑版 / 手机版切换
       changeBrowser(value) {
@@ -56,7 +61,15 @@
       padding: 27px 30px 40px 50px;
     }
     .edition-wrap {
-      display: none;
+     text-align: center;
+      font-size: 12px;
+      span:last-child{
+        border-left: 1px solid #cacaca;
+        margin-left: 8px;
+        padding-left: 8px;
+        line-height: 14px;
+        display: inline-block;
+      }
     }
     .tel-wrap {
       margin-right: 50px;
@@ -80,7 +93,7 @@
     }
     .qrcode {
       position: absolute;
-      right: 30px;
+      right: 10px;
       top: 40px;
       background: #3a3939;
       padding: 6px;

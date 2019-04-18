@@ -308,6 +308,7 @@
       input {
         outline: none;
         border: none;
+        width: 190px;
       }
       .pwd-wrap {
         margin-top: 30px;

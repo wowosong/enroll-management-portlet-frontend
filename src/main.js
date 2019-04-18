@@ -146,6 +146,9 @@ const router = new Router({
 // 文件系统地址 本地使用
 window.systemParameter = {};
 window.systemParameter.FILE_SYSTEM_URL = '/gateway/zuul/filesystem';
+window.systemParameter.FILE_SYSTEM_URL = '/gateway/zuul/filesystem';
+window.systemParameter.fileSystemWriteUrl = '/gateway/filesystem';
+
 window.userInfo = {
   id: ''
 };
