@@ -23,18 +23,35 @@ body{
   width: 1200px;
   margin: 20px auto;
 }
+.is_phone .comm_main{
+  width: auto;
+  margin: 0;
+}
 .comm_item{
   background: #fff;
+}
+.is_phone .comm_item{
+  background: none;
 }
 .float_left{
   float: left;
   width: 900px;
   padding: 20px 30px;
 }
+.is_phone .float_left{
+  float: none;
+  width: auto;
+  padding: 20px;
+}
 .float_right{
   float: right;
   width: 280px;
   padding: 20px 0;
+}
+.is_phone .float_right{
+  float: none;
+  width: auto;
+  padding: 0;
 }
 .nav_point{
   margin-top: 20px;
@@ -71,7 +88,9 @@ body{
 .no_data::before{
   content: '~ 暂无数据 ~'
 }
-
+.is_phone .no_data{
+  background: #fff;
+}
 .el-checkbox__input.is-checked + .el-checkbox__label {
   color: #333333 !important;
 }

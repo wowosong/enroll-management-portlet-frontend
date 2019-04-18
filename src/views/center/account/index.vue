@@ -4,17 +4,19 @@
             <tbody>
                 <tr>
                     <td align="right">登录名：</td>
-                    <td>卡机是否看见爱上凤凰大街上快递费按时发大水的发送到发送到</td>
-                    <td><span class="btn" @click="editFn('name')">修改</span></td>
+                    <td>{{logonName}}</td>
+                    <td>
+                      <!--<span class="btn" @click="editFn('name')">修改</span>-->
+                    </td>
                 </tr>
                 <tr>
                     <td align="right">学生姓名：</td>
-                    <td>颠三倒四</td>
+                    <td>{{userName}}</td>
                     <td></td>
                 </tr>
                 <tr>
                     <td align="right">身份证号：</td>
-                    <td>5109231992025854</td>
+                    <td>{{idCard}}</td>
                     <td></td>
                 </tr>
                 <tr>
@@ -35,8 +37,11 @@
         },
         data(){
             return{
-                isEdit:false,
-                isEditType:'password'
+              isEdit:false,
+              isEditType:'password',
+              userName:window.userInfo.userName,
+              idCard:window.userInfo.idCard,
+              logonName:window.userInfo.logonName
             }
         },
         methods:{

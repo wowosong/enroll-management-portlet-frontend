@@ -1,19 +1,33 @@
 <template>
-    <div class="comm_item float_right">
-        <div class="campus_tit">全部校区</div>
-        <div v-for="(item,index) in campusList" :key="index" class="campus_list">{{item.campusName}}</div>
-        <div class="no_data" v-if="!campusList || campusList.length == 0"></div>
+    <div class="comm_item float_right campus_main">
+        <div class="campus_tit" @click="isShowMoreFn">全部校区<img src="../imgs/warp/down.png"></div>
+        <div class="campus_layer" v-if="isShowMore">
+          <div v-for="(item,index) in campusList" :key="index" class="campus_list" @click="camputedFn(item)">{{item.campusName}}</div>
+          <div class="no_data" v-if="!campusList || campusList.length == 0"></div>
+        </div>
     </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      campusList: []
+      campusList: [],
+      isShowMore:true
+    }
+  },
+  computed:{
+      isPhone: function () {
+          return this.$store.state.isPhone
+      },
+  },
+  watch:{
+    isPhone:function(oldData,newData){
+      this.isShowMore = newData ? false : true
     }
   },
   mounted() {
     this.queryCampus();
+    this.isShowMore = this.$store.state.isPhone ? false : true
   },
   methods: {
     //获取校区
@@ -22,6 +36,14 @@ export default {
       http.get("/gateway/campus/list").then(function (xhr) {
         vm.campusList = xhr.data.data
       })
+    },
+    camputedFn(item){
+      this.$emit("query",item)
+    },
+    isShowMoreFn(){
+      if(this.isPhone){
+        this.isShowMore = !this.isShowMore
+      }
     }
   }
 }
@@ -42,6 +64,44 @@ export default {
         font-weight: bold;
         margin-bottom: 15px;
         line-height: 16px;
+        img{
+          display: none;
+        }
+    }
+    //warp版本
+    .is_phone{
+      .campus_main{
+        background: #fff;
+        text-align: center;
+        .campus_tit{
+          border: none;
+          line-height: 45px;
+          margin-bottom: 0;
+          img{
+            margin-left: 10px;
+            display: inline-block;
+          }
+        }
+        .campus_layer{
+          position: fixed;
+          z-index: 100;
+          background: rgba(0,0,0,0.5);
+          top:87px;
+          left: 0;
+          right:0;
+          bottom:0;
+          overflow: auto;
+        }
+        .campus_list{
+          background: #fff;
+          border-top:1px solid #eee;
+          padding: 13px 20px;
+          line-height: 20px;
+        }
+        .campus_list{
+
+        }
+      }
     }
 </style>
 
