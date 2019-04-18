@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container header">
     <header>
       <div class="main-wrap">
         <div class="logo-wrap clearfix">

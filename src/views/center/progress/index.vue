@@ -1,14 +1,17 @@
 <template>
     <div class="progress" >
         <div class="rate_hint">
-            <img src="@/imgs/pass.png" v-if="stempInfo.ifEnter == 1">
-            <img src="@/imgs/sh.png" v-if="stempInfo.ifEnter != 1">
+            <div class="hint_img">
+              <img src="@/imgs/pass.png" v-if="stempInfo.ifEnter == 1">
+              <img src="@/imgs/sh.png" v-if="stempInfo.ifEnter != 1">
+            </div>
             <div class="hint_info">
                 <template v-if="stempInfo.ifEnter == null">报名<span class="color1">成功</span>，请按学校通知时间到校现场确认，并参加面试（笔试）~</template>
                 <div v-if="stempInfo.ifPayment != 1">
                   <template v-if="stempInfo.ifEnter == 1">
-                    <div>您<span class="color1">已被录取</span><span class="btn" @click="viewScore()">查看成绩</span></div>
-                    <div>请在截止时间前完成缴费~</div><div>缴费截止时间：2019-06-10</div>
+                    <div>您<span class="color1">已被录取</span><span class="block">请在截止时间前完成缴费~</span></div>
+                    <div class="over_hint">缴费截止时间：2019-06-10</div>
+                    <span class="btn" @click="viewScore()">查看成绩</span>
 
                       <el-form v-if="stempInfo.paymentReserve == ''" :model="formData" :rules="rules" ref="ruleForm" label-width="172px">
                         <el-form-item label="预约缴费时间段:" prop="dataTime" required>
@@ -33,8 +36,9 @@
                     </template>
                   </template>
                   <template v-if="stempInfo.ifEnter == 0">
-                    <div>您<span class="color1">未已被录取</span><span class="btn" @click="viewScore()">查看成绩</span></div>
-                    <div>人生的机会还有很多哦...</div>
+                    <div>您<span class="color1">未已被录取</span></div>
+                    <div class="over_hint">人生的机会还有很多哦...</div>
+                    <span class="btn" @click="viewScore()">查看成绩</span>
                   </template>
                 </div>
                 <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null">
@@ -195,14 +199,19 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+    .block{
+      display: block;
+    }
     .progress{
         padding: 40px 20px 20px 60px;
     }
     .rate_hint{
         font-size: 16px;
+        .hint_img{
+          float: left;
+        }
         img{
-            float: left;
-
+            width: 20px;
         }
         .hint_info{
             margin-left: 40px;
@@ -222,7 +231,7 @@ export default {
         border-radius: 4px;
         margin: 0 auto;
         display: inline-block;
-        margin-left: 10px;
+        // margin-left: 10px;
         cursor: pointer;
     }
     .btn:hover,
@@ -289,4 +298,43 @@ export default {
     .my-table tr:nth-child(2n) td {
       background: #fafafa;
     }
+</style>
+<style lang="less" scoped>
+  //warp
+  .is_phone{
+    .block{
+      display: inline;
+    }
+    .block::before{
+      content: '，';
+    }
+    .progress{
+      padding: 50px 20px;
+    }
+      .rate_hint{
+        text-align: center;
+        .hint_info{
+          margin-left: 0;
+        }
+        .hint_img{float: none;text-align: center;}
+        img{
+          width: 68px;
+          margin-bottom: 30px;
+        }
+        .over_hint{
+          color: #999;
+          font-size: 14px;
+        }
+      }
+      .btn{
+        width: 50%;
+        line-height: 30px;
+        color: #2f3861;
+        border:1px solid #2f3861;
+        border-radius: 4px;
+        margin: 0 auto;
+        display: block;
+        margin-top: 10px;
+    }
+  }
 </style>

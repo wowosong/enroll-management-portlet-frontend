@@ -7,8 +7,10 @@
                 <div class="plan_list" v-for="(item,index) in planList" :key="index">
                     <i class="ico"></i>
                     <div class="plan_tit text_one">{{item.campusName}} {{item.planName}}</div>
-                    <span class="btn color1" :class="{dis_click:item.publishStatus != 1}" @click="signUp(item)">立即报名</span>
-                    <span class="btn color2" @click="enrollmentGuide(item)">招生简章</span>
+                    <div class="btn_c">
+                        <span class="btn color2" @click="enrollmentGuide(item)">招生简章</span>
+                        <span class="btn color1" :class="{dis_click:item.publishStatus != 1}" @click="signUp(item)">立即报名</span>
+                    </div>
                 </div>
                 <div class="no_data" v-if="!planList || planList.length == 0"></div>
             </div>
@@ -32,7 +34,7 @@
         mounted() {
             //初始化数据
             let vm = this;
-            http.get("/enroll/api/erEnrollPlan/portalQuery", {params: vm.filter}).then(function (xhr) {
+            http.get("/gateway/enroll/api/erEnrollPlan/portalQuery", {params: vm.filter}).then(function (xhr) {
               vm.planList = xhr.data.data;
             })
         },
@@ -105,11 +107,16 @@
         .plan_tit:hover{
             color: #aa2f33;
         }
+        .btn_c{
+            float: right;
+        }
         .btn{
             line-height: 32px;
             border-radius: 3px;
             border:1px solid #bbb;
-            float: right;
+            // float: right;
+            display: inline-block;
+            vertical-align: top;
             margin-left: 22px;
             padding: 0 15px;
             cursor: pointer;
@@ -158,19 +165,17 @@
                 left:0;
                 margin: 0;
             }
+            .btn_c{
+                float: none;
+                text-align: right;
+                margin-top: 10px;
+            }
             .btn{
                 float: none;
-                width: 100%;
-                display: block;
-                margin-left: 0;
-                color: #2f3861;
-                border:1px solid #2f3861;
+                line-height: 26px;
                 text-align: center;
-                margin-top: 10px;
-                background: none;
-            }
-            .color2{
-                display: none;
+                margin-left: 12px;
+                padding: 0 10px;
             }
         }
     }
