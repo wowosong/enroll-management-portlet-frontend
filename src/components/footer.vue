@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container footer">
     <footer>
       <div class="main-wrap">
         <p class="edition-wrap" v-if="isPhone">
