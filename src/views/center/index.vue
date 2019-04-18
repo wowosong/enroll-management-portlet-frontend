@@ -51,7 +51,7 @@
         },
         mounted(){
             if(this.isPhone){
-                this.tabIndex = 1
+                this.tabIndex = 0
                 $("#app>div").addClass("phone_center")
             }
             this.tabIndexFn(this.tabIndex)
