@@ -5,7 +5,13 @@
 .main-wrap, .comm_main {
   width: 100%;
 }
-
+input{
+  font-size: 12px !important;
+}
+/*解决ios滑动卡顿*/
+#app{
+  -webkit-overflow-scrolling:touch
+}
 /*!*header*!*/
 #app .main .container header {
   height: 42px;
@@ -184,6 +190,7 @@
   font-size: 12px;
   color: #999;
   padding: 16px 16px 0;
+  display: block;
 }
 
 #app .sign-wrap .sign-left .tip span {
@@ -306,7 +313,6 @@
 #app .sign-wrap .sign-left .sign-main .user-info .phone-img .head-wrap {
   width: 70px;
   height: 80px;
-  border: 1px solid #ebebeb;
   position: relative;
   margin-top: 8px;
 }
@@ -314,6 +320,7 @@
 #app .sign-wrap .sign-left .sign-main .user-info .phone-img .head-wrap .avatar-uploader .el-upload {
   width: 70px;
   height: 80px;
+  border: 1px solid #ebebeb;
 }
 
 #app .sign-wrap .sign-left .sign-main .user-info .phone-img .head-wrap .org-img {

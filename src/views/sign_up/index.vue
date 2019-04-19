@@ -7,7 +7,7 @@
           报名校区：<span>{{planInfo.campusName}}</span> 报名年级：<span>{{planInfo.gradeName}}</span>
         </div>
         <!--基本信息-->
-        <p v-if="isPhone" class="tip">提示：加<span>*</span>为<span>“必须填”</span>，其他项可在现场确认时补充</p>
+        <p class="tip">提示：加<span>*</span>为<span>“必须填”</span>，其他项可在现场确认时补充</p>
         <div class="sign-main" id="info">
           <p class="item-tit tit750">基本信息</p>
           <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="170px">
@@ -18,10 +18,10 @@
                   <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
                 </div>
                 <div class='img_null' v-if="userImgErr">证件照不能为空</div>
-                <div class="up_suerphoto" v-if="!regInfo.photoId" @click="uploadPicture">
+                <div class="up_suerphoto" @click="uploadPicture">
                   <img src="@/imgs/upload.png">上传证件照
                 </div>
-                <p v-if="!regInfo.photoId">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
+                <p>本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
               </div>
               <div class="user-info">
                 <!--手机浏览器 显示-->
@@ -32,9 +32,10 @@
                       class="avatar-uploader"
                       :action="uploadUrl"
                       :show-file-list="false"
+                      :accept="'image/*'"
                       :on-success="handleAvatarSuccess">
                       <img v-if="!regInfo.photoId" src="@/imgs/warp/head.png" class="org-img"/>
-                      <img v-else :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId" class="new-img">
+                      <img v-if="regInfo.photoId" :src="imgUrl+regInfo.photoId" class="new-img">
                     </el-upload>
                   </div>
                   <!--错误信息-->
@@ -137,7 +138,6 @@
                     </el-row>
                   </el-form-item>
                 </template>
-
               </div>
               <!--pc 显示-->
               <div class="user-info-table" v-if="!isPhone">
@@ -296,6 +296,7 @@
                       :action="uploadUrl"
                       :show-file-list="false"
                       :file-list="fileList"
+                      :accept="'image/*'"
                       :on-success="phoneEnclosure">
                       <div class="file-list">
                         <span>
@@ -337,14 +338,14 @@
                       <el-input v-if="!isPwd" type="password" v-model="regInfo.pwd"
                                 placeholder="默认密码 (身份证号后六位)">
                         <template slot="suffix">
-                          <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
-                          <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
+                          <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
+                          <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
                         </template>
                       </el-input>
                       <el-input v-if="isPwd" type="text" v-model="regInfo.pwd">
                         <template slot="suffix">
-                          <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
-                          <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
+                          <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
+                          <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
                         </template>
                       </el-input>
                     </el-col>
@@ -354,14 +355,14 @@
                       <el-input v-if="!isRePwd" type="password" v-model="regInfo.repwd"
                                 placeholder="默认密码 (身份证号后六位)">
                         <template slot="suffix">
-                          <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
-                          <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
+                          <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
+                          <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
                         </template>
                       </el-input>
                       <el-input v-if="isRePwd" type="text" v-model="regInfo.repwd">
                         <template slot="suffix">
-                          <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
-                          <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
+                          <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
+                          <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
                         </template>
                       </el-input>
                     </el-col>
@@ -472,7 +473,6 @@
           ],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
           repwd: [{required: true, message: '必填项', trigger: 'blur'}],
-          stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}]
         },
@@ -855,6 +855,9 @@
         color: #00b7ee;
         cursor: pointer;
       }
+    }
+    .tip{
+      display: none;
     }
     .sign-main {
       margin: 30px 0;
