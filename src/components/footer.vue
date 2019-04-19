@@ -34,13 +34,13 @@
   export default {
     computed: {
       isPhone: function () {
-        return this.$store.state.isPhone
+        return window.isPhone
       },
     },
     methods: {
       // 电脑版 / 手机版切换
       changeBrowser(value) {
-        this.$store.commit('setPhoneStyle', true);
+        this.$store.commit('setPhoneStyle', value);
         if (!value) {
           $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=0.1");
           $("#changeHref").attr('href', '');
@@ -48,7 +48,7 @@
         } else {
           $("#app").addClass('is_phone');
           $("#changeHref").attr('href', 'static/css/wrap.css');
-          $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=1");
+          $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no");
         }
       }
     },

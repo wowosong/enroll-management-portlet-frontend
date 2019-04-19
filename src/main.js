@@ -184,12 +184,13 @@ window.logout = function () {
   }
 }
 // 判断是否为手机浏览器
-const isPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
+window.isPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
 
 // 修改meta viewport
 function getPhone() {
-  $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=1");
+  $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no");
 }
+
 if (isPhone) {
   getPhone();
 }
@@ -201,7 +202,7 @@ const store = new Vuex.Store({
   state: {
     isLogin: localtoken ? true : false,
     userInfo: {},
-    isPhone: isPhone
+    isPhone: window.isPhone
   },
   mutations: {
     changeLogin(state, value) {
@@ -223,7 +224,7 @@ let app = new Vue({
     return h('div', {
       attrs: {
         id: 'app',
-        class: isPhone ? 'is_phone' :''
+        class: isPhone ? 'is_phone' : ''
       }
     }, [h('router-view')]);
   }

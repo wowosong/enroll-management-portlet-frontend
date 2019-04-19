@@ -163,6 +163,7 @@
       outline: none;
       border: none;
       background: none;
+      width: 200px;
       height: 100%;
     }
     .pwd-wrap {

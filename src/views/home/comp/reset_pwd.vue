@@ -24,7 +24,7 @@
               <el-input v-model="formData.userName" style="width:260px;" placeholder="请输入姓名"></el-input>
             </el-form-item>
             <el-form-item>
-              <div class="btn" @click="next('ruleForm')">下一步</div>
+              <div class="btn" @click="next('ruleForm')">验 证</div>
             </el-form-item>
           </template>
           <template v-if="stempNum == 2">
@@ -174,7 +174,7 @@
     .active {
       color: #333;
       i {
-        background: #aa2f33;
+        background: #bcc4eb;
       }
     }
   }
@@ -187,9 +187,9 @@
     width: 95px;
     line-height: 30px;
     text-align: center;
-    background: #aa2f33;
+    background: #2f3861;
     color: #fff;
-    border: 1px solid #aa2f33;
+    border: 1px solid #2f3861;
     border-radius: 4px;
     margin: 0 auto;
     display: inline-block;

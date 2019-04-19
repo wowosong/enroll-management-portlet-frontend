@@ -43,6 +43,11 @@
         return this.$store.state.isPhone
       },
     },
+    watch: {
+      // '$store.state.isPhone': function () {
+      //   console.log( this.$store.state.isPhone)
+      // }
+    },
     methods: {
       // logo 跳转首页
       goHome() {
