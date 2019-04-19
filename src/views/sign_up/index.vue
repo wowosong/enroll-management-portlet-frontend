@@ -54,7 +54,7 @@
                 </el-form-item>
                 <el-form-item label="身份证号:" prop="idCard" id="regInfo_idCard">
                   <el-col :span="12">
-                    <el-input v-model="regInfo.idCard" placeholder="请填写" @change="idCardNumFn"></el-input>
+                    <el-input v-model="regInfo.idCard"  placeholder="请填写" @change="idCardNumFn" style="line-height: normal"></el-input>
                   </el-col>
                   <!--错误信息-->
                   <template slot="error" slot-scope="scope">
@@ -366,6 +366,10 @@
                         </template>
                       </el-input>
                     </el-col>
+                    <!--错误信息-->
+                    <template slot="error" slot-scope="scope">
+                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                    </template>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -469,7 +473,7 @@
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
           idCard: [
             {required: true, message: '必填项', trigger: 'blur'},
-            {min: 15, max: 18, message: '格式有误', trigger: 'blur'}
+            {min: 15, max: 18, message: '请检查', trigger: 'blur'}
           ],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
           repwd: [{required: true, message: '必填项', trigger: 'blur'}],
@@ -491,14 +495,15 @@
     },
     mounted() {
       const vm = this;
-      vm.planId = this.$route.query.id
+      vm.planId = this.$route.query.id;
       // 查询性别
       vm.getEnum();
       vm.getAddList();
       vm.getGradeList();
       vm.getPlanInfo();
       vm.getReg();
-      // this.queryGender();
+
+
     },
     methods: {
       querySearch(queryString, cb) {
@@ -799,7 +804,9 @@
           if (valid) {
             vm.saveFlag = true;
           } else {
-            if (!vm.regInfo.photoId) return document.getElementById('regInfo_photoId').scrollIntoView();
+            if (vm.isPhone) {
+              if (!vm.regInfo.photoId) return document.getElementById('regInfo_photoId').scrollIntoView();
+            }
             if (!vm.regInfo.stuName) return document.getElementById('regInfo_stuName').scrollIntoView();
             if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
             if (!vm.regInfo.stuGender) return document.getElementById('regInfo_stuGender').scrollIntoView();
@@ -856,7 +863,7 @@
         cursor: pointer;
       }
     }
-    .tip{
+    .tip {
       display: none;
     }
     .sign-main {
@@ -1083,6 +1090,8 @@
 </style>
 <style lang="less">
   .sign-wrap {
+    /*height: 100%;*/
+    /*overflow-y: scroll;*/
     .el-input__inner {
       height: 36px;
       line-height: 36px;

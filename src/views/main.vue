@@ -9,6 +9,8 @@
 <script>
   import comm_head from '@/components/header.vue'
   import comm_footer from '@/components/footer.vue'
+  /*解决ios滚动卡顿问题*/
+  import BScroll from 'better-scroll'
 
   export default {
     components: {comm_head, comm_footer},
@@ -22,11 +24,16 @@
     mounted() {
       let vm = this;
       vm.$nextTick(function () {
-        vm.init()
+        vm.init();
+        if (vm.isPhone) {
+          const scroll = new BScroll('#app', {
+            click: true // 一开始的点击事件被bscroll阻止了，设置这个才能点击
+          });
+        }
       })
     },
-    watch:{
-      '$store.state.isLogin':function () {
+    watch: {
+      '$store.state.isLogin': function () {
         let vm = this;
         vm.init()
       }
@@ -39,25 +46,25 @@
         let vm = this;
         let localtoken = localStorage.getItem('accesstoken') ? JSON.parse(localStorage.getItem('accesstoken')) : '';
         if (localtoken && localtoken.access_token) {
-            http.get('/gateway/platform/users/roleTypes/2', {
-              headers: {Authorization: 'Bearer ' + localtoken.access_token},
-            }).then(function (xhr) {
-              if (xhr.data.error == "invalid_token") {
-                logout();
+          http.get('/gateway/platform/users/roleTypes/2', {
+            headers: {Authorization: 'Bearer ' + localtoken.access_token},
+          }).then(function (xhr) {
+            if (xhr.data.error == "invalid_token") {
+              logout();
+            }
+            if (xhr.data.data.isAdmin) {
+              vm.err = true;
+              vm.errorMsg = '管理员身份不能登录业务平台！';
+            } else {
+              //本地保存token
+              if (xhr.data.data.roleTypes.length > 0) {
+                vm.roles = xhr.data.data.roleTypes[0].id;
+                vm.getUserInfo()
               }
-              if (xhr.data.data.isAdmin) {
-                vm.err = true;
-                vm.errorMsg = '管理员身份不能登录业务平台！';
-              } else {
-                //本地保存token
-                if (xhr.data.data.roleTypes.length > 0) {
-                  vm.roles = xhr.data.data.roleTypes[0].id;
-                  vm.getUserInfo()
-                }
-              }
-            });
-          }
-         else {
+            }
+          });
+        }
+        else {
           vm.inited = true
         }
 
@@ -91,9 +98,8 @@
     }
   }
 </script>
-<style>
+<style scoped>
   .main {
-    height: 100%;
     display: flex;
     flex-direction: column;
     overflow: auto;

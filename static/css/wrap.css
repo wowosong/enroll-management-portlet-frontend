@@ -1,17 +1,26 @@
 .container {
   min-width: 100%;
+
 }
 
 .main-wrap, .comm_main {
   width: 100%;
 }
-input{
+
+input {
   font-size: 12px !important;
 }
-/*解决ios滑动卡顿*/
-#app{
-  -webkit-overflow-scrolling:touch
-}
+
+/*!*解决ios滑动卡顿*!*/
+/*#app .main {*/
+  /*overflow: auto;*/
+  /*-webkit-overflow-scrolling: touch;*/
+/*}*/
+
+/*#app .main .sign-wrap {*/
+  /*min-height: 101%;*/
+/*}*/
+
 /*!*header*!*/
 #app .main .container header {
   height: 42px;
@@ -230,6 +239,7 @@ input{
 #app .sign-wrap .sign-left .sign-main .basic-info input,
 #app .sign-wrap .sign-left .sign-main .guardian_info input {
   border: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 #app .sign-wrap .sign-left .sign-main .basic-info,
