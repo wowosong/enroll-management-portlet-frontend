@@ -87,15 +87,15 @@ input {
 
 /*!*首页*!*/
 #app .main .banner {
-  height: 211px;
-  background: url(../images/wrap/banner.jpg) no-repeat center;
-  background-size: cover;
+  height: 210px;
+  background: url(../images/wrap/banner.jpg) no-repeat top;
+  background-size: 100% 100%;
 }
 
 #app .main .home-wrap .main-wrap {
   padding-top: 0;
-  background: url(../images/wrap/banner.jpg) no-repeat center;
-  background-size: cover;
+  background: url(../images/wrap/banner.jpg) no-repeat top;
+  background-size:  100% 100%;
 }
 
 #app .main .home-wrap .main-wrap .sign-btn {

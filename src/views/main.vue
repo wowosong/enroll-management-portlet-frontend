@@ -9,8 +9,6 @@
 <script>
   import comm_head from '@/components/header.vue'
   import comm_footer from '@/components/footer.vue'
-  /*解决ios滚动卡顿问题*/
-  import BScroll from 'better-scroll'
 
   export default {
     components: {comm_head, comm_footer},
@@ -21,11 +19,6 @@
         inited: false
       }
     },
-    computed: {
-      isPhone: function () {
-        return this.$store.state.isPhone
-      }
-    },
     mounted() {
       this.init();
     },
@@ -33,16 +26,11 @@
       '$store.state.isLogin': function () {
         let vm = this;
         vm.init()
-      }
+      },
     },
     methods: {
       init() {
         this.getRoleType();
-        this.$nextTick(function () {
-          const scroll = new BScroll('.is_phone', {
-            click: true // 一开始的点击事件被bscroll阻止了，设置这个才能点击
-          });
-        })
       },
       getRoleType() {
         let vm = this;
@@ -105,6 +93,7 @@
     display: flex;
     flex-direction: column;
     overflow: auto;
+    height: 100%;
   }
 
   .box {
