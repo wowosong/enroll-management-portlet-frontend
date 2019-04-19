@@ -21,16 +21,13 @@
         inited: false
       }
     },
+    computed: {
+      isPhone: function () {
+        return this.$store.state.isPhone
+      }
+    },
     mounted() {
-      let vm = this;
-      vm.$nextTick(function () {
-        vm.init();
-        if (vm.isPhone) {
-          const scroll = new BScroll('#app', {
-            click: true // 一开始的点击事件被bscroll阻止了，设置这个才能点击
-          });
-        }
-      })
+      this.init();
     },
     watch: {
       '$store.state.isLogin': function () {
@@ -41,6 +38,11 @@
     methods: {
       init() {
         this.getRoleType();
+        this.$nextTick(function () {
+          const scroll = new BScroll('.is_phone', {
+            click: true // 一开始的点击事件被bscroll阻止了，设置这个才能点击
+          });
+        })
       },
       getRoleType() {
         let vm = this;

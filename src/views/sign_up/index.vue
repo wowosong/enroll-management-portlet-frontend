@@ -32,6 +32,7 @@
                       class="avatar-uploader"
                       :action="uploadUrl"
                       :show-file-list="false"
+                      :multiple="true"
                       :accept="'image/*'"
                       :on-success="handleAvatarSuccess">
                       <img v-if="!regInfo.photoId" src="@/imgs/warp/head.png" class="org-img"/>
@@ -54,7 +55,8 @@
                 </el-form-item>
                 <el-form-item label="身份证号:" prop="idCard" id="regInfo_idCard">
                   <el-col :span="12">
-                    <el-input v-model="regInfo.idCard"  placeholder="请填写" @change="idCardNumFn" style="line-height: normal"></el-input>
+                    <el-input v-model="regInfo.idCard" placeholder="请填写" @change="idCardNumFn"
+                              style="line-height: normal"></el-input>
                   </el-col>
                   <!--错误信息-->
                   <template slot="error" slot-scope="scope">
@@ -294,6 +296,7 @@
                     </div>
                     <el-upload
                       :action="uploadUrl"
+                      :multiple="true"
                       :show-file-list="false"
                       :file-list="fileList"
                       :accept="'image/*'"
