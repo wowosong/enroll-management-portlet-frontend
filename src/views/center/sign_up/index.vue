@@ -1,286 +1,330 @@
 <template>
   <div class="basic_info" v-loading="saving">
-    <div class="user_school">
-      <span class="school_item">报名校区：{{planInfo.campusName}}</span>
-      <span class="school_item">报名年级：{{planInfo.gradeName}}</span>
-      <span v-if="!idEdit && regInfo.regStatus == 0" class="float_r edit_btn" @click="idEdit = true">修改</span>
-      <span v-if="idEdit" class="import_hint float_r">提示：报名提交后不支持修改"必填项"，只支持修改"非必填项</span>
-    </div>
-    <div class="show_edit" v-if="idEdit">
-      <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="102px">
-        <p class="basic_tit">基本信息</p>
-        <div class="user_img">
-          <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId" @click="uploadPicture">
-          <img src="@/imgs/404.png" v-else @click="uploadPicture">
-          <div class="upload_btn" @click="uploadPicture">上传照片<span>:</span></div>
-          <p class="upload_hint">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
-        </div>
-        <div class="basic_info clearfix">
-          <el-form-item label="学生姓名:" required style="margin-bottom:5px">
-            {{regInfo.stuName}}
-          </el-form-item>
-          <el-form-item label="身份证号:" required style="margin-bottom:5px">
-            {{regInfo.idCard}}
-          </el-form-item>
-          <el-form-item label="出生日期:" required style="margin-bottom:5px">
-            {{regInfo.stuBirthday}}
-          </el-form-item>
-          <el-form-item label="性别:" required style="margin-bottom:5px">
-            {{genderMap[regInfo.stuGender]}}
-          </el-form-item>
-          <el-form-item label="户籍所在地:">
-            <el-cascader
-              style="width: 100%"
-              filterable
-              :options="addList"
-              v-model="regInfo.stuAdds"/>
-          </el-form-item>
-          <el-form-item label="现就读学校:">
-            <el-autocomplete v-model="regInfo.nowSchool" :fetch-suggestions="querySearch" placeholder="请输入内容"/>
-          </el-form-item>
-          <el-form-item label="现就读年级:">
-            <el-select clearable v-model="regInfo.nowGrade">
-              <el-option
-                v-for="item in gradeList"
-                :key="item.id"
-                :label="item.gradeName"
-                :value="item.id"/>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="总分年级排名/年级人数:" class="long_label">
-            <el-input
-              type="number"
-              min="1"
-              step="1"
-              v-model="regInfo.otherData['s_a']"
-              placeholder="年级排名"
-              style="width:98px"/>
-            <el-input
-              type="number"
-              min="1"
-              step="1"
-              v-model="regInfo.otherData['s_b']"
-              placeholder="年级人数"
-              style="width:98px"/>
-          </el-form-item>
-        </div>
-        <template v-if="!isPhone">
-          <el-form-item label="监护人:" label-width="82px">
-            <table class="table_list">
-              <thead>
-              <tr>
-                <th>姓名</th>
-                <th>手机</th>
-                <th>学历</th>
-                <th>工作单位</th>
-                <th>职务</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr v-for="i in 2" :key="i">
-                <td>
-                  <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
-                </td>
-                <td>
-                  <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
-                </td>
-                <td>
-                  <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
-                </td>
-                <td>
-                  <el-input :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
-                </td>
-                <td>
-                  <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </el-form-item>
-          <el-form-item label="获奖信息:" label-width="82px">
-            <table class="table_list">
-              <thead>
-              <tr>
-                <th>获奖时间</th>
-                <th>获奖名称</th>
-                <th>奖项等级</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr v-for="i in 3" :key="i">
-                <td>
-                  <el-date-picker
-                    placeholder="年/月/日"
-                    v-model="regInfo.rewards[i-1]['s_c']"
-                    type="date"/>
-                </td>
-                <td>
-                  <el-input
-                    placeholder="奖项名称（限20字）"
-                    :maxlength="20"
-                    v-model="regInfo.rewards[i-1]['s_d']"/>
-                </td>
-                <td>
-                  <el-input
-                    placeholder="奖项等级（限10字）"
-                    :maxlength="10"
-                    v-model="regInfo.rewards[i-1]['s_e']"/>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </el-form-item>
-          <el-form-item label="获奖附件:" label-width="82px">
-            <div class="img_thumbnail">
-              <img v-if="!fileList || !fileList.length" src="@/imgs/404.png">
-              <img v-else :src="imgUrl+fileList[0].fileId">
-              <div class="big_btn_l" @click="showBigImg()"></div>
-            </div>
-            <div class="upload_item">
-              <div class="up_idcard" @click="uploadEnclosure">
-                <template><img src="@/imgs/upload.png">上传证件</template>
-              </div>
-              <div class="hint prove">证明您的获奖情况</div>
-            </div>
-          </el-form-item>
-        </template>
-        <template v-if="isPhone">
-          <div class="parents_info">
-            <p class="basic_tit">监护人信息<span>添加</span></p>
-            <div v-for="i in 2" :key="i" class="phone_parents_item">
-              <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}<span class="edit_btn"></span></div>
-              <div class="parent_about">
-                <span>{{regInfo.parents[i-1]['s_h']}}</span>
-                <span>{{regInfo.parents[i-1]['s_i']}}</span>
-                <span>{{regInfo.parents[i-1]['s_j']}}</span>
-              </div>
-              <div class="parent_address">{{regInfo.parents[i-1]['s_k']}}</div>
-            </div>
-          </div>
-          <div class="reward_info">
-            <p class="basic_tit">获奖信息<span>添加</span></p>
-            <div v-for="i in 3" :key="i" class="phone_parents_item">
-              <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn"></span></div>
-              <div class="parent_about">
-                <span>{{regInfo.rewards[i-1]['s_e']}}</span>
-                <span>{{regInfo.rewards[i-1]['s_c']}}</span>
-              </div>
-            </div>
-          </div>
-        </template>
-      </el-form>
-      <div class="sign-btn">
-        <span class="save" @click="saveInfo">保存</span>
-        <span class="cancel" @click="cancel">取消</span>
+    <template v-if="!addrewardsFlag && !addparentFlag">
+      <div class="user_school">
+        <span class="school_item">报名校区：{{planInfo.campusName}}</span>
+        <span class="school_item">报名年级：{{planInfo.gradeName}}</span>
+        <span v-if="!idEdit && regInfo.regStatus == 0" class="float_r edit_btn" @click="idEdit = true">修改</span>
+        <span v-if="idEdit" class="import_hint float_r">提示：报名提交后不支持修改"必填项"，只支持修改"非必填项</span>
       </div>
-    </div>
-    <div class="show_info" v-if="!idEdit">
-      <!-- <div>
-        <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
-        <img src="@/imgs/404.png" class="user_img" v-else>
-      </div>
-      <div><span>学生姓名：</span>{{regInfo.stuName}}</div>
-      <div><span>身份证号：</span>{{regInfo.idCard}}</div>
-      <div><span>出生日期：</span>{{regInfo.stuBirthday | dateFormatYmd}}</div>
-      <div><span>性别：</span>{{genderMap[regInfo.stuGender]}}</div>
-      <div><span>户籍所在地：</span>{{regInfo.localStr}}</div>
-      <div><span>现就读学校：</span>{{regInfo.nowSchool}}</div>
-      <div><span>现就读年级：</span>{{regInfo.nowGradeName}}</div>
-      <div><span>总分年级排名/年级人数：</span>{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</div> -->
-      <table>
-        <tbody>
-        <tr>
-          <td rowspan="4" width="30%">
-            <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
-            <img src="@/imgs/404.png" class="user_img" v-else>
-          </td>
-          <td width="84px" align="right">学生姓名：</td>
-          <td width="130px">{{regInfo.stuName}}</td>
-          <td width="162px" align="right">身份证号：</td>
-          <td>{{regInfo.idCard}}</td>
-        </tr>
-        <tr>
-          <td align="right">出生日期：</td>
-          <td>{{regInfo.stuBirthday | dateFormatYmd}}</td>
-          <td align="right">性别：</td>
-          <td>{{genderMap[regInfo.stuGender]}}</td>
-        </tr> 
-        <tr>
-          <td align="right">户籍所在地：</td>
-          <td>{{regInfo.localStr}}</td>
-          <td align="right">现就读学校：</td>
-          <td>{{regInfo.nowSchool}}</td>
-        </tr>
-        <tr>
-          <td align="right">现就读年级：</td>
-          <td>{{regInfo.nowGradeName}}</td>
-          <td align="right">总分年级排名/年级人数：</td>
-          <td>{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</td>
-        </tr>
-        </tbody>
-      </table>
-      <table>
-        <tbody>
-        <tr>
-          <td width="82px" valign="top" align="right">监护人：</td>
-          <td>
-            <table class="table_list">
-              <thead>
-              <tr>
-                <th>姓名</th>
-                <th>手机</th>
-                <th>学历</th>
-                <th>工作单位</th>
-                <th>职务</th>
-              </tr>
-              </thead>
-              <tr v-for="i in 2" :key="i">
-                <td>
-                  {{regInfo.parents[i-1]['s_g']}}
-                </td>
-                <td>
-                  {{regInfo.parents[i-1]['s_h']}}
-                </td>
-                <td>
-                  {{regInfo.parents[i-1]['s_i']}}
-                </td>
-                <td>
-                  {{regInfo.parents[i-1]['s_j']}}
-                </td>
-                <td>
-                  {{regInfo.parents[i-1]['s_k']}}
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-        <!-- <div class="table-item">
-          <div v-if="regInfo.rewards && regInfo.rewards.length">
-            <label>获奖信息:</label>
-            <div v-for="(item, idx) in regInfo.rewards" :key="idx">
-              {{item['s_c']}} {{item['s_d']}} {{item['s_e']}}
-            </div>
-            <div v-if="regInfo.rewardFile && regInfo.rewardFile.length ">
-              <label>获奖附件:</label>
-              <div class="up_idcard" @click="showBig">
-                <img
-                  v-if="regInfo.rewardFile[0].fieldValue"
-                  :src="imgUrl+regInfo.rewardFile[0].fieldValue"
-                  @error="errorImg($event,'image')">
+      <div class="show_edit" v-if="idEdit">
+        <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="102px">
+          <p class="basic_tit">基本信息</p>
+          <div class="user_img">
+            <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId" @click="uploadPicture">
+            <img src="@/imgs/404.png" v-else @click="uploadPicture">
+            <div class="upload_btn" @click="uploadPicture">上传照片<span>:</span></div>
+            <p class="upload_hint">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
+          </div>
+          <div class="basic_info clearfix">
+            <el-form-item label="学生姓名:" required style="margin-bottom:5px">
+              {{regInfo.stuName}}
+            </el-form-item>
+            <el-form-item label="身份证号:" required style="margin-bottom:5px">
+              {{regInfo.idCard}}
+            </el-form-item>
+            <el-form-item label="出生日期:" required style="margin-bottom:5px">
+              {{regInfo.stuBirthday}}
+            </el-form-item>
+            <el-form-item label="性别:" required style="margin-bottom:5px">
+              {{genderMap[regInfo.stuGender]}}
+            </el-form-item>
+            <el-form-item label="户籍所在地:">
+              <el-cascader
+                style="width: 100%"
+                filterable
+                :options="addList"
+                v-model="regInfo.stuAdds"/>
+            </el-form-item>
+            <el-form-item label="现就读学校:">
+              <el-autocomplete v-model="regInfo.nowSchool" :fetch-suggestions="querySearch" placeholder="请输入内容"/>
+            </el-form-item>
+            <el-form-item label="现就读年级:">
+              <el-select clearable v-model="regInfo.nowGrade">
+                <el-option
+                  v-for="item in gradeList"
+                  :key="item.id"
+                  :label="item.gradeName"
+                  :value="item.id"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="总分年级排名/年级人数:" class="long_label">
+              <el-input
+                type="number"
+                min="1"
+                step="1"
+                v-model="regInfo.otherData['s_a']"
+                placeholder="年级排名"
+                style="width:98px"/>
+              <el-input
+                type="number"
+                min="1"
+                step="1"
+                v-model="regInfo.otherData['s_b']"
+                placeholder="年级人数"
+                style="width:98px"/>
+            </el-form-item>
+          </div>
+          <template v-if="!isPhone">
+            <el-form-item label="监护人:" label-width="82px">
+              <table class="table_list">
+                <thead>
+                <tr>
+                  <th>姓名</th>
+                  <th>手机</th>
+                  <th>学历</th>
+                  <th>工作单位</th>
+                  <th>职务</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in 2" :key="i">
+                  <td>
+                    <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
+                  </td>
+                  <td>
+                    <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
+                  </td>
+                  <td>
+                    <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
+                  </td>
+                  <td>
+                    <el-input :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
+                  </td>
+                  <td>
+                    <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </el-form-item>
+            <el-form-item label="获奖信息:" label-width="82px">
+              <table class="table_list">
+                <thead>
+                <tr>
+                  <th>获奖时间</th>
+                  <th>获奖名称</th>
+                  <th>奖项等级</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in 3" :key="i">
+                  <td>
+                    <el-date-picker
+                      placeholder="年/月/日"
+                      v-model="regInfo.rewards[i-1]['s_c']"
+                      type="date"/>
+                  </td>
+                  <td>
+                    <el-input
+                      placeholder="奖项名称（限20字）"
+                      :maxlength="20"
+                      v-model="regInfo.rewards[i-1]['s_d']"/>
+                  </td>
+                  <td>
+                    <el-input
+                      placeholder="奖项等级（限10字）"
+                      :maxlength="10"
+                      v-model="regInfo.rewards[i-1]['s_e']"/>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </el-form-item>
+            <el-form-item label="获奖附件:" label-width="82px">
+              <div class="img_thumbnail">
+                <img v-if="!fileList || !fileList.length" src="@/imgs/404.png">
+                <img v-else :src="imgUrl+fileList[0].fileId">
                 <div class="big_btn_l" @click="showBigImg()"></div>
-                <i class="el-icon-zoom-in"></i>
+              </div>
+              <div class="upload_item">
+                <div class="up_idcard" @click="uploadEnclosure">
+                  <template><img src="@/imgs/upload.png">上传证件</template>
+                </div>
+                <div class="hint prove">证明您的获奖情况</div>
+              </div>
+            </el-form-item>
+          </template>
+          <template v-if="isPhone">
+            <div class="parents_info">
+              <p class="basic_tit">监护人信息<span v-if="parentsLength < 2" @click="addparentFlagFn">添加</span></p>
+              <div v-for="(i,index) in parentsLength" :key="index" class="phone_parents_item">
+                <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}<span class="edit_btn" @click="editParentFn(i,regInfo.parents[i-1])"></span></div>
+                <div class="parent_about">
+                  <span v-if="regInfo.parents[i-1]['s_h']">{{regInfo.parents[i-1]['s_h']}}</span>
+                  <span v-if="regInfo.parents[i-1]['s_i']">{{regInfo.parents[i-1]['s_i']}}</span>
+                  <span v-if="regInfo.parents[i-1]['s_j']">{{regInfo.parents[i-1]['s_j']}}</span>
+                </div>
+                <div class="parent_address">{{regInfo.parents[i-1]['s_k']}}</div>
               </div>
             </div>
-          </div>
-        </div> -->
-        </tbody>
-      </table>
-    </div>
-    <div class="big_img" v-if="isShowBigImg">
-      <div class="img_main">
-        <span class="close_btn" @click="isShowBigImg = false"></span>
-        <img :src="imgUrl+fileList[0].fileId">
+            <div class="reward_info">
+              <p class="basic_tit">获奖信息<span v-if="rewardsLength < 2" @click="addrewardsFlagFn">添加</span></p>
+              <div v-for="i in rewardsLength" :key="i" class="phone_parents_item">
+                <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn" @click="editRewardFn(i,regInfo.rewards[i-1])"></span></div>
+                <div class="parent_about">
+                  <span v-if="regInfo.rewards[i-1]['s_e']">{{regInfo.rewards[i-1]['s_e']}}</span>
+                  <span v-if="regInfo.rewards[i-1]['s_c']">{{regInfo.rewards[i-1]['s_c']}}</span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </el-form>
+        <div class="sign-btn">
+          <span class="save" @click="saveInfo">保存</span>
+          <span class="cancel" @click="cancel">取消</span>
+        </div>
       </div>
+      <div class="show_info" v-if="!idEdit">
+        <!-- <div>
+          <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
+          <img src="@/imgs/404.png" class="user_img" v-else>
+        </div>
+        <div><span>学生姓名：</span>{{regInfo.stuName}}</div>
+        <div><span>身份证号：</span>{{regInfo.idCard}}</div>
+        <div><span>出生日期：</span>{{regInfo.stuBirthday | dateFormatYmd}}</div>
+        <div><span>性别：</span>{{genderMap[regInfo.stuGender]}}</div>
+        <div><span>户籍所在地：</span>{{regInfo.localStr}}</div>
+        <div><span>现就读学校：</span>{{regInfo.nowSchool}}</div>
+        <div><span>现就读年级：</span>{{regInfo.nowGradeName}}</div>
+        <div><span>总分年级排名/年级人数：</span>{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</div> -->
+        <table>
+          <tbody>
+          <tr>
+            <td rowspan="4" width="30%">
+              <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
+              <img src="@/imgs/404.png" class="user_img" v-else>
+            </td>
+            <td width="84px" align="right">学生姓名：</td>
+            <td width="130px">{{regInfo.stuName}}</td>
+            <td width="162px" align="right">身份证号：</td>
+            <td>{{regInfo.idCard}}</td>
+          </tr>
+          <tr>
+            <td align="right">出生日期：</td>
+            <td>{{regInfo.stuBirthday | dateFormatYmd}}</td>
+            <td align="right">性别：</td>
+            <td>{{genderMap[regInfo.stuGender]}}</td>
+          </tr> 
+          <tr>
+            <td align="right">户籍所在地：</td>
+            <td>{{regInfo.localStr}}</td>
+            <td align="right">现就读学校：</td>
+            <td>{{regInfo.nowSchool}}</td>
+          </tr>
+          <tr>
+            <td align="right">现就读年级：</td>
+            <td>{{regInfo.nowGradeName}}</td>
+            <td align="right">总分年级排名/年级人数：</td>
+            <td>{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <table>
+          <tbody>
+          <tr>
+            <td width="82px" valign="top" align="right">监护人：</td>
+            <td>
+              <table class="table_list">
+                <thead>
+                <tr>
+                  <th>姓名</th>
+                  <th>手机</th>
+                  <th>学历</th>
+                  <th>工作单位</th>
+                  <th>职务</th>
+                </tr>
+                </thead>
+                <tr v-for="i in 2" :key="i">
+                  <td>
+                    {{regInfo.parents[i-1]['s_g']}}
+                  </td>
+                  <td>
+                    {{regInfo.parents[i-1]['s_h']}}
+                  </td>
+                  <td>
+                    {{regInfo.parents[i-1]['s_i']}}
+                  </td>
+                  <td>
+                    {{regInfo.parents[i-1]['s_j']}}
+                  </td>
+                  <td>
+                    {{regInfo.parents[i-1]['s_k']}}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- <div class="table-item">
+            <div v-if="regInfo.rewards && regInfo.rewards.length">
+              <label>获奖信息:</label>
+              <div v-for="(item, idx) in regInfo.rewards" :key="idx">
+                {{item['s_c']}} {{item['s_d']}} {{item['s_e']}}
+              </div>
+              <div v-if="regInfo.rewardFile && regInfo.rewardFile.length ">
+                <label>获奖附件:</label>
+                <div class="up_idcard" @click="showBig">
+                  <img
+                    v-if="regInfo.rewardFile[0].fieldValue"
+                    :src="imgUrl+regInfo.rewardFile[0].fieldValue"
+                    @error="errorImg($event,'image')">
+                  <div class="big_btn_l" @click="showBigImg()"></div>
+                  <i class="el-icon-zoom-in"></i>
+                </div>
+              </div>
+            </div>
+          </div> -->
+          </tbody>
+        </table>
+      </div>
+      <div class="big_img" v-if="isShowBigImg">
+        <div class="img_main">
+          <span class="close_btn" @click="isShowBigImg = false"></span>
+          <img :src="imgUrl+fileList[0].fileId">
+        </div>
+      </div>
+    </template>
+    <div class="addparentFlag" v-if="addparentFlag">
+      <el-form ref="form_parent" :model="formParent" label-width="72px">
+        <el-form-item label="姓名">
+          <el-input v-model="formParent.s_g" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="formParent.s_h" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item label="学历">
+          <el-input v-model="formParent.s_i" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item label="职务">
+          <el-input v-model="formParent.s_j" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item label="工作单位">
+          <el-input v-model="formParent.s_k" placeholder="请输入"></el-input>
+        </el-form-item>
+        <div class="sign-btn">
+          <span class="save" @click="saveParent">保存</span>
+        </div>
+      </el-form>
+    </div>
+    <div class="addrewardsFlag" v-if="addrewardsFlag">
+      <el-form ref="form_rewards" :model="formRewards" label-width="72px">
+        <el-form-item label="获奖时间">
+          <el-date-picker
+            v-model="formRewards.s_c"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="奖项名称">
+          <el-input v-model="formRewards.s_d" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item label="奖项等级">
+          <el-input v-model="formRewards.s_e" placeholder="请输入"></el-input>
+        </el-form-item>
+        <div class="sign-btn">
+          <span class="save" @click="saveRewards">保存</span>
+        </div>
+      </el-form>
     </div>
   </div>
 </template>
@@ -353,7 +397,25 @@
             label: '二年级'
           },
         ],
-        rules: {}
+        rules: {},
+        parentsLength:0,
+        rewardsLength:0,
+        addparentFlag:false,
+        addrewardsFlag:false,
+        addParentIndex:0,
+        addRewardsIndex:0,
+        formParent:{
+          s_g:'',
+          s_h:'',
+          s_i:'',
+          s_j:'',
+          s_k:''
+        },
+        formRewards:{
+          s_c: "", 
+          s_d: "", 
+          s_e: ""
+        },
       }
     },
     computed:{
@@ -481,6 +543,8 @@
             return;
           }
           let data = xhr.data;
+          vm.parentsLength = data.parents.length
+          vm.rewardsLength = data.rewards.length
           for (let i = 0; i < 3; i++) {
             if (!data.rewards[i]) {
               let obj = {s_c: "", s_d: "", s_e: ""};
@@ -666,6 +730,36 @@
       showBigImg() {
 
       },
+      saveParent(){
+        this.regInfo.parents[this.addParentIndex] = this.formParent
+      },
+      addparentFlagFn(){
+        for(let i in this.formParent){
+          this.formParent[i] = ''
+        }
+        this.addParentIndex = this.parentsLength
+        this.addparentFlag = true
+      },
+      editParentFn(index,item){
+        this.addParentIndex = index
+        this.addparentFlag = true
+        this.formParent = item
+      },
+      saveRewards(){
+        this.regInfo.rewards[this.addRewardsIndex] = this.formRewards
+      },
+      addrewardsFlagFn(){
+        for(let i in this.formRewards){
+          this.formRewards[i] = ''
+        }
+        this.addRewardsIndex = this.rewardsLength
+        this.addrewardsFlag = true
+      },
+      editRewardFn(index,item){
+        this.addRewardsIndex = index
+        this.addrewardsFlag = true
+        this.formRewards = item
+      }
     }
   }
 </script>
@@ -1008,6 +1102,16 @@
         width: auto;
         border-radius: 0;
         margin-bottom: 20px;
+      }
+      .basic_tit{
+        display: block;
+      }
+      .addparentFlag,
+      .addrewardsFlag{
+        padding:20px;
+        .save{
+          margin: 0;
+        }
       }
     }
 </style>
