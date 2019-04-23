@@ -83,7 +83,7 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item label="户籍所在地:">
+                <el-form-item label="户籍所在地:" prop="stuAdds" id="regInfo_stuAdds">
                   <el-col :span="12" class="width_750">
                     <!--省市区县(传省市区id)-->
                     <!--<cityPicker :selectedFn="getArea"></cityPicker>-->
@@ -94,8 +94,12 @@
                       :options="addList"
                       v-model="regInfo.stuAdds"/>
                   </el-col>
+                  <!--错误信息-->
+                  <template slot="error" slot-scope="scope">
+                    <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                  </template>
                 </el-form-item>
-                <el-form-item label="现就读年级:" prop="nowGrade">
+                <el-form-item label="现就读年级:" prop="nowGrade" id="regInfo_nowGrade">
                   <el-col :span="12" class="width_750">
                     <el-select clearable v-model="regInfo.nowGrade" placeholder="请填写">
                       <el-option
@@ -105,6 +109,10 @@
                         :value="item.id"/>
                     </el-select>
                   </el-col>
+                  <!--错误信息-->
+                  <template slot="error" slot-scope="scope">
+                    <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                  </template>
                 </el-form-item>
                 <!--手机浏览器显示-->
                 <template v-if="isPhone">
@@ -142,9 +150,12 @@
                 </template>
               </div>
               <!--pc 显示-->
-              <div class="user-info-table" v-if="!isPhone">
+              <div class="user-info-table" v-if="!isPhone" id="regInfo_parents">
                 <div class="table-item">
-                  <label>监护人:</label>
+                  <label class="fill">
+                    监护人:
+                    <div style="width:50px;font-size: 12px;color: #F56C6C;float: right;margin-top: 5px">(监护人1姓名及电话必填)</div>
+                  </label>
                   <table class="table">
                     <thead>
                     <tr>
@@ -175,6 +186,11 @@
                     </tr>
                     </tbody>
                   </table>
+                  <div>
+                    <span class="error-info" v-if="parentsMsg">
+                      <i class="el-icon-circle-close"></i>{{parentsMsg}}
+                    </span>
+                  </div>
                 </div>
                 <div class="table-item">
                   <label>获奖信息:</label>
@@ -238,9 +254,10 @@
               <!--间隔线-->
               <div class="line"></div>
               <!--监护人信息-->
-              <div class="guardian_info">
+              <div class="guardian_info" id="regInfo_parents">
                 <p class="item-tit open-info">
                   监护人信息
+                  <label class="error-info" style="font-size: 12px" v-if="parentsMsg"><i class="el-icon-circle-close"></i>监护人1姓名及电话必填</label>
                   <span v-if="!guardianOpen" @click="guardianOpen = !guardianOpen">展开<i
                     class="el-icon-arrow-down"></i> </span>
                   <span v-else @click="guardianOpen = !guardianOpen">收起 <i class="el-icon-arrow-up"></i> </span>
@@ -329,7 +346,7 @@
                 <el-col :span="16" :offset="4">
                   <el-form-item label="登录名:" prop="phoneNum">
                     <el-col :span="18">
-                      <el-input v-model="regInfo.phoneNum" placeholder="请输入手机号"></el-input>
+                      <el-input v-model="regInfo.phoneNum" placeholder="请输入第一监护人手机号"></el-input>
                     </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
@@ -478,17 +495,22 @@
             {required: true, message: '必填项', trigger: 'blur'},
             {min: 15, max: 18, message: '请检查', trigger: 'blur'}
           ],
+          stuBirthday: [{required: true, message: '必填项', trigger: 'change'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
           repwd: [{required: true, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
-          photoId: [{required: true, message: '必填项', trigger: 'blur'}]
+          photoId: [{required: true, message: '必填项', trigger: 'blur'}],
+          nowGrade: [{required: true, message: '必填项', trigger: 'blur'}],
+          stuAdds: [{required: true, message: '必填项', trigger: 'blur'}]
         },
         //  监护人信息是否展开
-        guardianOpen: false,
+        guardianOpen: true,
         // 获奖信息是否展开
-        prizeOpen: false,
+        prizeOpen: true,
         // 上传图片 请求地址
-        uploadUrl: `${window.systemParameter.fileSystemWriteUrl}/api/upload/simpleupload?userId=00000000000000000000000000000000`
+        uploadUrl: `${window.systemParameter.fileSystemWriteUrl}/api/upload/simpleupload?userId=00000000000000000000000000000000`,
+        // 监护人错误提示
+        parentsMsg: ''
       }
     },
     computed: {
@@ -590,7 +612,7 @@
             }
           }
         }
-        vm.regInfo.creatorId = "00001111000011110000111100001111"
+        vm.regInfo.creatorId = "00001111000011110000111100001111";
         http.post("/gateway/enroll/api/erRegister", vm.regInfo).then((xhr) => {
           vm.saving = false;
           if (xhr.data.code) {
@@ -803,6 +825,13 @@
       // 保存
       save(formName) {
         let vm = this;
+        console.log('vm.regInfo.parents', vm.regInfo.parents);
+        vm.parentsMsg = '';
+        if (!vm.regInfo.parents[0].s_g || !vm.regInfo.parents[0].s_h) {
+          vm.parentsMsg = '必填项';
+          document.getElementById('regInfo_parents').scrollIntoView();
+          return false
+        }
         this.$refs[formName].validate((valid) => {
           if (valid) {
             vm.saveFlag = true;
@@ -813,6 +842,8 @@
             if (!vm.regInfo.stuName) return document.getElementById('regInfo_stuName').scrollIntoView();
             if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
             if (!vm.regInfo.stuGender) return document.getElementById('regInfo_stuGender').scrollIntoView();
+            if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
+            if (!vm.regInfo.nowGrade) return document.getElementById('regInfo_nowGrade').scrollIntoView();
             return false;
           }
         });
@@ -930,6 +961,11 @@
               flex-shrink: 0;
               padding-right: 12px;
             }
+            .fill::before {
+              content: '*';
+              color: #F56C6C;
+              margin-right: 4px;
+            }
             .table-item-tag {
               color: #999;
               font-size: 12px;
@@ -992,7 +1028,7 @@
               margin-top: 50px;
             }
             .table {
-              width: 620px;
+              width: 600px;
               border-top: 1px solid #ccc;
               border-right: 1px solid #ccc;
               text-align: center;

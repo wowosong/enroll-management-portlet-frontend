@@ -13,7 +13,7 @@
           <div class="pwd-error" v-if="pwdError">{{pwdError}}</div>
           <div class="login-item m-b">
             <i class="iconfont">&#xe618;</i>
-            <input v-model="loginForm.username" placeholder="请输入手机号"/>
+            <input v-model="loginForm.username" placeholder="请输入第一监护人手机号"/>
           </div>
           <div class="login-item">
             <i class="iconfont">&#xe69e;</i>
@@ -149,12 +149,12 @@
         let mobileRes = /^1[34578]\d{9}$/;
         vm.userError = '';
         vm.pwdError = '';
-        // if (!mobileRes.test(vm.loginForm.username)) {
-        //   vm.userError = '请输入正确格式的手机号码';
-        //   return false
-        // }
+        if (!mobileRes.test(vm.loginForm.username)) {
+          vm.userError = '请输入正确格式的手机号';
+          return false
+        }
         if (!vm.loginForm.username) {
-          vm.userError = '请输入手机号码';
+          vm.userError = '请输入第一监护人手机号';
           return false
         }
         if (!vm.loginForm.password) {
