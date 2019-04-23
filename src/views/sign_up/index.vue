@@ -154,8 +154,7 @@
                 <div class="table-item">
                   <label class="fill">
                     监护人:
-                    <div style="width:50px;font-size: 12px;color: #F56C6C;float: right;margin-top: 5px">(监护人1姓名及电话必填)
-                    </div>
+                    <div style="width:50px;font-size: 12px;color: #F56C6C;float: right;margin-top: 5px">(监护人1姓名及手机必填)</div>
                   </label>
                   <table class="table">
                     <thead>
@@ -259,7 +258,7 @@
                 <p class="item-tit open-info">
                   监护人信息
                   <label class="error-info" style="font-size: 12px" v-if="parentsMsg"><i
-                    class="el-icon-circle-close"></i>监护人1姓名及电话必填</label>
+                    class="el-icon-circle-close"></i>监护人1姓名及手机必填</label>
                   <span v-if="!guardianOpen" @click="guardianOpen = !guardianOpen">展开<i
                     class="el-icon-arrow-down"></i> </span>
                   <span v-else @click="guardianOpen = !guardianOpen">收起 <i class="el-icon-arrow-up"></i> </span>
@@ -835,7 +834,6 @@
       // 保存
       save(formName) {
         let vm = this;
-        console.log('vm.regInfo.parents', vm.regInfo.parents);
         vm.parentsMsg = '';
         if (!vm.regInfo.parents[0].s_g || !vm.regInfo.parents[0].s_h) {
           vm.parentsMsg = '必填项';
@@ -1164,6 +1162,7 @@
     width: 0 !important;
     height: 0 !important;
     position: absolute;
+    z-index: -1;
     input {
       border: none !important;
       -webkit-text-fill-color: #fff !important;
