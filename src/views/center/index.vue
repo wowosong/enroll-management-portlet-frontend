@@ -10,14 +10,14 @@
         </div>
         <div class="comm_item float_left">
            <div class="center_tabs clearfix">
-               <span @click="tabIndexFn(0)" :class="{active:tabIndex == 0}"><img src="@/imgs/warp/center_tab1.png">{{titleList[0]}}</span>
-               <span @click="tabIndexFn(1)" :class="{active:tabIndex == 1}"><img src="@/imgs/warp/center_tab2.png">{{titleList[1]}}</span>
-               <span @click="tabIndexFn(2)" :class="{active:tabIndex == 2}"><img src="@/imgs/warp/center_tab3.png">{{titleList[2]}}</span>
+               <span @click="tabIndexFn(1)" :class="{active:tabIndex == 0}"><img src="@/imgs/warp/center_tab1.png">{{titleList[0]}}</span>
+               <span @click="tabIndexFn(2)" :class="{active:tabIndex == 1}"><img src="@/imgs/warp/center_tab2.png">{{titleList[1]}}</span>
+               <span @click="tabIndexFn(3)" :class="{active:tabIndex == 2}"><img src="@/imgs/warp/center_tab3.png">{{titleList[2]}}</span>
                <div class="tab_active_border" :style="'left:'+left+'px'"></div>
            </div>
-           <signUpWidget v-if="tabIndex == 0"></signUpWidget>
-           <progressWidget v-if="tabIndex == 1"></progressWidget>
-           <accountWidget v-if="tabIndex == 2"></accountWidget>
+           <signUpWidget v-if="tabIndex == 1"></signUpWidget>
+           <progressWidget v-if="tabIndex == 2"></progressWidget>
+           <accountWidget v-if="tabIndex == 3"></accountWidget>
         </div>
         <div class="comm_item float_right">
             <div class="campus_tit">嘉祥官网</div>
@@ -38,7 +38,7 @@
         },
         data(){
             return{
-                tabIndex:0,
+                tabIndex:1,
                 left:30,
                 title:'个人中心',
                 titleList:['报名信息','招生进度','账号安全']
@@ -51,7 +51,7 @@
         },
         mounted(){
             if(this.isPhone){
-                this.tabIndex = 0
+                this.tabIndex = null
                 $("#app>div").addClass("phone_center")
             }
             this.tabIndexFn(this.tabIndex)
@@ -60,7 +60,7 @@
             tabIndexFn(index){
                 if(index){
                     this.tabIndex = index
-                    this.left = index * 132 + 30
+                    this.left = (index-1) * 132 + 30
                     this.title = this.titleList[index]
                 }
             },

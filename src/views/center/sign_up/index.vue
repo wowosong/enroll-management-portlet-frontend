@@ -1,5 +1,5 @@
 <template>
-  <div class="user_info" v-loading="saving">
+  <div class="basic_info" v-loading="saving">
     <div class="user_school">
       <span class="school_item">报名校区：{{planInfo.campusName}}</span>
       <span class="school_item">报名年级：{{planInfo.gradeName}}</span>
@@ -7,11 +7,12 @@
       <span v-if="idEdit" class="import_hint float_r">提示：报名提交后不支持修改"必填项"，只支持修改"非必填项</span>
     </div>
     <div class="show_edit" v-if="idEdit">
-      <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="172px">
+      <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="102px">
+        <p class="basic_tit">基本信息</p>
         <div class="user_img">
-          <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
-          <img src="@/imgs/404.png" v-else>
-          <div class="upload_btn" @click="uploadPicture">上传照片</div>
+          <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId" @click="uploadPicture">
+          <img src="@/imgs/404.png" v-else @click="uploadPicture">
+          <div class="upload_btn" @click="uploadPicture">上传照片<span>:</span></div>
           <p class="upload_hint">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
         </div>
         <div class="basic_info clearfix">
@@ -46,7 +47,7 @@
                 :value="item.id"/>
             </el-select>
           </el-form-item>
-          <el-form-item label="总分年级排名/年级人数:">
+          <el-form-item label="总分年级排名/年级人数:" class="long_label">
             <el-input
               type="number"
               min="1"
@@ -63,89 +64,129 @@
               style="width:98px"/>
           </el-form-item>
         </div>
-        <el-form-item label="监护人:" label-width="82px">
-          <table class="table_list">
-            <thead>
-            <tr>
-              <th>姓名</th>
-              <th>手机</th>
-              <th>学历</th>
-              <th>工作单位</th>
-              <th>职务</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="i in 2" :key="i">
-              <td>
-                <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
-              </td>
-              <td>
-                <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
-              </td>
-              <td>
-                <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
-              </td>
-              <td>
-                <el-input :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
-              </td>
-              <td>
-                <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </el-form-item>
-        <el-form-item label="获奖信息:" label-width="82px">
-          <table class="table_list">
-            <thead>
-            <tr>
-              <th>获奖时间</th>
-              <th>获奖名称</th>
-              <th>奖项等级</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="i in 3" :key="i">
-              <td>
-                <el-date-picker
-                  placeholder="年/月/日"
-                  v-model="regInfo.rewards[i-1]['s_c']"
-                  type="date"/>
-              </td>
-              <td>
-                <el-input
-                  placeholder="奖项名称（限20字）"
-                  :maxlength="20"
-                  v-model="regInfo.rewards[i-1]['s_d']"/>
-              </td>
-              <td>
-                <el-input
-                  placeholder="奖项等级（限10字）"
-                  :maxlength="10"
-                  v-model="regInfo.rewards[i-1]['s_e']"/>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </el-form-item>
-        <el-form-item label="获奖附件:" label-width="82px">
-          <div class="img_thumbnail">
-            <img v-if="!fileList || !fileList.length" src="@/imgs/404.png">
-            <img v-else :src="imgUrl+fileList[0].fileId">
-            <div class="big_btn_l" @click="showBigImg()"></div>
-          </div>
-          <div class="upload_item">
-            <div class="up_idcard" @click="uploadEnclosure">
-              <template><img src="@/imgs/upload.png">上传证件</template>
+        <template v-if="!isPhone">
+          <el-form-item label="监护人:" label-width="82px">
+            <table class="table_list">
+              <thead>
+              <tr>
+                <th>姓名</th>
+                <th>手机</th>
+                <th>学历</th>
+                <th>工作单位</th>
+                <th>职务</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="i in 2" :key="i">
+                <td>
+                  <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
+                </td>
+                <td>
+                  <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
+                </td>
+                <td>
+                  <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
+                </td>
+                <td>
+                  <el-input :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
+                </td>
+                <td>
+                  <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </el-form-item>
+          <el-form-item label="获奖信息:" label-width="82px">
+            <table class="table_list">
+              <thead>
+              <tr>
+                <th>获奖时间</th>
+                <th>获奖名称</th>
+                <th>奖项等级</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="i in 3" :key="i">
+                <td>
+                  <el-date-picker
+                    placeholder="年/月/日"
+                    v-model="regInfo.rewards[i-1]['s_c']"
+                    type="date"/>
+                </td>
+                <td>
+                  <el-input
+                    placeholder="奖项名称（限20字）"
+                    :maxlength="20"
+                    v-model="regInfo.rewards[i-1]['s_d']"/>
+                </td>
+                <td>
+                  <el-input
+                    placeholder="奖项等级（限10字）"
+                    :maxlength="10"
+                    v-model="regInfo.rewards[i-1]['s_e']"/>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </el-form-item>
+          <el-form-item label="获奖附件:" label-width="82px">
+            <div class="img_thumbnail">
+              <img v-if="!fileList || !fileList.length" src="@/imgs/404.png">
+              <img v-else :src="imgUrl+fileList[0].fileId">
+              <div class="big_btn_l" @click="showBigImg()"></div>
             </div>
-            <div class="hint prove">证明您的获奖情况</div>
+            <div class="upload_item">
+              <div class="up_idcard" @click="uploadEnclosure">
+                <template><img src="@/imgs/upload.png">上传证件</template>
+              </div>
+              <div class="hint prove">证明您的获奖情况</div>
+            </div>
+          </el-form-item>
+        </template>
+        <template v-if="isPhone">
+          <div class="parents_info">
+            <p class="basic_tit">监护人信息<span>添加</span></p>
+            <div v-for="i in 2" :key="i" class="phone_parents_item">
+              <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}<span class="edit_btn"></span></div>
+              <div class="parent_about">
+                <span>{{regInfo.parents[i-1]['s_h']}}</span>
+                <span>{{regInfo.parents[i-1]['s_i']}}</span>
+                <span>{{regInfo.parents[i-1]['s_j']}}</span>
+              </div>
+              <div class="parent_address">{{regInfo.parents[i-1]['s_k']}}</div>
+            </div>
           </div>
-        </el-form-item>
+          <div class="reward_info">
+            <p class="basic_tit">获奖信息<span>添加</span></p>
+            <div v-for="i in 3" :key="i" class="phone_parents_item">
+              <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn"></span></div>
+              <div class="parent_about">
+                <span>{{regInfo.rewards[i-1]['s_e']}}</span>
+                <span>{{regInfo.rewards[i-1]['s_c']}}</span>
+              </div>
+            </div>
+          </div>
+        </template>
       </el-form>
-      <button class="save" @click="saveInfo">保存</button>
-      <button class="cancel" @click="cancel">取消</button>
+      <div class="sign-btn">
+        <span class="save" @click="saveInfo">保存</span>
+        <span class="cancel" @click="cancel">取消</span>
+      </div>
     </div>
     <div class="show_info" v-if="!idEdit">
+      <!-- <div>
+        <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
+        <img src="@/imgs/404.png" class="user_img" v-else>
+      </div>
+      <div><span>学生姓名：</span>{{regInfo.stuName}}</div>
+      <div><span>身份证号：</span>{{regInfo.idCard}}</div>
+      <div><span>出生日期：</span>{{regInfo.stuBirthday | dateFormatYmd}}</div>
+      <div><span>性别：</span>{{genderMap[regInfo.stuGender]}}</div>
+      <div><span>户籍所在地：</span>{{regInfo.localStr}}</div>
+      <div><span>现就读学校：</span>{{regInfo.nowSchool}}</div>
+      <div><span>现就读年级：</span>{{regInfo.nowGradeName}}</div>
+      <div><span>总分年级排名/年级人数：</span>{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</div> -->
       <table>
         <tbody>
         <tr>
@@ -163,7 +204,7 @@
           <td>{{regInfo.stuBirthday | dateFormatYmd}}</td>
           <td align="right">性别：</td>
           <td>{{genderMap[regInfo.stuGender]}}</td>
-        </tr>
+        </tr> 
         <tr>
           <td align="right">户籍所在地：</td>
           <td>{{regInfo.localStr}}</td>
@@ -213,7 +254,7 @@
             </table>
           </td>
         </tr>
-        <div class="table-item">
+        <!-- <div class="table-item">
           <div v-if="regInfo.rewards && regInfo.rewards.length">
             <label>获奖信息:</label>
             <div v-for="(item, idx) in regInfo.rewards" :key="idx">
@@ -231,7 +272,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         </tbody>
       </table>
     </div>
@@ -287,7 +328,7 @@
         schoolList: [],
 
         // 原始
-        idEdit: false,
+        idEdit: true,
         isShowBigImg: false,
         bigFileId: '',
         bigImgUrl: '/gateway/zuul/filesystem/api/data/original/',
@@ -314,6 +355,11 @@
         ],
         rules: {}
       }
+    },
+    computed:{
+        isPhone: function () {
+            return this.$store.state.isPhone
+        },
     },
     mounted() {
       const vm = this;
@@ -682,6 +728,9 @@
       cursor: pointer;
       background: url('~@/imgs/upload.png') no-repeat 40px center;
       padding-left: 20px;
+      span{
+        display: none;
+      }
     }
     .upload_hint {
       font-size: 12px;
@@ -816,11 +865,163 @@
   .area_margin {
     margin: 0 !important;
   }
+  .sign-btn {
+    text-align: center;
+    span {
+      width: 118px;
+      height: 40px;
+      border: none;
+      line-height: 40px;
+      color: #fff;
+      margin: 0 8px;
+      border-radius: 4px;
+      letter-spacing: 5px;
+      display: inline-block;
+    }
+    .save {
+      background: #2f3861;
+    }
+    .cancel {
+      background: none;
+      color: #333;
+    }
+    .submit {
+      background: #eeeeee;
+      width: 300px;
+      color: #333;
+    }
+  }
+  .basic_tit{
+    display: none;
+  }
+</style>
+<style lang="less" scoped>
+    //warp版本
+    .is_phone{
+      .user_school{
+        text-align: center;
+        margin: 30px 0 10px 0;
+      }
+      .import_hint{
+        display: block;
+        float: none;
+        border-top:10px solid #eee;
+        padding: 10px 20px;
+        margin-top: 20px;
+        text-align: left;
+      }
+      .show_edit{
+        .user_img{
+          position: static;
+          width: auto;
+          margin: 0 20px;
+          img{
+            // float: right;
+            width: 70px;
+            height: 80px;
+          }
+          div,p{
+            // margin-right: 90px;
+          }
+          .upload_btn{
+            border:none;
+            background: none;
+            padding-left: 0;
+            margin-top: 0;
+            float: left;
+            width: 100px;
+            text-align: right;
+            padding-right: 12px;
+            span{
+              display: inline-block;
+            }
+          }
+          p{
+            margin-top: 0;
+            margin-left: 102px;
+          }
+        }
+        .basic_info{
+          padding: 0 20px 10px 20px;
+          margin: 0;
+          margin-bottom: 20px;
+          border-bottom:10px solid #eee;
+        }
+      }
+      .basic_tit{
+        border-left:3px solid #aa2f33;
+        line-height: 16px;
+        font-size: 16px;
+        font-weight: bold;
+        margin-left: 20px;
+        padding-left: 4px;
+        margin-bottom: 20px;
+        span{
+          float: right;
+          color: #aa2f33;
+          margin-right: 20px;
+          font-weight: normal;
+          font-size: 14px;
+        }
+      }
+      .phone_parents_item{
+        border-bottom:1px solid #eee;
+        margin-left: 20px;
+        padding: 20px 20px 20px 0;
+        .parent_name{
+          font-weight: bold;
+          .edit_btn{
+            width: 15px;
+            height: 15px;
+            background: url(~@/imgs/warp/edit.png) no-repeat;
+            background-size: 100%;
+            float: right;
+          }
+        }
+        .parent_about{
+          margin-top: 10px;
+          span{
+            border:1px solid #2f3861;
+            color: #2f3861;
+            padding: 2px 5px;
+            line-height: 16px;
+            display: inline-block;
+            vertical-align: top;
+          }
+        }
+        .parent_address{
+          margin-top: 10px;
+        }
+      }
+      .phone_parents_item:last-child{
+         border-bottom:none;
+      }
+      .parents_info{
+        border-bottom:10px solid #eee;
+        margin-bottom: 20px;
+      }
+      .cancel{
+        display: none;
+      }
+      .save{
+        display: block;
+        width: auto;
+        border-radius: 0;
+        margin-bottom: 20px;
+      }
+    }
 </style>
 <style lang="less">
   .table_list {
     .el-input__inner {
       border: none;
+    }
+  }
+  .is_phone{
+    .long_label{
+      .el-form-item__label{
+        line-height: 20px;
+      }
     }
   }
 </style>

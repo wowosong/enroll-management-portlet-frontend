@@ -1,11 +1,11 @@
 <template>
     <div class="edit">
         <div class="pro_tit clearfix">
-            <div class="pro_item active">
+            <div class="pro_item" :class="{active:stempNum == 1}">
                 <i></i>
                 <p>验证身份</p>
             </div>
-            <div class="pro_item">
+            <div class="pro_item" :class="{active:stempNum == 2}">
                 <i></i>
                 <p v-if="type == 'name'">修改登录名</p>
                 <p v-if="type == 'password'">修改密码</p>
@@ -21,7 +21,7 @@
                     <el-form-item label="姓名:" required>
                         <el-input v-model="formData.userName" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
-                    <el-form-item>
+                    <el-form-item label-width="0">
                         <div class="btn" @click="nextStep()">下一步</div>
                     </el-form-item>
                 </template>
@@ -31,7 +31,7 @@
                     <el-form-item label="新登录名:" required>
                         <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
-                    <el-form-item>
+                    <el-form-item label-width="0">
                         <div class="btn">确定</div>
                     </el-form-item>
                 </template>
@@ -44,7 +44,7 @@
                     <el-form-item label="确认新密码:" prop="newCheckPass">
                         <el-input v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
-                    <el-form-item>
+                    <el-form-item label-width="0">
                         <div class="btn" @click="submit">确定</div>
                     </el-form-item>
                 </div>
@@ -187,5 +187,39 @@
         margin: 0 auto;
         display: inline-block;
         cursor: pointer;
+        margin-left: 120px;
+    }
+</style>
+<style lang="less" scoped>
+    //warp版本
+    .is_phone{
+      .edit{
+        width: 100%;
+      }
+      .el-input{
+        width: auto!important;
+        margin-right: 20px;
+        display: block;
+      }
+      .btn{
+        width: auto;
+        line-height: 45px;
+        text-align: center;
+        background: #2f3861;
+        color: #fff;
+        border:1px solid #2f3861;
+        border-radius: 4px;
+        cursor: pointer;
+        display: block;
+        border-radius: 0;
+        margin:10px 20px;
+      }
+      .pro_tit{
+        .active{
+          i{
+            background: #bcc4eb;
+          }
+        }
+      }
     }
 </style>
