@@ -149,12 +149,12 @@
         let mobileRes = /^1[34578]\d{9}$/;
         vm.userError = '';
         vm.pwdError = '';
-        if (!mobileRes.test(vm.loginForm.username)) {
-          vm.userError = '请输入正确格式的手机号';
-          return false
-        }
         if (!vm.loginForm.username) {
           vm.userError = '请输入第一监护人手机号';
+          return false
+        }
+        if (!mobileRes.test(vm.loginForm.username)) {
+          vm.userError = '请输入正确格式的手机号';
           return false
         }
         if (!vm.loginForm.password) {
