@@ -189,6 +189,7 @@ window.isPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.use
 // 修改meta viewport
 function getPhone() {
   $("meta[name='viewport']").attr('content', "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no");
+  $("#changeHref").attr('href', 'static/css/wrap.css');
 }
 
 if (isPhone) {
