@@ -997,6 +997,7 @@
                 border-radius: 2px;
                 position: relative;
                 float: left;
+                margin-bottom: 12px;
                 &:hover .cover {
                   display: block;
                 }
@@ -1020,7 +1021,6 @@
               }
               .up_area {
                 float: left;
-                margin-top: 12px
               }
               .card {
                 width: 100%;
