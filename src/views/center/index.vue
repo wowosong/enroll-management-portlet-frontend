@@ -67,6 +67,11 @@
             goback(){//判断是返回上一页还是显示tab首页
                 this.tabIndex = this.tabIndex ? null : this.$router.back(-1)
             }
+        },
+        destroyed(){
+            if(this.isPhone){
+                $("#app>div").removeClass("phone_center")
+            }
         }
     }
 </script>
