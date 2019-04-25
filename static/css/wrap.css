@@ -379,6 +379,7 @@ input {
 
 #app .sign-wrap .line {
   border-width: 10px;
+  margin: 20px 0;
 }
 
 #app .sign-wrap .line-1 {
