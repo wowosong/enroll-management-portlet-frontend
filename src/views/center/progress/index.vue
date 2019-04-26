@@ -57,7 +57,7 @@
           <table class="table_list">
             <thead>
             <tr>
-              <th>报名卡号</th>
+              <th>面谈卡号</th>
               <th>姓名</th>
               <th>身份证号</th>
               <th>奖学金（元）</th>
@@ -79,7 +79,7 @@
           <table class="table_list">
             <thead>
             <tr>
-              <th>报名卡编号</th>
+              <th>面谈卡编号</th>
               <th>姓名</th>
               <th>身份证号</th>
               <th>校区</th>
@@ -110,7 +110,7 @@
       <table class="my-table">
         <thead>
         <tr>
-          <th>报名卡编号</th>
+          <th>面谈卡编号</th>
           <th>姓名</th>
           <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
         </tr>

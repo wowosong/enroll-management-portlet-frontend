@@ -203,7 +203,8 @@ const store = new Vuex.Store({
   state: {
     isLogin: localtoken ? true : false,
     userInfo: {},
-    isPhone: window.isPhone
+    isPhone: window.isPhone,
+    active:'home'
   },
   mutations: {
     changeLogin(state, value) {
@@ -214,6 +215,9 @@ const store = new Vuex.Store({
     },
     setPhoneStyle(state, value) {
       state.isPhone = value
+    },
+    setMenu(state, value) {
+      state.active = value
     }
   }
 });
