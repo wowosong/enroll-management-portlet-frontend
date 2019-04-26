@@ -204,6 +204,7 @@
               localStorage.setItem('accesstoken', JSON.stringify(dataToken));
               if (xhr.data && xhr.data.access_token) {
                 vm.$store.commit('changeLogin', true);
+                vm.$router.push({path: '/center'})
               }
             }
           })
