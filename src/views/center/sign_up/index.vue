@@ -131,7 +131,33 @@
                 </tbody>
               </table>
             </el-form-item>
-            <el-form-item label="获奖附件:" label-width="82px">
+          </template>
+          <template v-if="isPhone">
+            <div class="parents_info">
+              <p class="basic_tit">监护人信息<span v-if="parentsLength < 2" @click="addparentFlagFn">添加</span></p>
+              <div v-for="(i,index) in parentsLength" :key="index" class="phone_parents_item">
+                <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}<span class="edit_btn" @click="editParentFn(index,regInfo.parents[i-1])"></span></div>
+                <div class="parent_about">
+                  <span v-if="regInfo.parents[i-1]['s_h']">{{regInfo.parents[i-1]['s_h']}}</span>
+                  <span v-if="regInfo.parents[i-1]['s_i']">{{regInfo.parents[i-1]['s_i']}}</span>
+                  <span v-if="regInfo.parents[i-1]['s_j']">{{regInfo.parents[i-1]['s_j']}}</span>
+                </div>
+                <div class="parent_address">{{regInfo.parents[i-1]['s_k']}}</div>
+              </div>
+            </div>
+            <div class="reward_info">
+              <p class="basic_tit">获奖信息<span v-if="rewardsLength < 3" @click="addrewardsFlagFn">添加</span></p>
+              <div v-for="(i,index) in rewardsLength" :key="index" class="phone_parents_item">
+                <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn" @click="editRewardFn(index,regInfo.rewards[i-1])"></span></div>
+                <div class="parent_about">
+                  <span v-if="regInfo.rewards[i-1]['s_e']">{{regInfo.rewards[i-1]['s_e']}}</span>
+                  <span v-if="regInfo.rewards[i-1]['s_c']">{{regInfo.rewards[i-1]['s_c']}}</span>
+                </div>
+              </div>
+            </div>
+          </template>
+          <el-form-item label="获奖附件:" label-width="82px">
+            <div class="img_box">
               <div class="img_thumbnail">
                 <img v-if="!fileList || !fileList.length" src="@/imgs/404.png">
                 <img v-else :src="imgUrl+fileList[0].fileId">
@@ -143,32 +169,8 @@
                 </div>
                 <div class="hint prove">证明您的获奖情况</div>
               </div>
-            </el-form-item>
-          </template>
-          <template v-if="isPhone">
-            <div class="parents_info">
-              <p class="basic_tit">监护人信息<span v-if="parentsLength < 2" @click="addparentFlagFn">添加</span></p>
-              <div v-for="(i,index) in parentsLength" :key="index" class="phone_parents_item">
-                <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}<span class="edit_btn" @click="editParentFn(i,regInfo.parents[i-1])"></span></div>
-                <div class="parent_about">
-                  <span v-if="regInfo.parents[i-1]['s_h']">{{regInfo.parents[i-1]['s_h']}}</span>
-                  <span v-if="regInfo.parents[i-1]['s_i']">{{regInfo.parents[i-1]['s_i']}}</span>
-                  <span v-if="regInfo.parents[i-1]['s_j']">{{regInfo.parents[i-1]['s_j']}}</span>
-                </div>
-                <div class="parent_address">{{regInfo.parents[i-1]['s_k']}}</div>
-              </div>
             </div>
-            <div class="reward_info">
-              <p class="basic_tit">获奖信息<span v-if="rewardsLength < 2" @click="addrewardsFlagFn">添加</span></p>
-              <div v-for="i in rewardsLength" :key="i" class="phone_parents_item">
-                <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn" @click="editRewardFn(i,regInfo.rewards[i-1])"></span></div>
-                <div class="parent_about">
-                  <span v-if="regInfo.rewards[i-1]['s_e']">{{regInfo.rewards[i-1]['s_e']}}</span>
-                  <span v-if="regInfo.rewards[i-1]['s_c']">{{regInfo.rewards[i-1]['s_c']}}</span>
-                </div>
-              </div>
-            </div>
-          </template>
+          </el-form-item>
         </el-form>
         <div class="sign-btn">
           <span class="save" @click="saveInfo">保存</span>
@@ -312,7 +314,8 @@
           <el-date-picker
             v-model="formRewards.s_c"
             type="date"
-            placeholder="选择日期">
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="奖项名称">
@@ -404,6 +407,8 @@
         addrewardsFlag:false,
         addParentIndex:0,
         addRewardsIndex:0,
+        isAddparentItem:false,
+        isAddRewardItem:false,
         formParent:{
           s_g:'',
           s_h:'',
@@ -677,12 +682,10 @@
           vm.planInfo = xhr.data.data;
         });
       },
-
       pointFn(type) {
         document.getElementById(type).scrollIntoView();
         this.current = type
       },
-
       // 根据身份证号码识别出生日期
       idCardNumFn() {
         let vm = this;
@@ -731,34 +734,56 @@
 
       },
       saveParent(){
-        this.regInfo.parents[this.addParentIndex] = this.formParent
+        this.regInfo.parents[this.addParentIndex] = _.cloneDeep(this.formParent)
+        if(this.isAddparentItem){
+          this.parentsLength++
+        }
+        this.$emit("changeTitle",'报名信息')
+        this.addparentFlag = false
       },
       addparentFlagFn(){
         for(let i in this.formParent){
           this.formParent[i] = ''
         }
         this.addParentIndex = this.parentsLength
+        this.isAddparentItem = true
+        this.$emit("changeTitle",'新增监护人')
         this.addparentFlag = true
       },
       editParentFn(index,item){
         this.addParentIndex = index
-        this.addparentFlag = true
         this.formParent = item
+        this.isAddparentItem = false
+        this.$emit("changeTitle",'编辑监护人')
+        this.addparentFlag = true
       },
       saveRewards(){
-        this.regInfo.rewards[this.addRewardsIndex] = this.formRewards
+        this.regInfo.rewards[this.addRewardsIndex] = _.cloneDeep(this.formRewards)
+        if(this.isAddRewardItem){
+          this.rewardsLength++
+        }
+        this.$emit("changeTitle",'报名信息')
+        this.addrewardsFlag = false
       },
       addrewardsFlagFn(){
         for(let i in this.formRewards){
           this.formRewards[i] = ''
         }
         this.addRewardsIndex = this.rewardsLength
+        this.isAddRewardItem = true
+        this.$emit("changeTitle",'新增获奖信息')
         this.addrewardsFlag = true
       },
       editRewardFn(index,item){
         this.addRewardsIndex = index
         this.addrewardsFlag = true
+        this.isAddRewardItem = false
+        this.$emit("changeTitle",'编辑获奖信息')
         this.formRewards = item
+      },
+      goBackFn(){
+        this.addparentFlag = false
+        this.addrewardsFlag = false
       }
     }
   }
@@ -1111,6 +1136,21 @@
         padding:20px;
         .save{
           margin: 0;
+        }
+      }
+      .prove{
+        display: none;
+      }
+      .img_box{
+        &>div{
+          width: 30%;
+          height: 70px;
+          float: left;
+          .up_idcard{
+            width: 100%;
+            height: 70px;
+            line-height: 70px;
+          }
         }
       }
     }
