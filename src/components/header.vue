@@ -7,7 +7,7 @@
           <div class="menu-main">
             <ul>
               <li @click="goHome" :class="active=='home'?'active':''">首页</li>
-              <li v-if="!isLogin" @click="goPlan" :class="active=='sign'?'active':''">网上报名</li>
+              <li v-if="!isLogin" @click="goPlan" :class="active=='plan'?'active':''">网上报名</li>
               <li v-if="isLogin" @click="goCenter" :class="active=='center'?'active':''">个人中心</li>
             </ul>
           </div>
@@ -62,18 +62,21 @@
       // logo 跳转首页
       goHome() {
         // 设置导航栏状态
+        localStorage.setItem('active','home');
         this.$store.commit('setMenu', 'home');
         this.$router.push('/')
       },
       //首次报名 跳转计划列表
       goPlan() {
         // 设置导航栏状态
-        this.$store.commit('setMenu', 'sign');
+        localStorage.setItem('active','plan');
+        this.$store.commit('setMenu', 'plan');
         this.$router.push({path: '/plan'})
       },
       // 头像 跳转个人中心
       goCenter() {
         // 设置导航栏状态
+        localStorage.setItem('active','center');
         this.$store.commit('setMenu', 'center');
         this.$router.push({path: '/center'})
       },
@@ -91,6 +94,7 @@
         this.$store.commit('changeLogin', false);
         // 设置导航栏状态
         this.$store.commit('setMenu', 'home');
+        localStorage.setItem('active','home');
         this.$router.push('/')
       }
     }

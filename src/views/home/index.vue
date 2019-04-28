@@ -203,6 +203,7 @@
               let dataToken = xhr.data;
               localStorage.setItem('accesstoken', JSON.stringify(dataToken));
               if (xhr.data && xhr.data.access_token) {
+                localStorage.setItem('active','center');
                 vm.$store.commit('changeLogin', true);
                 vm.$store.commit('setMenu', 'center');
                 vm.$router.push({path: '/center'})
