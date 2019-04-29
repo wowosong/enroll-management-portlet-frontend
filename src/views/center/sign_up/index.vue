@@ -8,7 +8,7 @@
         <span v-if="idEdit" class="import_hint float_r">提示：报名提交后不支持修改"必填项"，只支持修改"非必填项</span>
       </div>
       <div class="show_edit" v-if="idEdit">
-        <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="102px">
+        <el-form :model="regInfo" :rules="rules" ref="ruleForm" :label-width="isPhone ? '102px' : '172px'">
           <p class="basic_tit">基本信息</p>
           <div class="user_img">
             <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId" @click="uploadPicture">
@@ -257,7 +257,40 @@
               </table>
             </td>
           </tr>
-          <!-- <div class="table-item">
+          </tbody>
+        </table>
+        <table>
+          <tbody>
+            <tr>
+              <td width="82px" valign="top" align="right">
+                <div style="line-height:30px">获奖信息：</div>
+              </td>
+              <td>
+                <table>
+                  <tr v-for="(item, idx) in regInfo.rewards" :key="idx">
+                    <td><div style="line-height:30px" v-if="item['s_c'] && item['s_d'] && item['s_e']">{{item['s_c'] | dateFormatYmdW}} {{item['s_d']}} {{item['s_e']}}</div></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td width="82px" valign="top" align="right">获奖附件：</td>
+              <td>
+                <div v-if="regInfo.rewardFile && regInfo.rewardFile.length ">
+                  <div class="up_idcard" @click="showBig">
+                    <img
+                      v-if="regInfo.rewardFile[0].fieldValue"
+                      :src="imgUrl+regInfo.rewardFile[0].fieldValue"
+                      @error="errorImg($event,'image')">
+                    <div class="big_btn_l" @click="showBigImg()"></div>
+                    <i class="el-icon-zoom-in"></i>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- <div class="table-item">
             <div v-if="regInfo.rewards && regInfo.rewards.length">
               <label>获奖信息:</label>
               <div v-for="(item, idx) in regInfo.rewards" :key="idx">
@@ -276,8 +309,6 @@
               </div>
             </div>
           </div> -->
-          </tbody>
-        </table>
       </div>
       <div class="big_img" v-if="isShowBigImg">
         <div class="img_main">
@@ -375,7 +406,7 @@
         schoolList: [],
 
         // 原始
-        idEdit: true,
+        idEdit: false,
         isShowBigImg: false,
         bigFileId: '',
         bigImgUrl: '/gateway/zuul/filesystem/api/data/original/',

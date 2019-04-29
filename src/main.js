@@ -118,7 +118,7 @@ Vue.http.interceptors.push(function (request, next) {
     if (!response.ok) {
       if (data.error == 'invalid_token') {
         // 跳到登录页
-        // logout();
+        logout();
       }
     }
 

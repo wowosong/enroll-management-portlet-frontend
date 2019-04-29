@@ -101,6 +101,7 @@
         </template>
         <template v-if="stempInfo.ifReport == 1">请按学校通知时间到校报到，并填写报到信息~
           <div class="btn sub_btn">填写报到信息</div>
+          <reportInfo></reportInfo>
         </template>
       </div>
     </div>
@@ -131,7 +132,7 @@
 </template>
 <script>
   import reserve from "./reserve_comp"
-
+  import reportInfo from "./report_info"
   export default {
     data() {
       return {
@@ -165,6 +166,7 @@
     },
     components: {
       reserve,
+      reportInfo
     },
     methods: {
       serReserve(id) {
