@@ -203,6 +203,7 @@
               let dataToken = xhr.data;
               localStorage.setItem('accesstoken', JSON.stringify(dataToken));
               if (xhr.data && xhr.data.access_token) {
+                localStorage.setItem('active','center');
                 vm.$store.commit('changeLogin', true);
                 vm.$store.commit('setMenu', 'center');
                 vm.$router.push({path: '/center'})
@@ -214,12 +215,14 @@
       // 首次报名 跳转计划列表
       goPlan() {
         // 设置导航栏状态
-        this.$store.commit('setMenu', 'sign');
+        localStorage.setItem('active','plan');
+        this.$store.commit('setMenu', 'plan');
         this.$router.push({path: '/plan'});
       },
       // 查看报名 跳转个人中心
       goCenter() {
         // 设置导航栏状态
+        localStorage.setItem('active','center');
         this.$store.commit('setMenu', 'center');
         this.$router.push({path: '/center'})
       },

@@ -198,13 +198,14 @@ if (isPhone) {
 
 
 let localtoken = localStorage.getItem('accesstoken') ? JSON.parse(localStorage.getItem('accesstoken')) : '';
+let active = localStorage.getItem('active')?localStorage.getItem('active'):'home';
 // 初始化 store
 const store = new Vuex.Store({
   state: {
     isLogin: localtoken ? true : false,
     userInfo: {},
     isPhone: window.isPhone,
-    active:'home'
+    active:active
   },
   mutations: {
     changeLogin(state, value) {
