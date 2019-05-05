@@ -99,7 +99,12 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item label="现就读年级:" prop="nowGrade" id="regInfo_nowGrade">
+                <el-form-item label="现就读学校:" prop="nowSchool">
+                  <el-col :span="12">
+                  <el-autocomplete v-model="regInfo.nowSchool" :fetch-suggestions="querySearch" placeholder="请填写"/>
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="现就读年级:" prop="nowGrade">
                   <el-col :span="12" class="width_750">
                     <el-select clearable v-model="regInfo.nowGrade" placeholder="请填写">
                       <el-option
@@ -505,7 +510,6 @@
           repwd: [{required: true, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
-          nowGrade: [{required: true, message: '必填项', trigger: 'blur'}],
           stuAdds: [{required: true, message: '必填项', trigger: 'blur'}]
         },
         //  监护人信息是否展开
@@ -851,7 +855,6 @@
             if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
             if (!vm.regInfo.stuGender) return document.getElementById('regInfo_stuGender').scrollIntoView();
             if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
-            if (!vm.regInfo.nowGrade) return document.getElementById('regInfo_nowGrade').scrollIntoView();
             return false;
           }
         });
@@ -1139,6 +1142,9 @@
   .sign-wrap {
     /*height: 100%;*/
     /*overflow-y: scroll;*/
+    .el-autocomplete{
+      display: block;
+    }
     .el-input__inner {
       height: 36px;
       line-height: 36px;
