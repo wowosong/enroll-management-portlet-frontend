@@ -10,7 +10,7 @@
         <p class="tip">提示：加<span>*</span>为<span>“必须填”</span>，其他项可在现场确认时补充</p>
         <div class="sign-main" id="info">
           <p class="item-tit tit750">基本信息</p>
-          <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="170px">
+          <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="180px">
             <div class="basic-info">
               <!--pc 显示-->
               <div class="user-img">
@@ -121,27 +121,30 @@
                 </el-form-item>
                 <!--手机浏览器显示-->
                 <template v-if="isPhone">
-                  <el-form-item label="总分年级排名">
-                    <el-row>
+                  <el-form-item label="中考年级排名" prop="rank" id="regInfo_rank">
                       <el-col :span="12">
                         <el-input type="number" min="1" step="1" placeholder="请填写"
                                   v-model="regInfo.otherData['s_a']"></el-input>
                       </el-col>
-                    </el-row>
+                    <!--错误信息-->
+                    <template slot="error" slot-scope="scope">
+                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                    </template>
                   </el-form-item>
-                  <el-form-item label="年级人数:">
-                    <el-row>
+                  <el-form-item label="年级人数:" prop="rank">
                       <el-col :span="12">
                         <el-input type="number" min="1" step="1" placeholder="请填写"
                                   v-model="regInfo.otherData['s_b']"></el-input>
                       </el-col>
-                    </el-row>
+                    <!--错误信息-->
+                    <template slot="error" slot-scope="scope">
+                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                    </template>
                   </el-form-item>
                 </template>
                 <!--pc 显示-->
                 <template v-else>
-                  <el-form-item label="总分年级排名/年级人数:">
-                    <el-row>
+                  <el-form-item label="中考年级排名/年级人数:" prop="rank" id="regInfo_rank">
                       <el-col :span="6" class="m-r-12">
                         <el-input type="number" min="1" step="1" placeholder="请填写"
                                   v-model="regInfo.otherData['s_a']"></el-input>
@@ -150,7 +153,10 @@
                         <el-input type="number" min="1" step="1" placeholder="请填写"
                                   v-model="regInfo.otherData['s_b']"></el-input>
                       </el-col>
-                    </el-row>
+                    <!--错误信息-->
+                    <template slot="error" slot-scope="scope">
+                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                    </template>
                   </el-form-item>
                 </template>
               </div>
@@ -452,6 +458,15 @@
   export default {
     name: "index",
     data() {
+      let checkRank = (rule, value, callback) => {
+        if (!this.regInfo.otherData['s_a']) {
+          return callback(new Error('必填项'));
+        }else if (!this.regInfo.otherData['s_b']) {
+          return callback(new Error('必填项'));
+        }else{
+          callback();
+        }
+      };
       return {
         // 绑数据
         planInfo: {},
@@ -510,7 +525,8 @@
           repwd: [{required: true, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
-          stuAdds: [{required: true, message: '必填项', trigger: 'blur'}]
+          stuAdds: [{required: true, message: '必填项', trigger: 'blur'}],
+          rank:[{validator: checkRank,required: true, trigger: 'blur' }]
         },
         //  监护人信息是否展开
         guardianOpen: true,
@@ -855,6 +871,7 @@
             if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
             if (!vm.regInfo.stuGender) return document.getElementById('regInfo_stuGender').scrollIntoView();
             if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
+            if(!vm.regInfo.otherData['s_a'] || !vm.regInfo.otherData['s_b'])return document.getElementById('regInfo_rank').scrollIntoView();
             return false;
           }
         });
