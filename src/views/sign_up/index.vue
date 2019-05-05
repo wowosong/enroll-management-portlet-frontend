@@ -520,7 +520,7 @@
             {required: true, message: '必填项', trigger: 'blur'},
             {min: 15, max: 18, message: '请检查', trigger: 'blur'}
           ],
-          stuBirthday: [{required: true, message: '必填项', trigger: 'change'}],
+          stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
           repwd: [{required: true, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
