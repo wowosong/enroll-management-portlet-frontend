@@ -6,35 +6,53 @@
         <img src="@/imgs/sh.png" v-if="stempInfo.ifEnter != 1">
       </div>
       <div class="hint_info">
-        <template v-if="stempInfo.ifEnter == null">报名<span class="color1">成功</span>，请按学校通知时间到校现场确认，并参加面试（笔试）~</template>
-        <div v-if="stempInfo.ifPayment != 1">
-          <template v-if="stempInfo.ifEnter == 1">
-            <div>您<span class="color1">已被录取</span><span class="block">请在截止时间前完成缴费~</span></div>
-            <div class="over_hint">缴费截止时间：2019-06-10</div>
-            <span class="btn" @click="viewScore()">查看成绩</span>
 
-            <div v-if="!reserveObj">
-              <!--<el-form-item label="预约缴费时间段:" prop="dataTime" required>-->
-              <!--<el-date-picker-->
-              <!--v-model="formData.dataTime"-->
-              <!--type="date"-->
-              <!--placeholder="选择日期" style="width:180px">-->
-              <!--</el-date-picker>-->
-              <!--<el-time-picker-->
-              <!--is-range-->
-              <!--v-model="formData.timeRang"-->
-              <!--range-separator="至"-->
-              <!--start-placeholder="开始时间"-->
-              <!--end-placeholder="结束时间"-->
-              <!--placeholder="选择时间范围" style="width:360px">-->
-              <!--</el-time-picker>-->
-              <!--</el-form-item>-->
-              <span style="color: #00ff00">预约线下缴费的时间段</span>（友情提示：为了节省您宝贵的时间，可进行缴费时间预约）
-              <reserve :planId="planId" @serReserve="serReserve"/>
-              <el-button style="width: 200px; position: relative; left: 33%;" size="mini" @click="submit()"
-                         type="primary" round>提交
-              </el-button>
-            </div>
+        <!-- 完成报名 -->
+        <template v-if="stempInfo.ifEnter == null">
+          <p>您于<span class="color1">2019年07月01日</span>完成网上报名，请在<span class="color1">“报名信息”</span>页面完善信息~</p>
+          <p>并按学校通知时间到<span class="color1">校现场确认</span>，打印面谈卡~</p>
+        </template>
+
+        <!-- 完成面谈卡 -->
+        <template>
+          <p>您于<span class="color1">2019年07月01日</span>到校办理了面谈卡~</p>
+          <p>并按面谈卡的面谈时间到校<span class="color1">参加面谈</span>~</p>
+        </template>
+
+        <!-- 录取结果-->
+        <div v-if="stempInfo.ifPayment != 1">
+          <!-- 录取 -->
+          <template v-if="stempInfo.ifEnter == 1">
+            <!-- 预约缴费 -->
+            <template v-if="!reserveObj">
+              <div>您于<span class="block">2019年07月01日</span>被学校录取，并获得奖学金5000元/3年~</div>
+              <div class="over_hint">请在截止时间前完成缴费~(缴费截止时间：2019-06-10)</div>
+              <span class="btn" @click="viewScore()">查看成绩</span>
+              <div>
+                <!--<el-form-item label="预约缴费时间段:" prop="dataTime" required>-->
+                <!--<el-date-picker-->
+                <!--v-model="formData.dataTime"-->
+                <!--type="date"-->
+                <!--placeholder="选择日期" style="width:180px">-->
+                <!--</el-date-picker>-->
+                <!--<el-time-picker-->
+                <!--is-range-->
+                <!--v-model="formData.timeRang"-->
+                <!--range-separator="至"-->
+                <!--start-placeholder="开始时间"-->
+                <!--end-placeholder="结束时间"-->
+                <!--placeholder="选择时间范围" style="width:360px">-->
+                <!--</el-time-picker>-->
+                <!--</el-form-item>-->
+                <span style="color: #00ff00">预约线下缴费的时间段</span>（友情提示：为了节省您宝贵的时间，可进行缴费时间预约）
+                <reserve :planId="planId" @serReserve="serReserve"/>
+                <el-button style="width: 200px; position: relative; left: 33%;" size="mini" @click="submit()"
+                          type="primary" round>提交
+                </el-button>
+              </div>
+            </template>
+
+            <!-- 预约缴费成功 -->
             <template v-if="reserveObj">
               <div>
                 <i class="el-icon-circle-check" style="color: #00ff00">
@@ -46,14 +64,18 @@
               </div>
             </template>
           </template>
+
+          <!-- 未录取 -->
           <template v-if="stempInfo.ifEnter == 0">
             <div>您<span class="color1">未已被录取</span></div>
             <div class="over_hint">人生的机会还有很多哦...</div>
             <span class="btn" @click="viewScore()">查看成绩</span>
           </template>
         </div>
+
+        <!-- 缴费成功 -->
         <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null">
-          恭喜您，缴费成功！<span>{{stempInfo.payAmount}} 元</span>
+          <p>您于<span class="color1">2019年07月01日</span>到校完成缴费，缴费金额<span class="color1">{{stempInfo.payAmount}}元</span>~</p>
           <table class="table_list">
             <thead>
             <tr>
@@ -73,8 +95,14 @@
             </tr>
           </table>
           <p class="pay_hint">友情提示：若需要退学退费，请线下联系学校财务。</p>
-
         </template>
+
+        <!-- 逾期未缴费 -->
+        <template>
+          <p>您<span class="color1">逾期未缴费</span>，视为自动放弃录取资格~</p>
+        </template>
+
+        <!-- 分班结果 -->
         <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport == null">分班与寝室分配已公布~
           <table class="table_list">
             <thead>
@@ -99,16 +127,24 @@
             </tr>
           </table>
         </template>
-        <template v-if="stempInfo.ifReport == 1">请按学校通知时间到校报到，并填写报到信息~
-          <div class="btn sub_btn">填写报到信息</div>
-          <reportInfo></reportInfo>
-        </template>
+
+        <!-- 报到成功 -->
+        <template>您于<span class="color1">2019年07月01日</span>完成到校报到注册手续~</template>
+
+        <!-- 逾期未报到 -->
+        <template>您<span class="color1">逾期未到学校报到</span>，视为自动放弃入学资格~</template>
+
       </div>
+
+      <!-- 填写报到信息 -->
+      <template v-if="stempInfo.ifReport == 1">请按学校通知时间<span class="color1">到校报到</span>，并<span class="color1">填写报到信息</span>~
+        <reportInfo></reportInfo>
+      </template>
     </div>
     <!--成绩-->
 
-    <el-dialog title="查看成绩" :visible.sync="scoreDialogVisible" width="800px">
-      <table class="my-table">
+    <el-dialog title="查看成绩" :visible.sync="scoreDialogVisible" :width="isPhone ? '100%' : '800px'">
+      <table class="my-table" v-if="!isPhone">
         <thead>
         <tr>
           <th>面谈卡编号</th>
@@ -119,14 +155,18 @@
         <tr>
           <td>{{nowStuInfo.signCardCode}}</td>
           <td>{{nowStuInfo.stuName}}</td>
-          <td
-            v-for="stuScore in nowStuInfo.scores"><span>{{stuScore.testScore}}</span>
+          <td v-for="stuScore in nowStuInfo.scores"><span>{{stuScore.testScore}}</span>
           </td>
         </tr>
       </table>
+      <div v-if="isPhone">
+        <div>面谈卡编号:{{nowStuInfo.signCardCode}}</div>
+        <div>姓名:{{nowStuInfo.stuName}}</div>
+        <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index">{{stuScore.name}}:{{stuScore.testScore}}</div>
+      </div>
       <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="scoreDialogVisible = false">关 闭</el-button>
-            </span>
+          <el-button type="primary" @click="scoreDialogVisible = false">关 闭</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -160,6 +200,11 @@
         planId: "",
         reserveObj: null,
       }
+    },
+    computed:{
+        isPhone: function () {
+            return this.$store.state.isPhone
+        },
     },
     mounted() {
       this.query()
