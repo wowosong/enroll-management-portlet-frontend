@@ -121,7 +121,7 @@
                 </el-form-item>
                 <!--手机浏览器显示-->
                 <template v-if="isPhone">
-                  <el-form-item label="中考年级排名" prop="rank" id="regInfo_rank">
+                  <el-form-item label="初三年级排名" prop="rank" id="regInfo_rank">
                       <el-col :span="12">
                         <el-input type="number" min="1" step="1" placeholder="请填写"
                                   v-model="regInfo.otherData['s_a']"></el-input>
@@ -212,6 +212,8 @@
                         <th>获奖时间</th>
                         <th>奖项名称</th>
                         <th>奖项等级</th>
+                        <th>奖项范围</th>
+                        <th>奖项类别</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -224,15 +226,35 @@
                         </td>
                         <td>
                           <el-input
-                            placeholder="奖项名称（限20字）"
+                            placeholder="（限20字）"
                             :maxlength="20"
                             v-model="regInfo.rewards[i-1]['s_d']"/>
                         </td>
                         <td>
                           <el-input
-                            placeholder="奖项等级（限10字）"
+                            placeholder="（限10字）"
                             :maxlength="10"
                             v-model="regInfo.rewards[i-1]['s_e']"/>
+                        </td>
+                        <td>
+                          <el-select v-model="regInfo.rewards[i-1]['s_f']" clearable placeholder="请选择">
+                            <el-option
+                              v-for="item in ranges"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value">
+                            </el-option>
+                          </el-select>
+                        </td>
+                        <td>
+                          <el-select v-model="regInfo.rewards[i-1]['s_g']" clearable placeholder="请选择">
+                            <el-option
+                              v-for="item in awardTypes"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value">
+                            </el-option>
+                          </el-select>
                         </td>
                       </tr>
                       </tbody>
@@ -308,10 +330,30 @@
                     <el-date-picker placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
                   </el-form-item>
                   <el-form-item label="奖项名称:">
-                    <el-input placeholder="奖项名称（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
+                    <el-input placeholder="（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
                   </el-form-item>
                   <el-form-item label="奖项等级:">
-                    <el-input placeholder="奖项等级（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
+                    <el-input placeholder="（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
+                  </el-form-item>
+                  <el-form-item label="奖项范围:">
+                    <el-select v-model="regInfo.rewards[i-1]['s_f']" clearable placeholder="请选择">
+                      <el-option
+                        v-for="item in ranges"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="奖项类别:">
+                    <el-select v-model="regInfo.rewards[i-1]['s_g']" clearable placeholder="请选择">
+                      <el-option
+                        v-for="item in awardTypes"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
                   </el-form-item>
                   <div class="line-1" v-if="i == 3"></div>
                   <el-form-item label="获奖附件:" v-if="i == 3" class="file-wrap">
@@ -336,10 +378,6 @@
                         </span>
                       </div>
                     </el-upload>
-                    <!--<template v-if="!fileList || !fileList.length">-->
-                    <!--<img src="@/imgs/upload.png">上传证件-->
-                    <!--</template>-->
-                    <!--<img v-else :src="imgUrl+fileList[0].fileId" class="card">-->
                   </el-form-item>
                   <div class="line-1" v-if="i == 1 || i == 2"></div>
                 </template>
@@ -537,7 +575,15 @@
         // 监护人错误提示
         parentsMsg: '',
         // 登录密码框是否显示
-        showInput: false
+        showInput: false,
+        // 奖项范围数据
+        ranges:[
+          { value: '选项1', label: '奖项范围'}
+        ],
+        // 奖项类别
+        awardTypes:[
+          { value: '选项1', label: '奖项范围'}
+        ]
       }
     },
     computed: {

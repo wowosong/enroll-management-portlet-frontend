@@ -27,6 +27,9 @@ input {
   line-height: 42px;
   border-bottom: none;
 }
+#app .main .container .menu-main{
+  display: none;
+}
 
 #app .main .container header .logo-wrap .logo {
   width: 138px;
@@ -345,11 +348,11 @@ input {
 }
 
 #app .sign-wrap .sign-left .sign-main .el-form-item__label {
-  width: 100px !important;
+  width: 120px !important;
 }
 
 #app .sign-wrap .sign-left .sign-main .el-form-item__content {
-  margin-left: 100px !important;
+  margin-left: 120px !important;
 }
 
 #app .sign-wrap .sign-left .sign-main .sign-pwd .sign-pwd-tit {
