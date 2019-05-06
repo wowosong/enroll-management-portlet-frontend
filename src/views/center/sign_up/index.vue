@@ -461,6 +461,11 @@
     },
     mounted() {
       const vm = this;
+
+      if(this.$store.state.isPhone){
+        this.idEdit = true
+      }
+
       vm.getEnum();
       vm.getAddList();
       vm.getGradeList();
