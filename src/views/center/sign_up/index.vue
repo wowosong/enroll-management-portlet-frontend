@@ -105,6 +105,8 @@
                   <th>获奖时间</th>
                   <th>获奖名称</th>
                   <th>奖项等级</th>
+                  <th>奖项范围</th>
+                  <th>奖项类别</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -127,6 +129,23 @@
                       :maxlength="10"
                       v-model="regInfo.rewards[i-1]['s_e']"/>
                   </td>
+                  <td>
+                    <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
+                      <el-option
+                        v-for="item in enumMap['s_t']"
+                        :key="item.seiValue"
+                        :label="item.seiName"
+                        :value="item.seiValue"/>
+                    </el-select>
+                  <td>
+                  <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in enumMap['s_u']"
+                      :key="item.seiValue"
+                      :label="item.seiName"
+                      :value="item.seiValue"/>
+                  </el-select>
+                </td>
                 </tr>
                 </tbody>
               </table>
@@ -268,7 +287,11 @@
               <td>
                 <table>
                   <tr v-for="(item, idx) in regInfo.rewards" :key="idx">
-                    <td><div style="line-height:30px" v-if="item['s_c'] && item['s_d'] && item['s_e']">{{item['s_c'] | dateFormatYmdW}} {{item['s_d']}} {{item['s_e']}}</div></td>
+                    <td><div style="line-height:30px" v-if="item['s_c'] && item['s_d'] && item['s_e']">
+                      {{item['s_c'] | dateFormatYmdW}} {{item['s_d']}} {{item['s_e']}}
+                      {{itemMap['s_t'][item['s_t']]}} {{itemMap['s_u'][item['s_u']]}}
+                    </div>
+                    </td>
                   </tr>
                 </table>
               </td>
@@ -377,9 +400,9 @@
             {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""},
           ],
           rewards: [
-            {s_c: "", s_d: "", s_e: ""},
-            {s_c: "", s_d: "", s_e: ""},
-            {s_c: "", s_d: "", s_e: ""}
+            {s_t: "", s_u: "", s_c: "", s_d: "", s_e: ""},
+            {s_t: "", s_u: "", s_c: "", s_d: "", s_e: ""},
+            {s_t: "", s_u: "", s_c: "", s_d: "", s_e: ""}
           ],
         },
         planId: "",
@@ -404,6 +427,7 @@
         }],
         genderMap: {2: "女", 1: "男"},
         schoolList: [],
+        itemMap: {s_t: {}, s_u: {}},
 
         // 原始
         idEdit: false,
@@ -450,7 +474,9 @@
         formRewards:{
           s_c: "", 
           s_d: "", 
-          s_e: ""
+          s_e: "",
+          s_t: "",
+          s_u: ""
         },
       }
     },
@@ -588,7 +614,7 @@
           vm.rewardsLength = data.rewards.length
           for (let i = 0; i < 3; i++) {
             if (!data.rewards[i]) {
-              let obj = {s_c: "", s_d: "", s_e: ""};
+              let obj = {s_c: "", s_d: "", s_e: "",s_t: "",s_u: ""};
               data.rewards[i] = obj;
             } else {
               // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
@@ -650,13 +676,16 @@
             } else {
               codes.push(fieldCode);
             }
+            let items = {};
             for (let enumItem of list[0].data) {
               if (enumItem.code == key) {
                 enums.push(enumItem);
+                items[enumItem.seiValue] = enumItem.seiName;
               }
             }
             for (let c of codes) {
               vm.enumMap[c] = enums;
+              vm.itemMap[c] = items;
             }
           }
         });

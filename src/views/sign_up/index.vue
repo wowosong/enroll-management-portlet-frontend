@@ -241,23 +241,21 @@
                             v-model="regInfo.rewards[i-1]['s_e']"/>
                         </td>
                         <td>
-                          <el-select v-model="regInfo.rewards[i-1]['s_f']" clearable placeholder="请选择">
+                          <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
                             <el-option
-                              v-for="item in ranges"
-                              :key="item.value"
-                              :label="item.label"
-                              :value="item.value">
-                            </el-option>
+                              v-for="item in enumMap['s_t']"
+                              :key="item.seiValue"
+                              :label="item.seiName"
+                              :value="item.seiValue"/>
                           </el-select>
                         </td>
                         <td>
-                          <el-select v-model="regInfo.rewards[i-1]['s_g']" clearable placeholder="请选择">
+                          <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
                             <el-option
-                              v-for="item in awardTypes"
-                              :key="item.value"
-                              :label="item.label"
-                              :value="item.value">
-                            </el-option>
+                              v-for="item in enumMap['s_u']"
+                              :key="item.seiValue"
+                              :label="item.seiName"
+                              :value="item.seiValue"/>
                           </el-select>
                         </td>
                       </tr>
@@ -340,23 +338,21 @@
                     <el-input placeholder="（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
                   </el-form-item>
                   <el-form-item label="奖项范围:">
-                    <el-select v-model="regInfo.rewards[i-1]['s_f']" clearable placeholder="请选择">
+                    <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
                       <el-option
-                        v-for="item in ranges"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
+                        v-for="item in enumMap['s_t']"
+                        :key="item.seiValue"
+                        :label="item.seiName"
+                        :value="item.seiValue"/>
                     </el-select>
                   </el-form-item>
                   <el-form-item label="奖项类别:">
-                    <el-select v-model="regInfo.rewards[i-1]['s_g']" clearable placeholder="请选择">
+                    <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
                       <el-option
-                        v-for="item in awardTypes"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
+                        v-for="item in enumMap['s_u']"
+                        :key="item.seiValue"
+                        :label="item.seiName"
+                        :value="item.seiValue"/>
                     </el-select>
                   </el-form-item>
                   <div class="line-1" v-if="i == 3"></div>
@@ -521,9 +517,9 @@
             {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""},
           ],
           rewards: [
-            {s_c: "", s_d: "", s_e: ""},
-            {s_c: "", s_d: "", s_e: ""},
-            {s_c: "", s_d: "", s_e: ""}
+            {s_t: "", s_u: "", s_c: "", s_d: "", s_e: ""},
+            {s_t: "", s_u: "", s_c: "", s_d: "", s_e: ""},
+            {s_t: "", s_u: "", s_c: "", s_d: "", s_e: ""}
           ],
         },
         addList: [],
@@ -711,7 +707,7 @@
           let data = xhr.data;
           for (let i = 0; i < 3; i++) {
             if (!data.rewards[i]) {
-              let obj = {s_c: "", s_d: "", s_e: ""};
+              let obj = {s_c: "", s_d: "", s_e: "",s_t: "",s_u: ""};
               data.rewards[i] = obj;
             } else {
               // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
