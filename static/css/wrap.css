@@ -117,7 +117,7 @@ input {
   width: 100%;
 }
 
-#app .main .home-wrap .notice-wrap .hide {
+#app .main .home-wrap .notice-wrap .swiper-hide {
   display: none;
 }
 

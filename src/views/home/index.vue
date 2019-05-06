@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="notice-wrap clearfix">
-      <div class="swiper-container hide">
+      <div class="swiper-container swiper-hide">
         <div class="swiper-wrapper">
           <div class="swiper-slide" v-for="(i,index) in noticeSlide" :key="index"
                :style="{backgroundImage:'url('+i.imgUrl+')'}">
