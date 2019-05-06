@@ -63,9 +63,13 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item label="出生日期:" prop="stuBirthday">
+                <el-form-item label="出生日期:" prop="stuBirthday" id="regInfo_stuBirthday">
                   <el-col :span="12">
-                    <el-input v-model="regInfo.stuBirthday" placeholder="0000-00-00" readonly></el-input>
+                    <el-date-picker
+                      type="date"
+                      placeholder="0000-00-00"
+                      v-model="regInfo.stuBirthday"
+                      format="yyyy-MM-dd"></el-date-picker>
                   </el-col>
                   <!--错误信息-->
                   <template slot="error" slot-scope="scope">
@@ -267,7 +271,7 @@
                   <div class="up_idcard clearfix">
                     <template v-if="fileList && fileList.length > 0">
                       <span v-for="(item,index) in fileList" :key="index">
-                        <div class="cover"><i class="el-icon-circle-close-outline"
+                        <div class="cover"><i class="el-icon-close"
                                               @click="fileList.splice(index, 1)"></i></div>
                         <img :src="imgUrl+item.fileId" class="card">
                       </span>
@@ -361,7 +365,7 @@
                       <span v-for="(item,index) in fileList" :key="index">
                             <div class="cover"></div>
                              <img :src="imgUrl+item.fileId" class="new-img">
-                              <i class="el-icon-circle-close-outline delete-icon"
+                              <i class="el-icon-close delete-icon"
                                  @click="fileList.splice(index, 1)"></i>
                          </span>
                     </div>
@@ -554,10 +558,7 @@
         // 表单验证
         rules: {
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
-          idCard: [
-            {required: true, message: '必填项', trigger: 'blur'},
-            {min: 15, max: 18, message: '请检查', trigger: 'blur'}
-          ],
+          idCard: [{required: true, message: '必填项', trigger: 'blur'}],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
           repwd: [{required: true, message: '必填项', trigger: 'blur'}],
@@ -620,6 +621,7 @@
       saveInfo() {
         const vm = this;
         vm.saving = true;
+        vm.regInfo.stuBirthday = moment(vm.regInfo.stuBirthday).format('YYYY-MM-DD');
         vm.regInfo.planId = vm.planId;
         vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade];
         vm.regInfo.rewardFile = [];
@@ -900,12 +902,6 @@
       // 保存
       save(formName) {
         let vm = this;
-        vm.parentsMsg = '';
-        if (!vm.regInfo.parents[0].s_g || !vm.regInfo.parents[0].s_h) {
-          vm.parentsMsg = '必填项';
-          document.getElementById('regInfo_parents').scrollIntoView();
-          return false
-        }
         this.$refs[formName].validate((valid) => {
           if (valid) {
             vm.saveFlag = true;
@@ -915,9 +911,16 @@
             }
             if (!vm.regInfo.stuName) return document.getElementById('regInfo_stuName').scrollIntoView();
             if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
+            if (!vm.regInfo.stuBirthday) return document.getElementById('regInfo_stuBirthday').scrollIntoView();
             if (!vm.regInfo.stuGender) return document.getElementById('regInfo_stuGender').scrollIntoView();
             if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
             if(!vm.regInfo.otherData['s_a'] || !vm.regInfo.otherData['s_b'])return document.getElementById('regInfo_rank').scrollIntoView();
+            vm.parentsMsg = '';
+            if (!vm.regInfo.parents[0].s_g || !vm.regInfo.parents[0].s_h) {
+              vm.parentsMsg = '必填项';
+              document.getElementById('regInfo_parents').scrollIntoView();
+              return false
+            }
             return false;
           }
         });
