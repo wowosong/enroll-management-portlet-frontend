@@ -53,7 +53,7 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item label="身份证号:" prop="idCard" id="regInfo_idCard">
+                <el-form-item label="身份证/护照号:" prop="idCard" id="regInfo_idCard">
                   <el-col :span="12">
                     <el-input v-model="regInfo.idCard" placeholder="请填写" @change="idCardNumFn"
                               style="line-height: normal"></el-input>
