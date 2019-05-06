@@ -13,12 +13,12 @@ input {
 
 /*!*解决ios滑动卡顿*!*/
 /*#app .main {*/
-  /*overflow: auto;*/
-  /*-webkit-overflow-scrolling: touch;*/
+/*overflow: auto;*/
+/*-webkit-overflow-scrolling: touch;*/
 /*}*/
 
 /*#app .main .sign-wrap {*/
-  /*min-height: 101%;*/
+/*min-height: 101%;*/
 /*}*/
 
 /*!*header*!*/
@@ -26,6 +26,10 @@ input {
   height: 42px;
   line-height: 42px;
   border-bottom: none;
+}
+
+#app .main .container .menu-main {
+  display: none;
 }
 
 #app .main .container header .logo-wrap .logo {
@@ -95,7 +99,7 @@ input {
 #app .main .home-wrap .main-wrap {
   padding-top: 0;
   background: url(../images/wrap/banner.jpg) no-repeat top;
-  background-size:  100% 100%;
+  background-size: 100% 100%;
 }
 
 #app .main .home-wrap .main-wrap .sign-btn {
@@ -111,6 +115,10 @@ input {
 
 #app .main .home-wrap .notice-wrap {
   width: 100%;
+}
+
+#app .main .home-wrap .notice-wrap .swiper-hide {
+  display: none;
 }
 
 #app .main .home-wrap .notice-wrap .notice-main {
@@ -345,11 +353,11 @@ input {
 }
 
 #app .sign-wrap .sign-left .sign-main .el-form-item__label {
-  width: 100px !important;
+  width: 120px !important;
 }
 
 #app .sign-wrap .sign-left .sign-main .el-form-item__content {
-  margin-left: 100px !important;
+  margin-left: 120px !important;
 }
 
 #app .sign-wrap .sign-left .sign-main .sign-pwd .sign-pwd-tit {

@@ -1,8 +1,8 @@
 <template>
   <div class="container home-wrap">
-    <div :class="['banner',{'banner-after':isLogin}]">
-      <div :class="['main-wrap', 'clearfix',{'banner-after':isLogin,'no-p-t':isLogin}]">
-        <div :class="['sign-btn',{'isSign-btn':isLogin && !isPhone}]">
+    <div class="banner">
+      <div class="main-wrap clearfix']">
+        <div class="sign-btn">
           <a v-if="!isLogin" @click="goPlan">首次报名</a>
           <a v-if="isLogin" @click="goCenter">查看报名</a>
         </div>
@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="notice-wrap clearfix">
-      <div class="swiper-container" v-if="!isPhone">
+      <div class="swiper-container swiper-hide">
         <div class="swiper-wrapper">
           <div class="swiper-slide" v-for="(i,index) in noticeSlide" :key="index"
                :style="{backgroundImage:'url('+i.imgUrl+')'}">
@@ -260,18 +260,14 @@
       background-size: cover;
       text-align: center;
       position: absolute;
-      left: 50%;
+      left: 47%;
       bottom: 50px;
-      transform: translateX(-50%);
+      transform: translateX(-47%);
       a {
         display: block;
         color: #fff;
         font-size: 20px;
       }
-    }
-    .isSign-btn {
-      left: 318px;
-      transform: translateX(0);
     }
     .login {
       float: right;
@@ -344,15 +340,6 @@
       margin-bottom: 20px;
     }
   }
-
-  .no-p-t {
-    padding-top: 0;
-  }
-
-  .banner-after {
-    background: url(~css_img/banner1.jpg) no-repeat center;
-  }
-
   .fr {
     float: right;
   }

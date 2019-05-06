@@ -53,7 +53,7 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item label="身份证号:" prop="idCard" id="regInfo_idCard">
+                <el-form-item label="身份证/护照号:" prop="idCard" id="regInfo_idCard">
                   <el-col :span="12">
                     <el-input v-model="regInfo.idCard" placeholder="请填写" @change="idCardNumFn"
                               style="line-height: normal"></el-input>
@@ -63,9 +63,13 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item label="出生日期:" prop="stuBirthday">
+                <el-form-item label="出生日期:" prop="stuBirthday" id="regInfo_stuBirthday">
                   <el-col :span="12">
-                    <el-input v-model="regInfo.stuBirthday" placeholder="0000-00-00" readonly></el-input>
+                    <el-date-picker
+                      type="date"
+                      placeholder="0000-00-00"
+                      v-model="regInfo.stuBirthday"
+                      format="yyyy-MM-dd"></el-date-picker>
                   </el-col>
                   <!--错误信息-->
                   <template slot="error" slot-scope="scope">
@@ -121,7 +125,7 @@
                 </el-form-item>
                 <!--手机浏览器显示-->
                 <template v-if="isPhone">
-                  <el-form-item label="中考年级排名" prop="rank" id="regInfo_rank">
+                  <el-form-item label="初三年级排名" prop="rank" id="regInfo_rank">
                       <el-col :span="12">
                         <el-input type="number" min="1" step="1" placeholder="请填写"
                                   v-model="regInfo.otherData['s_a']"></el-input>
@@ -212,6 +216,8 @@
                         <th>获奖时间</th>
                         <th>奖项名称</th>
                         <th>奖项等级</th>
+                        <th>奖项范围</th>
+                        <th>奖项类别</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -224,15 +230,35 @@
                         </td>
                         <td>
                           <el-input
-                            placeholder="奖项名称（限20字）"
+                            placeholder="（限20字）"
                             :maxlength="20"
                             v-model="regInfo.rewards[i-1]['s_d']"/>
                         </td>
                         <td>
                           <el-input
-                            placeholder="奖项等级（限10字）"
+                            placeholder="（限10字）"
                             :maxlength="10"
                             v-model="regInfo.rewards[i-1]['s_e']"/>
+                        </td>
+                        <td>
+                          <el-select v-model="regInfo.rewards[i-1]['s_f']" clearable placeholder="请选择">
+                            <el-option
+                              v-for="item in ranges"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value">
+                            </el-option>
+                          </el-select>
+                        </td>
+                        <td>
+                          <el-select v-model="regInfo.rewards[i-1]['s_g']" clearable placeholder="请选择">
+                            <el-option
+                              v-for="item in awardTypes"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value">
+                            </el-option>
+                          </el-select>
                         </td>
                       </tr>
                       </tbody>
@@ -245,7 +271,7 @@
                   <div class="up_idcard clearfix">
                     <template v-if="fileList && fileList.length > 0">
                       <span v-for="(item,index) in fileList" :key="index">
-                        <div class="cover"><i class="el-icon-circle-close-outline"
+                        <div class="cover"><i class="el-icon-close"
                                               @click="fileList.splice(index, 1)"></i></div>
                         <img :src="imgUrl+item.fileId" class="card">
                       </span>
@@ -308,10 +334,30 @@
                     <el-date-picker placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
                   </el-form-item>
                   <el-form-item label="奖项名称:">
-                    <el-input placeholder="奖项名称（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
+                    <el-input placeholder="（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
                   </el-form-item>
                   <el-form-item label="奖项等级:">
-                    <el-input placeholder="奖项等级（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
+                    <el-input placeholder="（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
+                  </el-form-item>
+                  <el-form-item label="奖项范围:">
+                    <el-select v-model="regInfo.rewards[i-1]['s_f']" clearable placeholder="请选择">
+                      <el-option
+                        v-for="item in ranges"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="奖项类别:">
+                    <el-select v-model="regInfo.rewards[i-1]['s_g']" clearable placeholder="请选择">
+                      <el-option
+                        v-for="item in awardTypes"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
                   </el-form-item>
                   <div class="line-1" v-if="i == 3"></div>
                   <el-form-item label="获奖附件:" v-if="i == 3" class="file-wrap">
@@ -319,7 +365,7 @@
                       <span v-for="(item,index) in fileList" :key="index">
                             <div class="cover"></div>
                              <img :src="imgUrl+item.fileId" class="new-img">
-                              <i class="el-icon-circle-close-outline delete-icon"
+                              <i class="el-icon-close delete-icon"
                                  @click="fileList.splice(index, 1)"></i>
                          </span>
                     </div>
@@ -336,10 +382,6 @@
                         </span>
                       </div>
                     </el-upload>
-                    <!--<template v-if="!fileList || !fileList.length">-->
-                    <!--<img src="@/imgs/upload.png">上传证件-->
-                    <!--</template>-->
-                    <!--<img v-else :src="imgUrl+fileList[0].fileId" class="card">-->
                   </el-form-item>
                   <div class="line-1" v-if="i == 1 || i == 2"></div>
                 </template>
@@ -516,10 +558,7 @@
         // 表单验证
         rules: {
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
-          idCard: [
-            {required: true, message: '必填项', trigger: 'blur'},
-            {min: 15, max: 18, message: '请检查', trigger: 'blur'}
-          ],
+          idCard: [{required: true, message: '必填项', trigger: 'blur'}],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
           repwd: [{required: true, message: '必填项', trigger: 'blur'}],
@@ -537,7 +576,15 @@
         // 监护人错误提示
         parentsMsg: '',
         // 登录密码框是否显示
-        showInput: false
+        showInput: false,
+        // 奖项范围数据
+        ranges:[
+          { value: '选项1', label: '奖项范围'}
+        ],
+        // 奖项类别
+        awardTypes:[
+          { value: '选项1', label: '奖项范围'}
+        ]
       }
     },
     computed: {
@@ -574,6 +621,7 @@
       saveInfo() {
         const vm = this;
         vm.saving = true;
+        vm.regInfo.stuBirthday = moment(vm.regInfo.stuBirthday).format('YYYY-MM-DD');
         vm.regInfo.planId = vm.planId;
         vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade];
         vm.regInfo.rewardFile = [];
@@ -854,12 +902,6 @@
       // 保存
       save(formName) {
         let vm = this;
-        vm.parentsMsg = '';
-        if (!vm.regInfo.parents[0].s_g || !vm.regInfo.parents[0].s_h) {
-          vm.parentsMsg = '必填项';
-          document.getElementById('regInfo_parents').scrollIntoView();
-          return false
-        }
         this.$refs[formName].validate((valid) => {
           if (valid) {
             vm.saveFlag = true;
@@ -869,9 +911,16 @@
             }
             if (!vm.regInfo.stuName) return document.getElementById('regInfo_stuName').scrollIntoView();
             if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
+            if (!vm.regInfo.stuBirthday) return document.getElementById('regInfo_stuBirthday').scrollIntoView();
             if (!vm.regInfo.stuGender) return document.getElementById('regInfo_stuGender').scrollIntoView();
             if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
             if(!vm.regInfo.otherData['s_a'] || !vm.regInfo.otherData['s_b'])return document.getElementById('regInfo_rank').scrollIntoView();
+            vm.parentsMsg = '';
+            if (!vm.regInfo.parents[0].s_g || !vm.regInfo.parents[0].s_h) {
+              vm.parentsMsg = '必填项';
+              document.getElementById('regInfo_parents').scrollIntoView();
+              return false
+            }
             return false;
           }
         });
@@ -1105,6 +1154,7 @@
           margin: 0 8px;
           border-radius: 4px;
           letter-spacing: 5px;
+          cursor: pointer;
         }
         .save {
           background: #2f3861;
