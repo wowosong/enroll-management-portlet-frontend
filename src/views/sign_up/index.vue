@@ -1105,6 +1105,7 @@
           margin: 0 8px;
           border-radius: 4px;
           letter-spacing: 5px;
+          cursor: pointer;
         }
         .save {
           background: #2f3861;
