@@ -614,7 +614,7 @@
       getReg() {
         const vm = this;
         vm.planFlag = true;
-        http.get("/enroll/api/erRegister/" + vm.regId).then((xhr) => {
+        http.get("/gateway/enroll/api/erRegister/" + vm.regId).then((xhr) => {
           if (xhr.code) {
             return;
           }
