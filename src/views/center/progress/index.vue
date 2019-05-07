@@ -138,7 +138,7 @@
 
       <!-- 填写报到信息 -->
       <template v-if="stempInfo.ifReport == 1">请按学校通知时间<span class="color1">到校报到</span>，并<span class="color1">填写报到信息</span>~
-        <reportInfo></reportInfo>
+        <!-- <reportInfo></reportInfo> -->
       </template>
     </div>
     <!--成绩-->
