@@ -82,3 +82,19 @@
         }
     }
 </style>
+<style lang="less" scoped>
+.is_phone{
+    .notice_about{
+        span{
+            display: block;
+        }
+    }
+}
+</style>
+<style lang="less">
+    .cont{
+        img{
+            max-width: 100%;
+        }
+    }
+</style>

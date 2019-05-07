@@ -86,3 +86,16 @@
         .time{float: right;}
     }
 </style>
+<style lang="less" scoped>
+    .is_phone{
+        .plan_list {
+            .plan_tit{
+                width: auto;
+                display: block;
+                word-wrap: break-word;
+                word-break: normal;
+            }
+            .time{float: none;margin-left: 10px;font-size: 12px;color: #999;}
+        }
+    }
+</style>
