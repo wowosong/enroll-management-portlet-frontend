@@ -76,7 +76,7 @@
         <!-- 缴费成功 -->
         <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null">
           <p>您于<span class="color1">2019年07月01日</span>到校完成缴费，缴费金额<span class="color1">{{stempInfo.payAmount}}元</span>~</p>
-          <table class="table_list">
+          <table class="table_list" v-if="!isPhone">
             <thead>
             <tr>
               <th>面谈卡号</th>
@@ -94,6 +94,13 @@
               <td>{{stempInfo.payAmount}}</td>
             </tr>
           </table>
+          <div v-if="isPhone" class="pay_info">
+            <div><span>面谈卡号：</span>{{stempInfo.signCardCode}}</div>
+            <div><span>姓名：</span>{{stempInfo.stuName}}</div>
+            <div><span>身份证号：</span>{{stempInfo.idCard}}</div>
+            <div><span>奖学金(元)：</span>{{stempInfo.scholarship}}</div>
+            <div><span>应缴费(元)：</span>{{stempInfo.payAmount}}</div>
+          </div>
           <p class="pay_hint">友情提示：若需要退学退费，请线下联系学校财务。</p>
         </template>
 
@@ -104,7 +111,7 @@
 
         <!-- 分班结果 -->
         <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport == null">分班与寝室分配已公布~
-          <table class="table_list">
+          <table class="table_list" v-if="!isPhone">
             <thead>
             <tr>
               <th>面谈卡编号</th>
@@ -126,6 +133,15 @@
               <td>{{stempInfo.dormitoryName}}</td>
             </tr>
           </table>
+          <div v-if="isPhone" class="pay_info">
+            <div><span>面谈卡号：</span>{{stempInfo.signCardCode}}</div>
+            <div><span>姓名：</span>{{stempInfo.stuName}}</div>
+            <div><span>身份证号：</span>{{stempInfo.idCard}}</div>
+            <div><span>校区：</span>{{stempInfo.campusName}}</div>
+            <div><span>年级：</span>{{stempInfo.gradeName}}</div>
+            <div><span>所属班级：</span>{{stempInfo.className}}</div>
+            <div><span>所属寝室：</span>{{stempInfo.dormitoryName}}</div>
+          </div>
         </template>
 
         <!-- 报到成功 -->
@@ -159,10 +175,10 @@
           </td>
         </tr>
       </table>
-      <div v-if="isPhone">
-        <div>面谈卡编号:{{nowStuInfo.signCardCode}}</div>
-        <div>姓名:{{nowStuInfo.stuName}}</div>
-        <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index">{{stuScore.name}}:{{stuScore.testScore}}</div>
+      <div v-if="isPhone" class="phone_scores">
+        <div><span>面谈卡编号：</span>{{nowStuInfo.signCardCode}}</div>
+        <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
+        <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}</div>
       </div>
       <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="scoreDialogVisible = false">关 闭</el-button>
@@ -440,6 +456,33 @@
       margin: 0 auto;
       display: block;
       margin-top: 10px;
+    }
+    .phone_scores{
+      &>div{
+        margin: 5px 0;
+        text-align: left;
+        span{
+          display: inline-block;
+          width: 88px;
+          text-align: right;
+        }
+      }
+    }
+    .pay_info{
+      border:1px solid #eee;
+      &>div{
+        border-bottom: 1px solid #eee;
+        text-align: left;
+        padding: 5px 0;
+        span{
+          display: inline-block;
+          width: 110px;
+          text-align: right;
+        }
+      }
+      &>div:last-child{
+        border-bottom:none;
+      }
     }
   }
 </style>
