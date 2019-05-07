@@ -531,6 +531,7 @@
         operation: "",
         otherEnum: "",
         enumMap: {},
+        itemMap: {s_t: {}, s_u: {}},
         saving: false,
         saveFlag: false,
         // 性别数据
@@ -648,9 +649,18 @@
           let reward = vm.regInfo.rewards[i];
           for (let key in reward) {
             let value = reward[key];
+            let text = '';
             if (value) {
               if (key == "s_c") {
                 value = moment(value).format('YYYY-MM-DD');
+              }
+              if (key == "s_t" || key == "s_u") {
+                for (let s of vm.enumMap[key]) {
+                  if (s.seiValue == value) {
+                    text = s.seiName;
+                    break;
+                  }
+                }
               }
               vm.$set(reward, key, value + "#," + value);
             }
@@ -761,13 +771,16 @@
             } else {
               codes.push(fieldCode);
             }
+            let items = {};
             for (let enumItem of list[0].data) {
               if (enumItem.code == key) {
                 enums.push(enumItem);
+                items[enumItem.seiValue] = enumItem.seiName;
               }
             }
             for (let c of codes) {
               vm.enumMap[c] = enums;
+              vm.itemMap[c] = items;
             }
           }
         });

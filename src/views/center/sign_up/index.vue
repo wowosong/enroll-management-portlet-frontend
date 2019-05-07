@@ -555,9 +555,18 @@
           let reward = vm.regInfo.rewards[i];
           for (let key in reward) {
             let value = reward[key];
+            let text = '';
             if (value) {
               if (key == "s_c") {
                 value = moment(value).format('YYYY-MM-DD');
+              }
+              if (key == "s_t" || key == "s_u") {
+                for (let s of vm.enumMap[key]) {
+                  if (s.seiValue == value) {
+                    text = s.seiName;
+                    break;
+                  }
+                }
               }
               vm.$set(reward, key, value + "#," + value);
             }
@@ -605,7 +614,7 @@
       getReg() {
         const vm = this;
         vm.planFlag = true;
-        http.get("/gateway/enroll/api/erRegister/" + vm.regId).then((xhr) => {
+        http.get("/enroll/api/erRegister/" + vm.regId).then((xhr) => {
           if (xhr.code) {
             return;
           }
@@ -689,6 +698,7 @@
             }
           }
         });
+        console.log("vm.itemMap",vm.itemMap)
       },
       getEnum() {
         let vm = this;
