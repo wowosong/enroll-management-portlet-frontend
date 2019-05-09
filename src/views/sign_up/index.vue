@@ -390,7 +390,7 @@
               <p class="item-tit">登录密码</p>
               <div class="sign-pwd-tit">
                 请设置密码，建议使用字符的组合密码且长度超过6位
-                <p>注：若未设置密码，下次登录的密码为“身份证号后六位”</p>
+                <p>注：若未设置密码，下次登录的密码为“证件号后六位”</p>
               </div>
               <el-row>
                 <el-col :span="16" :offset="4">
@@ -408,7 +408,7 @@
                   <el-form-item label="设置密码:" prop="pwd">
                     <el-col :span="18">
                       <el-input v-show="showInput" v-if="!isPwd" type="password" v-model="regInfo.pwd"
-                                placeholder="默认密码 (身份证号后六位)">
+                                placeholder="默认密码 (证件号后六位)">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
                           <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
@@ -425,7 +425,7 @@
                   <el-form-item label="确认密码:" prop="repwd">
                     <el-col :span="18">
                       <el-input v-show="showInput" v-if="!isRePwd" type="password" v-model="regInfo.repwd"
-                                placeholder="默认密码 (身份证号后六位)">
+                                placeholder="默认密码 (证件号后六位)">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
                           <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
@@ -462,30 +462,30 @@
           <div class="point" :class="{active:current == 'pwd'}" @click="pointFn('pwd')">登录密码</div>
         </div>
       </div>
-      <el-dialog title="警告" :visible.sync="saveFlag">
-        <div>
-          确定提交报名？提交后以下信息将<span style="color: red">不支持修改</span>：
+      <el-dialog title="警告" :visible.sync="saveFlag" width="600px">
+        <div class="mb-20">
+          确定提交报名？提交后以下信息将<span class="text-red">不支持修改</span>：
         </div>
         <!--todo 分割线 -->
-        <el-row>
-          <el-col :span="10">
-            * 学生姓名：{{regInfo.stuName}}
+        <el-row class="mb-5">
+          <el-col :span="10" :offset="2">
+            <span class="modal-item">学生姓名：{{regInfo.stuName}}</span>
           </el-col>
           <el-col :span="10">
-            * 身份证号：{{regInfo.idCard}}
+           <span class="modal-item">身份证/护照号：{{regInfo.idCard}}</span>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="10">
-            * 出生日期：{{regInfo.stuBirthday | dateFormatYmd}}
+          <el-col :span="10" :offset="2">
+            <span class="modal-item">出生日期：{{regInfo.stuBirthday | dateFormatYmd}}</span>
           </el-col>
           <el-col :span="10">
-            * 性别：{{genderMap[regInfo.stuGender]}}
+            <span class="modal-item">性别：{{genderMap[regInfo.stuGender]}}</span>
           </el-col>
         </el-row>
         <div slot="footer">
           <el-button @click="saveFlag=false">取消</el-button>
-          <el-button @click="saveInfo" type="primary">保存</el-button>
+          <el-button @click="saveInfo" type="primary">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -1249,5 +1249,24 @@
       border: none !important;
       -webkit-text-fill-color: #fff !important;
     }
+  }
+  .mb-20{
+    margin-bottom: 30px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+  }
+  .mb-5{
+    margin-bottom: 20px;
+  }
+  .text-red{
+    color: red;
+  }
+  .modal-item::before{
+    content: "*";
+    color: red;
+    padding-right: 8px;
+  }
+  .el-dialog__body{
+    padding: 20px !important;
   }
 </style>

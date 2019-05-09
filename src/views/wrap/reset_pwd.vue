@@ -16,8 +16,8 @@
           <el-form-item label="登录名:" prop="logonName">
             <el-input v-model="formData.logonName" style="width:260px;" placeholder="请输入登录名"></el-input>
           </el-form-item>
-          <el-form-item label="身份证号:" prop="idCard">
-            <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入身份证号"></el-input>
+          <el-form-item label="证件号:" prop="idCard">
+            <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入证件号"></el-input>
           </el-form-item>
           <el-form-item label="姓名:" prop="userName">
             <el-input v-model="formData.userName" style="width:260px;" placeholder="请输入姓名"></el-input>
@@ -60,7 +60,7 @@
             {required: true, message: '请填写登录名', trigger: 'blur'}
           ],
           idCard: [
-            {required: true, message: '请输入身份证号', trigger: 'blur'}
+            {required: true, message: '请输入证件号', trigger: 'blur'}
           ],
           userName: [
             {required: true, message: '请输入姓名', trigger: 'blur'}

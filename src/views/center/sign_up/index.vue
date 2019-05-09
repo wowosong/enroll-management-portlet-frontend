@@ -180,7 +180,7 @@
               <div class="img_thumbnail">
                 <img v-if="!fileList || !fileList.length" src="@/imgs/404.png">
                 <img v-else :src="imgUrl+fileList[0].fileId">
-                <div class="big_btn_l" @click="showBigImg()"></div>
+                <div class="big_btn_l" @click="showBigImg(fileList[0].fileId)"></div>
               </div>
               <div class="upload_item">
                 <div class="up_idcard" @click="uploadEnclosure">
@@ -213,7 +213,7 @@
           <tbody>
           <tr>
             <td rowspan="4" width="30%">
-              <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
+              <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId" class="user_img" @error="errorImg($event,'image')">
               <img src="@/imgs/404.png" class="user_img" v-else>
             </td>
             <td width="84px" align="right">学生姓名：</td>
@@ -299,14 +299,13 @@
             <tr>
               <td width="82px" valign="top" align="right">获奖附件：</td>
               <td>
-                <div v-if="regInfo.rewardFile && regInfo.rewardFile.length ">
-                  <div class="up_idcard" @click="showBig">
+                <div v-if="regInfo.rewardFile && regInfo.rewardFile.length > 0">
+                  <div class="img_thumbnail">
                     <img
                       v-if="regInfo.rewardFile[0].fieldValue"
                       :src="imgUrl+regInfo.rewardFile[0].fieldValue"
                       @error="errorImg($event,'image')">
-                    <div class="big_btn_l" @click="showBigImg()"></div>
-                    <i class="el-icon-zoom-in"></i>
+                    <div class="big_btn_l" @click="showBigImg(regInfo.rewardFile[0].fieldValue)"></div>
                   </div>
                 </div>
               </td>
@@ -336,7 +335,7 @@
       <div class="big_img" v-if="isShowBigImg">
         <div class="img_main">
           <span class="close_btn" @click="isShowBigImg = false"></span>
-          <img :src="imgUrl+fileList[0].fileId">
+          <img :src="imgUrl+bigimgId">
         </div>
       </div>
     </template>
@@ -432,6 +431,7 @@
         // 原始
         idEdit: false,
         isShowBigImg: false,
+        bigimgId:'',
         bigFileId: '',
         bigImgUrl: '/gateway/zuul/filesystem/api/data/original/',
         imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
@@ -805,8 +805,9 @@
           }
         });
       },
-      showBigImg() {
-
+      showBigImg(id) {
+        this.bigimgId = id
+        this.isShowBigImg = !this.isShowBigImg
       },
       saveParent(){
         this.regInfo.parents[this.addParentIndex] = _.cloneDeep(this.formParent)
@@ -1025,6 +1026,7 @@
     border: 1px solid #ccc;
     line-height: 100px;
     height: 100px;
+    width: 150px;
     border-radius: 2px;
     text-align: center;
     width: 150px;
@@ -1033,13 +1035,13 @@
     vertical-align: top;
     cursor: pointer;
     margin-left: 30px;
+    img {
+      vertical-align: middle;
+      margin-right: 5px;
+      // width: 100%;
+      // height: 100%;
+    }
   }
-
-  .upload_item .up_idcard img {
-    vertical-align: middle;
-    margin-right: 5px;
-  }
-
   .upload_item .card {
     float: left;
   }
