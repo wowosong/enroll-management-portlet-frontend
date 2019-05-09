@@ -14,7 +14,10 @@
       },
       mounted() {
         let vm = this;
-        vm.datail = vm.$route.query.erEnrollmentGuide
+        vm.datail = vm.$route.query.erEnrollmentGuide;
+        if(vm.datail.guideType == 2) {
+          window.open(vm.datail.guideLink);
+        }
       },
     }
 </script>

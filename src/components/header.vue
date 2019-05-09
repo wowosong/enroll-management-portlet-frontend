@@ -147,8 +147,8 @@
         margin-right: 5px;
       }
       img {
-        width: 41px;
-        height: 38px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         margin-right: 8px;
       }

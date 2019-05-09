@@ -206,7 +206,7 @@
                 localStorage.setItem('active','center');
                 vm.$store.commit('changeLogin', true);
                 vm.$store.commit('setMenu', 'center');
-                vm.$router.push({path: '/center'})
+                vm.$router.push({path:'/center',query:{progress:true}});
               }
             }
           })
