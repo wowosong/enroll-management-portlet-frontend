@@ -54,7 +54,7 @@
                 this.tabIndex = null
                 $("#app>div").addClass("phone_center")
             }
-            let progress = this.$router.query ? this.$router.query.progress : false//是否直接显示招生进度
+            let progress = this.$route.query ? this.$route.query.progress : false//是否直接显示招生进度
             if(progress){
                 this.tabIndex = 1
             }
