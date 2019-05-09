@@ -17,8 +17,8 @@
           </div>
           <div class="login-item">
             <i class="iconfont">&#xe69e;</i>
-            <input type="password" v-model="loginForm.password" v-if="isPwd" placeholder="初始化密码为身份证号后六位"/>
-            <input type="text" v-model="loginForm.password" v-if="!isPwd" placeholder="初始化密码为身份证号后六位"/>
+            <input type="password" v-model="loginForm.password" v-if="isPwd" placeholder="初始化密码为证件号后六位"/>
+            <input type="text" v-model="loginForm.password" v-if="!isPwd" placeholder="初始化密码为证件号后六位"/>
             <i class="iconfont fr pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
             <i class="iconfont fr pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
           </div>
