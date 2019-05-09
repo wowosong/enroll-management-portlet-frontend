@@ -462,7 +462,7 @@
           <div class="point" :class="{active:current == 'pwd'}" @click="pointFn('pwd')">登录密码</div>
         </div>
       </div>
-      <el-dialog title="警告" :visible.sync="saveFlag" width="600px">
+      <el-dialog title="警告" :visible.sync="saveFlag" width="680px">
         <div class="mb-20">
           确定提交报名？提交后以下信息将<span class="text-red">不支持修改</span>：
         </div>
