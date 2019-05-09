@@ -13,7 +13,7 @@ module.exports = {
     // proxyTable: {},
     proxyTable: {
       '/platform': {
-        target: 'http://127.0.0.1:8086',
+        target: 'http://119.23.47.139',
         changeOrigin: true,
         secure: false
       },
@@ -24,7 +24,7 @@ module.exports = {
       },
       '/enroll': {
         // target:'http://microtest.hanboard.com.cn:8084',
-        target: 'http://127.0.0.1:8140',
+        target: 'http://119.23.47.139',
         changeOrigin: true,
         secure: false
       },
