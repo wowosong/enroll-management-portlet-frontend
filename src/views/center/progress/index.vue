@@ -105,7 +105,7 @@
         </template>
 
         <!-- 逾期未缴费 -->
-        <template>
+        <template v-if="reserveObj && reserveObj.ifPayment == 0 && reserveObj.paymentDeadline.getTime() + (24 * 60 * 60 * 1000) < new Date().getTime()">
           <p>您<span class="color1">逾期未缴费</span>，视为自动放弃录取资格~</p>
         </template>
 
@@ -250,6 +250,7 @@
             return;
           }
           vm.reserveObj = xhr.data.data;
+
         });
       },
       query() {

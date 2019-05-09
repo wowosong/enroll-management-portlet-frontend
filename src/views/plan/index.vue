@@ -28,6 +28,7 @@
                 planList:[],
                 filter:{
                   campusId: '',
+                  schoolId:''
                 },
             }
         },
@@ -61,6 +62,11 @@
             },
             queryCampus(data){
                 //校区查询
+              let vm = this;
+              vm.filter.schoolId = data.id;
+              http.get("/gateway/enroll/api/erEnrollPlan/portalQuery", {params: vm.filter}).then(function (xhr) {
+                vm.planList = xhr.data.data;
+              })
             }
         }
     }

@@ -48,7 +48,7 @@
         <div class="notice-title">通知公告<a @click="moreNotice()"><span>更多</span> <i class="iconfont">&#xe6e9;</i></a></div>
         <ul class="notice-list" v-if="noticeList && noticeList.length > 0">
           <li v-for="(item,index) in noticeList" :key="index" v-if="index<5" >
-            <p>{{item.noticeTitle}}</p>
+            <p @click="showNotice(item)">{{item.noticeTitle}}</p>
             <span>{{item.createTime | dateFormatYmd}}</span>
           </li>
         </ul>
@@ -142,6 +142,9 @@
       },
       moreNotice() {
         this.$router.push({path: '/notice'});
+      },
+      showNotice(data) {
+        this.$router.push({path:'/notice/detail',query:{datail:data}});
       },
       // 验证登陆信息是否可以提交
       vaildFn() {

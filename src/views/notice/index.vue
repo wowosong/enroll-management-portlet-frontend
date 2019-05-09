@@ -11,7 +11,7 @@
                 <div class="no_data" v-if="!noticeList || noticeList.length == 0"></div>
             </div>
         </div>
-        <campus></campus>
+        <campus @query="queryCampus"></campus>
     </div>
 </template>
 <script>
@@ -25,6 +25,7 @@
               noticeList:[],
               filter:{
                 campusId: '',
+                schoolId: '',
               },
             }
         },
@@ -38,7 +39,15 @@
         methods:{
             noticeDetail(item){
               this.$router.push({path:'/notice/detail',query:{datail:item}});
-            }
+            },
+          queryCampus(data){
+            //校区查询
+            let vm = this;
+            vm.filter.schoolId = data.id;
+            http.get("/gateway/enroll/api/erNotice/portalQuery", {params: vm.filter}).then(function (xhr) {
+              vm.noticeList = xhr.data.data;
+            })
+          }
         }
     }
 </script>

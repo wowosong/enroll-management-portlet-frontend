@@ -3,7 +3,7 @@
         <div class="campus_tit" @click="isShowMoreFn">全部校区<img src="../imgs/warp/down.png"></div>
         <div class="campus_layer" v-if="isShowMore">
           <div class="layer_main">
-            <div v-for="(item,index) in campusList" :key="index" class="campus_list" @click="camputedFn(item)">{{item.campusName}}</div>
+            <div v-for="(item,index) in campusList" :key="index" class="campus_list" @click="camputedFn(item)">{{item.cnName}}</div>
             <div class="no_data" v-if="!campusList || campusList.length == 0"></div>
           </div>
           <div class="layer_bg" @click="isShowMore = !isShowMore"></div>
@@ -36,8 +36,8 @@ export default {
     //获取校区
     queryCampus() {
       let vm = this;
-      http.get("/gateway/campus/list").then(function (xhr) {
-        vm.campusList = xhr.data.data
+      http.get("/gateway/platform/api/school/all").then(function (xhr) {
+        vm.campusList = xhr.data
       })
     },
     camputedFn(item){
