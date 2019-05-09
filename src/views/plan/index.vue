@@ -6,7 +6,7 @@
             <div class="plan_cont">
                 <div class="plan_list" v-for="(item,index) in planList" :key="index">
                     <i class="ico"></i>
-                    <div class="plan_tit text_one">{{item.campusName}} {{item.planName}}</div>
+                    <div class="plan_tit text_one">[{{item.campusName}}] {{item.planName}}</div>
                     <div class="btn_c">
                         <span class="btn color2" @click="enrollmentGuide(item)">招生简章</span>
                         <span class="btn color1" :class="{dis_click:item.publishStatus != 1}" @click="signUp(item)">立即报名</span>

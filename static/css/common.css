@@ -1,4 +1,8 @@
 
+*{
+  word-wrap: break-word;
+    word-break: normal;
+}
 body{
   color: #333;
   background: #eff3f5;
