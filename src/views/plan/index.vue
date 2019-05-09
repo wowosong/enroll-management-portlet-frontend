@@ -58,7 +58,11 @@
                     });
                     return;
                 }
+              if(item.erEnrollmentGuide.guideType == 2) {
+                window.open(item.erEnrollmentGuide.guideLink);
+              } else {
                 this.$router.push({path:'/plan/detail',query:{erEnrollmentGuide:item.erEnrollmentGuide}});
+              }
             },
             queryCampus(data){
                 //校区查询
