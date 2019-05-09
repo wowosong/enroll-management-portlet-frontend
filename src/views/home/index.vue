@@ -146,7 +146,7 @@
       // 验证登陆信息是否可以提交
       vaildFn() {
         let vm = this;
-        let mobileRes = /^1[34578]\d{9}$/;
+        let mobileRes = /^\d{8,15}?$/;
         vm.userError = '';
         vm.pwdError = '';
         if (!vm.loginForm.username) {
