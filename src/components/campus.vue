@@ -1,9 +1,9 @@
 <template>
     <div class="comm_item float_right campus_main">
-        <div class="campus_tit" @click="isShowMoreFn">全部校区<img src="../imgs/warp/down.png"></div>
+        <div class="campus_tit" @click="isShowMoreFn">全部校区eeeee<img src="../imgs/warp/down.png"></div>
         <div class="campus_layer" v-if="isShowMore">
-          <div class="layer_main">
-            <div v-for="(item,index) in campusList" :key="index" class="campus_list" @click="camputedFn(item)">{{item.cnName}}</div>
+          <div class="layer_main">-ssssssss{{nowCampsId}}
+            <div v-for="(item,index) in campusList" :key="index" class="campus_list" :class="{active:nowCampsId == item.id}" @click="camputedFn(item)">{{item.cnName}}</div>
             <div class="no_data" v-if="!campusList || campusList.length == 0"></div>
           </div>
           <div class="layer_bg" @click="isShowMore = !isShowMore"></div>
@@ -15,7 +15,8 @@ export default {
   data() {
     return {
       campusList: [],
-      isShowMore:true
+      isShowMore:true,
+      nowCampsId:''
     }
   },
   computed:{
@@ -41,9 +42,12 @@ export default {
       })
     },
     camputedFn(item){
-      this.$emit("query",item)
+      this.nowCampsId = item.id
+      this.$emit("query",item.id)
     },
     isShowMoreFn(){
+      this.nowCampsId = ''
+      this.$emit("query",'')
       if(this.isPhone){
         this.isShowMore = !this.isShowMore
       }
@@ -57,7 +61,8 @@ export default {
         color: #666;
         cursor: pointer;
     }
-    .campus_list:hover{
+    .campus_list:hover,
+    .active{
         color: #aa2f33;
     }
     .campus_tit{
@@ -67,6 +72,7 @@ export default {
         font-weight: bold;
         margin-bottom: 15px;
         line-height: 16px;
+        cursor: pointer;
         img{
           display: none;
         }
