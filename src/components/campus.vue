@@ -1,8 +1,8 @@
 <template>
     <div class="comm_item float_right campus_main">
-        <div class="campus_tit" @click="isShowMoreFn">全部校区eeeee<img src="../imgs/warp/down.png"></div>
+        <div class="campus_tit" @click="isShowMoreFn">全部校区<img src="../imgs/warp/down.png"></div>
         <div class="campus_layer" v-if="isShowMore">
-          <div class="layer_main">-ssssssss{{nowCampsId}}
+          <div class="layer_main">
             <div v-for="(item,index) in campusList" :key="index" class="campus_list" :class="{active:nowCampsId == item.id}" @click="camputedFn(item)">{{item.cnName}}</div>
             <div class="no_data" v-if="!campusList || campusList.length == 0"></div>
           </div>
