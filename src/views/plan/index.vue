@@ -33,12 +33,15 @@
         },
         mounted() {
             //初始化数据
-            let vm = this;
-            http.get("/gateway/enroll/api/erEnrollPlan/portalQuery", {params: vm.filter}).then(function (xhr) {
-              vm.planList = xhr.data.data;
-            })
+            this.query()
         },
         methods: {
+            query(){
+                let vm = this;
+                http.get("/gateway/enroll/api/erEnrollPlan/portalQuery", {params: vm.filter}).then(function (xhr) {
+                    vm.planList = xhr.data.data;
+                })
+            },
             signUp(item) {
                 this.$router.push({path:'/fillInstructions',query:item});
             },
@@ -61,6 +64,8 @@
             },
             queryCampus(data){
                 //校区查询
+                this.filter.campusId = data
+                this.query()
             }
         }
     }
