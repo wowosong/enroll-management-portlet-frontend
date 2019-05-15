@@ -187,7 +187,7 @@
                         <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
                       </td>
                       <td>
-                        <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
+                        <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']" @blur="setLoginName"/>
                       </td>
                       <td>
                         <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
@@ -303,7 +303,7 @@
                     <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_g']"/>
                   </el-form-item>
                   <el-form-item label="手机:">
-                    <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
+                    <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']" @blur="setLoginName"/>
                   </el-form-item>
                   <el-form-item label="学历:">
                     <el-input :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
@@ -462,6 +462,7 @@
           <div class="point" :class="{active:current == 'pwd'}" @click="pointFn('pwd')">登录密码</div>
         </div>
       </div>
+      <!--提交报名信息提示-->
       <el-dialog title="警告" :visible.sync="saveFlag" width="680px">
         <div class="mb-20">
           确定提交报名？提交后以下信息将<span class="text-red">不支持修改</span>：
@@ -557,7 +558,7 @@
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
           idCard: [{required: true, message: '必填项', trigger: 'blur'}],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
-          phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
+          phoneNum: [{required: true, message: '必填项', trigger: 'change'}],
           repwd: [{required: true, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
@@ -907,6 +908,10 @@
           fileName: file.data.filename,
           fileId: _.trim(file.data.id),
         });
+      },
+      //根据第一监护人手机号填充登录名
+      setLoginName(){
+        this.regInfo.phoneNum = this.regInfo.parents[0]['s_h'];
       },
       // 保存
       save(formName) {
