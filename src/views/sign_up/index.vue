@@ -130,7 +130,7 @@
                 </el-form-item>
                 <!--手机浏览器显示-->
                 <template v-if="isPhone">
-                  <el-form-item label="最近一次年级统考排名" prop="rank">
+                  <el-form-item label="最近一次年级排名" prop="rank" id="regInfo_rank">
                     <el-col :span="12">
                       <el-input type="number" min="1" step="1" placeholder="请填写"
                                 v-model="regInfo.otherData['s_a']"></el-input>
@@ -153,7 +153,7 @@
                 </template>
                 <!--pc 显示-->
                 <template v-else>
-                  <el-form-item label="最近一次年级统考排名/年级人数:" prop="rank">
+                  <el-form-item label="最近一次年级排名/年级人数:" prop="rank" id="regInfo_rank">
                     <el-col :span="6" class="m-r-12">
                       <el-input type="number" min="1" step="1" placeholder="请填写"
                                 v-model="regInfo.otherData['s_a']"></el-input>
@@ -571,8 +571,8 @@
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
           stuAdds: [{required: true, message: '必填项', trigger: 'blur'}],
           nowSchool: [{required: true, message: '必填项', trigger: 'blur'}],
-          nowGrade: [{required: true, message: '必填项', trigger: 'blur'}]
-          // rank:[{validator: checkRank,required: true, trigger: 'blur' }]
+          nowGrade: [{required: true, message: '必填项', trigger: 'blur'}],
+          rank:[{validator: checkRank,required: true, trigger: 'blur' }]
         },
         //  监护人信息是否展开
         guardianOpen: true,
@@ -944,6 +944,7 @@
             if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
             if (!vm.regInfo.nowSchool) return document.getElementById('regInfo_nowSchool').scrollIntoView();
             if (!vm.regInfo.nowGrade) return document.getElementById('regInfo_nowGrade').scrollIntoView();
+            if (!vm.regInfo.otherData['s_a'] || vm.regInfo.otherData['s_b']) return document.getElementById('regInfo_rank').scrollIntoView();
             vm.parentsMsg = '';
             if (!vm.regInfo.parents[0].s_g || !vm.regInfo.parents[0].s_h) {
               vm.parentsMsg = '必填项';
