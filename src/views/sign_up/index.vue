@@ -403,7 +403,8 @@
                 <el-col :span="16" :offset="4">
                   <el-form-item label="登录名:" prop="phoneNum">
                     <el-col :span="18">
-                      <el-input v-show="showInput" disabled v-model="regInfo.phoneNum" placeholder="请输入第一监护人手机号"></el-input>
+                      <el-input v-show="showInput" disabled v-model="regInfo.phoneNum"
+                                placeholder="请输入第一监护人手机号"></el-input>
                       <!--解决google自动填充输入框-->
                       <el-input class="hide"></el-input>
                     </el-col>
@@ -566,13 +567,13 @@
           idCard: [{required: true, message: '必填项', trigger: 'blur'}],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'change'}],
-          repwd: [{required: true, message: '必填项', trigger: 'blur'}],
+          // repwd: [{required: true, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
           stuAdds: [{required: true, message: '必填项', trigger: 'blur'}],
           nowSchool: [{required: true, message: '必填项', trigger: 'blur'}],
           nowGrade: [{required: true, message: '必填项', trigger: 'blur'}],
-          rank:[{validator: checkRank,required: true, trigger: 'blur' }]
+          rank: [{validator: checkRank, required: true, trigger: 'blur'}]
         },
         //  监护人信息是否展开
         guardianOpen: true,
@@ -713,8 +714,46 @@
           }
           vm.regId = xhr.data.data;
           vm.saveFlag = false;
-          vm.$router.push({path: '/'})
+          vm.login();
+          vm.$router.push({path: '/center'})
           // todo 跳转到个人中心页面 or 登录页面
+        })
+      },
+      // 自动登陆
+      login() {
+        let vm = this;
+
+        let loginForm = {
+          grant_type: 'password',
+          username:vm.regInfo.phoneNum,
+          password:vm.regInfo.pwd?vm.regInfo.pwd : vm.regInfo.idCard.substring(vm.regInfo.idCard.length-6)
+        };
+        http.post('/gateway/auth/oauth/token',loginForm, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic YnJvd3Nlcjo='
+          },
+          emulateJSON: true,
+          transformRequest: [function (data) {
+            let ret = '';
+            Object.keys(data).map(key => {
+              ret += encodeURIComponent(key) + '=' + encodeURIComponent(data[key]) + '&'
+            });
+            return ret
+          }]
+        }).then(function (xhr) {
+          if (xhr.data.code == '20001') {
+            // vm.userError = xhr.data.message;
+          } else {
+            let dataToken = xhr.data;
+            localStorage.setItem('accesstoken', JSON.stringify(dataToken));
+            if (xhr.data && xhr.data.access_token) {
+              localStorage.setItem('active', 'center');
+              vm.$store.commit('changeLogin', true);
+              vm.$store.commit('setMenu', 'center');
+              vm.$router.push({path: '/center'});
+            }
+          }
         })
       },
       getReg() {
@@ -930,8 +969,8 @@
           if (valid) {
             vm.saveFlag = true;
           } else {
-            if (!vm.regInfo.photoId){
-              if(!vm.isLogin){
+            if (!vm.regInfo.photoId) {
+              if (!vm.isLogin) {
                 vm.userImgErr = true;
               }
               document.getElementById('regInfo_photoId').scrollIntoView();
