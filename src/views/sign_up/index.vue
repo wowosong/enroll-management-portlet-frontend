@@ -403,7 +403,7 @@
                 <el-col :span="16" :offset="4">
                   <el-form-item label="登录名:" prop="phoneNum">
                     <el-col :span="18">
-                      <el-input v-show="showInput" v-model="regInfo.phoneNum" placeholder="请输入第一监护人手机号"></el-input>
+                      <el-input v-show="showInput" disabled v-model="regInfo.phoneNum" placeholder="请输入第一监护人手机号"></el-input>
                       <!--解决google自动填充输入框-->
                       <el-input class="hide"></el-input>
                     </el-col>
