@@ -699,6 +699,8 @@
         http.post("/gateway/enroll/api/erRegister", vm.regInfo).then((xhr) => {
           vm.saving = false;
           if (xhr.data.code) {
+            //处理数据
+            vm.clData();
             return;
           }
           vm.regId = xhr.data.data;
@@ -706,6 +708,18 @@
           vm.$router.push({path: '/'})
           // todo 跳转到个人中心页面 or 登录页面
         })
+      },
+      clData() {
+        let vm = this;
+        for (let i = 0; i < 2; i++) {
+          let parent = vm.regInfo.parents[i];
+          for (let key in parent) {
+            let value = parent[key];
+            if (value) {
+              vm.$set(parent, key, value.split("#,")[0]);
+            }
+          }
+        }
       },
       getReg() {
         const vm = this;
