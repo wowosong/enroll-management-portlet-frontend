@@ -38,6 +38,11 @@
         let vm = this;
         vm.datail = vm.$route.query.datail
       },
+      methods: {
+        down(file){
+          window.filesystemSingleDownload([{id:file.fileId},{filename:file.fileName}])
+        },
+      }
     }
 </script>
 
