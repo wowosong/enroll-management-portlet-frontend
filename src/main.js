@@ -26,7 +26,7 @@ import router_list from './router'
 import './comm_filter'
 import './components/fileUpload/index.js'
 
-import default_avatar from '@/imgs/avatar.png'
+import default_avatar from '@/imgs/avatar1.png'
 import default_img from '@/imgs/default_image_small.png'
 
 Vue.prototype.errorImg = function (e, type) {
