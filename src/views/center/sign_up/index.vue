@@ -29,17 +29,17 @@
             <el-form-item label="性别:" required style="margin-bottom:5px">
               {{genderMap[regInfo.stuGender]}}
             </el-form-item>
-            <el-form-item label="户籍所在地:">
+            <el-form-item label="户籍所在地:" prop="stuAdds">
               <el-cascader
                 style="width: 100%"
                 filterable
                 :options="addList"
                 v-model="regInfo.stuAdds"/>
             </el-form-item>
-            <el-form-item label="现就读学校:">
+            <el-form-item label="现就读学校:" prop="nowSchool">
               <el-autocomplete v-model="regInfo.nowSchool" :fetch-suggestions="querySearch" placeholder="请输入内容"/>
             </el-form-item>
-            <el-form-item label="现就读年级:">
+            <el-form-item label="现就读年级:" prop="nowGrade">
               <el-select clearable v-model="regInfo.nowGrade">
                 <el-option
                   v-for="item in gradeList"
@@ -48,7 +48,7 @@
                   :value="item.id"/>
               </el-select>
             </el-form-item>
-            <el-form-item label="总分年级排名/年级人数:" class="long_label">
+            <el-form-item label="总分年级排名/年级人数:" class="long_label other_data_s_a" prop="otherData.s_a">
               <el-input
                 type="number"
                 min="1"
@@ -56,6 +56,8 @@
                 v-model="regInfo.otherData['s_a']"
                 placeholder="年级排名"
                 style="width:98px"/>
+            </el-form-item>
+            <el-form-item class="long_label other_data_s_b" prop="otherData.s_b" label-width="0">
               <el-input
                 type="number"
                 min="1"
@@ -66,7 +68,7 @@
             </el-form-item>
           </div>
           <template v-if="!isPhone">
-            <el-form-item label="监护人:" label-width="82px">
+            <el-form-item label="监护人:" label-width="82px" prop="parentsV">
               <table class="table_list">
                 <thead>
                 <tr>
@@ -388,6 +390,21 @@
 
   export default {
     data() {
+      var parentsVFn = (rule, value, callback) => {
+        let parents = this.regInfo.parents
+        let isFlag = false
+          for(let i=0;i<parents.length;i++){
+            if(parents[i].s_g && parents[i].s_g != ''){
+              isFlag = true
+              break
+            }
+          }
+          if(!isFlag){
+            callback(new Error('必填'));
+          }else{
+            callback();
+          }
+      }
       return {
         // 绑数据
         userInfo: window.userInfo,
@@ -478,6 +495,26 @@
           s_t: "",
           s_u: ""
         },
+        rules: {
+          stuAdds:[
+            { required: true, message: "必填", trigger: "blur" }
+          ],
+          nowSchool:[
+            { required: true, message: "必填", trigger: "blur" }
+          ],
+          nowGrade:[
+            { required: true, message: "必填", trigger: "blur" }
+          ],
+          'otherData.s_a':[
+            { required: true, message: "必填", trigger: "blur" }
+          ],
+          'otherData.s_b':[
+            { required: true, message: "必填", trigger: "blur" }
+          ],
+          'parentsV':[
+            { required: true,validator: parentsVFn, trigger: 'blur' }
+          ]
+        }
       }
     },
     computed:{
@@ -524,91 +561,95 @@
       },
       saveInfo() {
         const vm = this;
-        vm.saving = true;
-        vm.regInfo.planId = vm.planId;
-        vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade]
-        vm.regInfo.rewardFile = [];
-        if (vm.fileList && vm.fileList.length) {
-          for (let file of vm.fileList) {
-            vm.regInfo.rewardFile.push({fieldText: file.fileName, fieldValue: file.fileId});
-          }
-        }
-        vm.regInfo.localStr = "";
-        let al = vm.addList;
-        if (vm.regInfo.stuAdds && vm.regInfo.stuAdds.length) {
-          vm.regInfo.stuAdd = vm.regInfo.stuAdds.join(",");
-          for (let key of vm.regInfo.stuAdds) {
-            let obj = {};
-            for (let addObj of al) {
-              if (addObj.value == key) {
-                obj = addObj;
-                break;
+        vm.$refs["ruleForm"].validate((valid) => {
+          if(valid){
+            vm.saving = true;
+            vm.regInfo.planId = vm.planId;
+            vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade]
+            vm.regInfo.rewardFile = [];
+            if (vm.fileList && vm.fileList.length) {
+              for (let file of vm.fileList) {
+                vm.regInfo.rewardFile.push({fieldText: file.fileName, fieldValue: file.fileId});
               }
             }
-            vm.regInfo.localStr += obj.label;
-            if (obj.children && obj.children.length) {
-              al = obj.children;
-            }
-          }
-        }
-        for (let i = 0; i < 3; i++) {
-          let reward = vm.regInfo.rewards[i];
-          for (let key in reward) {
-            let value = reward[key];
-            let text = '';
-            if (value) {
-              if (key == "s_c") {
-                value = moment(value).format('YYYY-MM-DD');
-              }
-              if (key == "s_t" || key == "s_u") {
-                for (let s of vm.enumMap[key]) {
-                  if (s.seiValue == value) {
-                    text = s.seiName;
+            vm.regInfo.localStr = "";
+            let al = vm.addList;
+            if (vm.regInfo.stuAdds && vm.regInfo.stuAdds.length) {
+              vm.regInfo.stuAdd = vm.regInfo.stuAdds.join(",");
+              for (let key of vm.regInfo.stuAdds) {
+                let obj = {};
+                for (let addObj of al) {
+                  if (addObj.value == key) {
+                    obj = addObj;
                     break;
                   }
                 }
-              }
-              vm.$set(reward, key, value + "#," + value);
-            }
-          }
-          if (i < 2) {
-            let parent = vm.regInfo.parents[i];
-            for (let key in parent) {
-              let value = parent[key];
-              if (value) {
-                vm.$set(parent, key, value + "#," + value);
+                vm.regInfo.localStr += obj.label;
+                if (obj.children && obj.children.length) {
+                  al = obj.children;
+                }
               }
             }
-          }
-        }
-        if (vm.regInfo.otherData) {
-          for (let key in vm.regInfo.otherData) {
-            let value = vm.regInfo.otherData[key];
-            if (value) {
-              if (vm.enumMap[key]) {
-                let items = vm.enumMap[key];
-                let text = "";
-                for (let item of items) {
-                  if (item.seiValue == value) {
-                    text = item.seiName;
-                    break;
+            for (let i = 0; i < 3; i++) {
+              let reward = vm.regInfo.rewards[i];
+              for (let key in reward) {
+                let value = reward[key];
+                let text = '';
+                if (value) {
+                  if (key == "s_c") {
+                    value = moment(value).format('YYYY-MM-DD');
+                  }
+                  if (key == "s_t" || key == "s_u") {
+                    for (let s of vm.enumMap[key]) {
+                      if (s.seiValue == value) {
+                        text = s.seiName;
+                        break;
+                      }
+                    }
+                  }
+                  vm.$set(reward, key, value + "#," + value);
+                }
+              }
+              if (i < 2) {
+                let parent = vm.regInfo.parents[i];
+                for (let key in parent) {
+                  let value = parent[key];
+                  if (value) {
+                    vm.$set(parent, key, value + "#," + value);
                   }
                 }
-                vm.$set(vm.regInfo.otherData, key, value + "#," + text);
-              } else {
-                vm.$set(vm.regInfo.otherData, key, value + "#," + value);
               }
             }
-          }
-        }
-        // vm.regInfo.creatorId = "00001111000011110000111100001111"
-        http.put("/gateway/enroll/api/erRegister", vm.regInfo).then((xhr) => {
-          vm.saving = false;
-          if (xhr.data.code) {
-            return;
-          }
-          vm.getReg();
-          vm.idEdit = false;
+            if (vm.regInfo.otherData) {
+              for (let key in vm.regInfo.otherData) {
+                let value = vm.regInfo.otherData[key];
+                if (value) {
+                  if (vm.enumMap[key]) {
+                    let items = vm.enumMap[key];
+                    let text = "";
+                    for (let item of items) {
+                      if (item.seiValue == value) {
+                        text = item.seiName;
+                        break;
+                      }
+                    }
+                    vm.$set(vm.regInfo.otherData, key, value + "#," + text);
+                  } else {
+                    vm.$set(vm.regInfo.otherData, key, value + "#," + value);
+                  }
+                }
+              }
+            }
+            // vm.regInfo.creatorId = "00001111000011110000111100001111"
+            http.put("/gateway/enroll/api/erRegister", vm.regInfo).then((xhr) => {
+              vm.saving = false;
+              if (xhr.data.code) {
+                return;
+              }
+              vm.getReg();
+              vm.idEdit = false;
+            })
+            }
         })
       },
       getReg() {
@@ -1230,6 +1271,9 @@
           }
         }
       }
+    }
+    .other_data_s_a,.other_data_s_b{
+      display: inline-block;
     }
 </style>
 <style lang="less">

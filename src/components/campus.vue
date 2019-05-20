@@ -1,6 +1,6 @@
 <template>
     <div class="comm_item float_right campus_main">
-        <div class="campus_tit" @click="isShowMoreFn">全部校区<img src="../imgs/warp/down.png"></div>
+        <div class="campus_tit" @click="isShowMoreFn" :class="{allInfo:nowCampsId == ''}">全部校区<img src="../imgs/warp/down.png"></div>
         <div class="campus_layer" v-if="isShowMore">
           <div class="layer_main">
             <div v-for="(item,index) in campusList" :key="index" class="campus_list" :class="{active:nowCampsId == item.id}" @click="camputedFn(item)">{{item.cnName}}</div>
@@ -76,6 +76,9 @@ export default {
         img{
           display: none;
         }
+    }
+    .allInfo{
+      color: #aa2f33;
     }
     //warp版本
     .is_phone{
