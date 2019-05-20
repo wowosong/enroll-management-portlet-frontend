@@ -178,7 +178,7 @@
           </template>
           <el-form-item label="获奖附件:" label-width="82px">
             <div class="img_box">
-              <div class="img_thumbnail">
+              <div class="img_thumbnail" v-if="fileList && fileList.length>0">
                 <img @error="errorImg($event,'image')" :src="imgUrl+fileList[0].fileId">
                 <div class="big_btn_l" @click="showBigImg(fileList[0].fileId)"></div>
               </div>
