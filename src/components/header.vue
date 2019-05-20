@@ -18,7 +18,8 @@
           <template v-else>
             <a>
               <label @click="goCenter">
-                <img :src="avatar_url+userInfo.accountAvatar" @error="errorImg($event,'avatar')">
+                <img v-if="avatar_url" :src="avatar_url+userInfo.accountAvatar">
+                <img v-else src="~css_img/imgs/avatar.png">
                 <span class="user-name">{{userInfo.userName}}</span>
               </label>
               <span class="logout" @click="logout">退出</span>
