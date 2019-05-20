@@ -19,7 +19,7 @@
             <a>
               <label @click="goCenter">
                 <img v-if="avatar_url" :src="avatar_url+userInfo.accountAvatar">
-                <img v-else src="~css_img/imgs/avatar.png">
+                <img v-else src="@/imgs/avatar.png">
                 <span class="user-name">{{userInfo.userName}}</span>
               </label>
               <span class="logout" @click="logout">退出</span>
