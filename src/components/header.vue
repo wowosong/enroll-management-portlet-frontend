@@ -18,7 +18,7 @@
           <template v-else>
             <a>
               <label @click="goCenter">
-                <img v-if="avatar_url" :src="avatar_url+userInfo.accountAvatar">
+                <img v-if="userInfo.accountAvatar" :src="avatar_url+userInfo.accountAvatar">
                 <img v-else src="@/imgs/avatar.png">
                 <span class="user-name">{{userInfo.userName}}</span>
               </label>
