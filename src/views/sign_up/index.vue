@@ -2,7 +2,7 @@
   <div class="container sign-wrap">
     <div class="comm_main" v-loading="saving">
       <div class="sign-left">
-        <h6 class="sign-tit">[{{planInfo.campusName}}]{{planInfo.yearName}}{{planInfo.planName}}</h6>
+        <h6 class="sign-tit">[{{planInfo.campusName}}] {{planInfo.planName}}</h6>
         <div class="sign-subttit">
           报名校区：<span>{{planInfo.campusName}}</span> 报名年级：<span>{{planInfo.gradeName}}</span>
         </div>
@@ -13,12 +13,13 @@
           <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="180px">
             <div class="basic-info">
               <!--pc 显示-->
-              <div class="user-img">
+              <div class="user-img" id="regInfo_photoId" v-if="!isPhone">
                 <div class="user_photo">
                   <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
                 </div>
-                <div class='img_null' v-if="userImgErr">证件照不能为空</div>
+                <div class='img_null' v-if="userImgErr"><i class="el-icon-circle-close"></i>必填项</div>
                 <div class="up_suerphoto" @click="uploadPicture">
+                  <span style="color: #F56C6C">*</span>
                   <img src="@/imgs/upload.png">上传证件照
                 </div>
                 <p>本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
@@ -103,12 +104,16 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item label="现就读学校:" prop="nowSchool">
-                  <el-col :span="12">
-                  <el-autocomplete v-model="regInfo.nowSchool" :fetch-suggestions="querySearch" placeholder="请填写"/>
+                <el-form-item label="现就读学校:" prop="nowSchool" id="regInfo_nowSchool">
+                  <el-col :span="12" class="width_750">
+                    <el-autocomplete v-model="regInfo.nowSchool" :fetch-suggestions="querySearch" placeholder="请填写"/>
                   </el-col>
+                  <!--错误信息-->
+                  <template slot="error" slot-scope="scope">
+                    <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
+                  </template>
                 </el-form-item>
-                <el-form-item label="现就读年级:" prop="nowGrade">
+                <el-form-item label="现就读年级:" prop="nowGrade" id="regInfo_nowGrade">
                   <el-col :span="12" class="width_750">
                     <el-select clearable v-model="regInfo.nowGrade" placeholder="请填写">
                       <el-option
@@ -125,21 +130,21 @@
                 </el-form-item>
                 <!--手机浏览器显示-->
                 <template v-if="isPhone">
-                  <el-form-item label="初三年级排名" prop="rank" id="regInfo_rank">
-                      <el-col :span="12">
-                        <el-input type="number" min="1" step="1" placeholder="请填写"
-                                  v-model="regInfo.otherData['s_a']"></el-input>
-                      </el-col>
+                  <el-form-item label="最近一次年级排名" prop="rank" id="regInfo_rank">
+                    <el-col :span="12">
+                      <el-input type="number" min="1" step="1" placeholder="请填写"
+                                v-model="regInfo.otherData['s_a']"></el-input>
+                    </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
                       <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                     </template>
                   </el-form-item>
                   <el-form-item label="年级人数:" prop="rank">
-                      <el-col :span="12">
-                        <el-input type="number" min="1" step="1" placeholder="请填写"
-                                  v-model="regInfo.otherData['s_b']"></el-input>
-                      </el-col>
+                    <el-col :span="12">
+                      <el-input type="number" min="1" step="1" placeholder="请填写"
+                                v-model="regInfo.otherData['s_b']"></el-input>
+                    </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
                       <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
@@ -148,15 +153,15 @@
                 </template>
                 <!--pc 显示-->
                 <template v-else>
-                  <el-form-item label="中考年级排名/年级人数:" prop="rank" id="regInfo_rank">
-                      <el-col :span="6" class="m-r-12">
-                        <el-input type="number" min="1" step="1" placeholder="请填写"
-                                  v-model="regInfo.otherData['s_a']"></el-input>
-                      </el-col>
-                      <el-col :span="6">
-                        <el-input type="number" min="1" step="1" placeholder="请填写"
-                                  v-model="regInfo.otherData['s_b']"></el-input>
-                      </el-col>
+                  <el-form-item label="最近一次年级排名/年级人数:" prop="rank" id="regInfo_rank">
+                    <el-col :span="6" class="m-r-12">
+                      <el-input type="number" min="1" step="1" placeholder="请填写"
+                                v-model="regInfo.otherData['s_a']"></el-input>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-input type="number" min="1" step="1" placeholder="请填写"
+                                v-model="regInfo.otherData['s_b']"></el-input>
+                    </el-col>
                     <!--错误信息-->
                     <template slot="error" slot-scope="scope">
                       <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
@@ -169,7 +174,8 @@
                 <div class="table-item">
                   <label class="fill">
                     监护人:
-                    <div style="width:50px;font-size: 12px;color: #F56C6C;float: right;margin-top: 5px">(监护人1姓名及手机必填)</div>
+                    <div style="width:50px;font-size: 12px;color: #F56C6C;float: right;margin-top: 5px">(监护人1姓名及手机必填)
+                    </div>
                   </label>
                   <table class="table">
                     <thead>
@@ -187,7 +193,7 @@
                         <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
                       </td>
                       <td>
-                        <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
+                        <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']" @blur="setLoginName"/>
                       </td>
                       <td>
                         <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
@@ -303,7 +309,8 @@
                     <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_g']"/>
                   </el-form-item>
                   <el-form-item label="手机:">
-                    <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
+                    <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"
+                              @blur="setLoginName"/>
                   </el-form-item>
                   <el-form-item label="学历:">
                     <el-input :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
@@ -396,7 +403,8 @@
                 <el-col :span="16" :offset="4">
                   <el-form-item label="登录名:" prop="phoneNum">
                     <el-col :span="18">
-                      <el-input v-show="showInput" v-model="regInfo.phoneNum" placeholder="请输入第一监护人手机号"></el-input>
+                      <el-input v-show="showInput" disabled v-model="regInfo.phoneNum"
+                                placeholder="请输入第一监护人手机号"></el-input>
                       <!--解决google自动填充输入框-->
                       <el-input class="hide"></el-input>
                     </el-col>
@@ -462,6 +470,7 @@
           <div class="point" :class="{active:current == 'pwd'}" @click="pointFn('pwd')">登录密码</div>
         </div>
       </div>
+      <!--提交报名信息提示-->
       <el-dialog title="警告" :visible.sync="saveFlag" width="680px">
         <div class="mb-20">
           确定提交报名？提交后以下信息将<span class="text-red">不支持修改</span>：
@@ -472,7 +481,7 @@
             <span class="modal-item">学生姓名：{{regInfo.stuName}}</span>
           </el-col>
           <el-col :span="10">
-           <span class="modal-item">身份证/护照号：{{regInfo.idCard}}</span>
+            <span class="modal-item">身份证/护照号：{{regInfo.idCard}}</span>
           </el-col>
         </el-row>
         <el-row>
@@ -499,9 +508,9 @@
       let checkRank = (rule, value, callback) => {
         if (!this.regInfo.otherData['s_a']) {
           return callback(new Error('必填项'));
-        }else if (!this.regInfo.otherData['s_b']) {
+        } else if (!this.regInfo.otherData['s_b']) {
           return callback(new Error('必填项'));
-        }else{
+        } else {
           callback();
         }
       };
@@ -557,12 +566,14 @@
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
           idCard: [{required: true, message: '必填项', trigger: 'blur'}],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
-          phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
-          repwd: [{required: true, message: '必填项', trigger: 'blur'}],
+          phoneNum: [{required: true, message: '必填项', trigger: 'change'}],
+          // repwd: [{required: true, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
           stuAdds: [{required: true, message: '必填项', trigger: 'blur'}],
-          rank:[{validator: checkRank,required: true, trigger: 'blur' }]
+          nowSchool: [{required: true, message: '必填项', trigger: 'blur'}],
+          nowGrade: [{required: true, message: '必填项', trigger: 'blur'}],
+          rank: [{validator: checkRank, required: true, trigger: 'blur'}]
         },
         //  监护人信息是否展开
         guardianOpen: true,
@@ -575,12 +586,12 @@
         // 登录密码框是否显示
         showInput: false,
         // 奖项范围数据
-        ranges:[
-          { value: '选项1', label: '奖项范围'}
+        ranges: [
+          {value: '选项1', label: '奖项范围'}
         ],
         // 奖项类别
-        awardTypes:[
-          { value: '选项1', label: '奖项范围'}
+        awardTypes: [
+          {value: '选项1', label: '奖项范围'}
         ]
       }
     },
@@ -705,7 +716,8 @@
           }
           vm.regId = xhr.data.data;
           vm.saveFlag = false;
-          vm.$router.push({path: '/'})
+          vm.login();
+          vm.$router.push({path: '/center'})
           // todo 跳转到个人中心页面 or 登录页面
         })
       },
@@ -721,6 +733,43 @@
           }
         }
       },
+      // 自动登陆
+      login() {
+        let vm = this;
+
+        let loginForm = {
+          grant_type: 'password',
+          username:vm.regInfo.phoneNum,
+          password:vm.regInfo.pwd?vm.regInfo.pwd : vm.regInfo.idCard.substring(vm.regInfo.idCard.length-6)
+        };
+        http.post('/gateway/auth/oauth/token',loginForm, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic YnJvd3Nlcjo='
+          },
+          emulateJSON: true,
+          transformRequest: [function (data) {
+            let ret = '';
+            Object.keys(data).map(key => {
+              ret += encodeURIComponent(key) + '=' + encodeURIComponent(data[key]) + '&'
+            });
+            return ret
+          }]
+        }).then(function (xhr) {
+          if (xhr.data.code == '20001') {
+            // vm.userError = xhr.data.message;
+          } else {
+            let dataToken = xhr.data;
+            localStorage.setItem('accesstoken', JSON.stringify(dataToken));
+            if (xhr.data && xhr.data.access_token) {
+              localStorage.setItem('active', 'center');
+              vm.$store.commit('changeLogin', true);
+              vm.$store.commit('setMenu', 'center');
+              vm.$router.push({path: '/center'});
+            }
+          }
+        })
+      },
       getReg() {
         const vm = this;
         vm.planFlag = true;
@@ -731,7 +780,7 @@
           let data = xhr.data;
           for (let i = 0; i < 3; i++) {
             if (!data.rewards[i]) {
-              let obj = {s_c: "", s_d: "", s_e: "",s_t: "",s_u: ""};
+              let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
               data.rewards[i] = obj;
             } else {
               // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
@@ -922,22 +971,33 @@
           fileId: _.trim(file.data.id),
         });
       },
+      //根据第一监护人手机号填充登录名
+      setLoginName() {
+        this.regInfo.phoneNum = this.regInfo.parents[0]['s_h'];
+      },
       // 保存
       save(formName) {
         let vm = this;
+        vm.userImgErr = false;
         this.$refs[formName].validate((valid) => {
           if (valid) {
             vm.saveFlag = true;
           } else {
-            if (vm.isPhone) {
-              if (!vm.regInfo.photoId) return document.getElementById('regInfo_photoId').scrollIntoView();
+            if (!vm.regInfo.photoId) {
+              if (!vm.isLogin) {
+                vm.userImgErr = true;
+              }
+              document.getElementById('regInfo_photoId').scrollIntoView();
+              return false
             }
             if (!vm.regInfo.stuName) return document.getElementById('regInfo_stuName').scrollIntoView();
             if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
             if (!vm.regInfo.stuBirthday) return document.getElementById('regInfo_stuBirthday').scrollIntoView();
             if (!vm.regInfo.stuGender) return document.getElementById('regInfo_stuGender').scrollIntoView();
             if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
-            if(!vm.regInfo.otherData['s_a'] || !vm.regInfo.otherData['s_b'])return document.getElementById('regInfo_rank').scrollIntoView();
+            if (!vm.regInfo.nowSchool) return document.getElementById('regInfo_nowSchool').scrollIntoView();
+            if (!vm.regInfo.nowGrade) return document.getElementById('regInfo_nowGrade').scrollIntoView();
+            if (!vm.regInfo.otherData['s_a'] || vm.regInfo.otherData['s_b']) return document.getElementById('regInfo_rank').scrollIntoView();
             vm.parentsMsg = '';
             if (!vm.regInfo.parents[0].s_g || !vm.regInfo.parents[0].s_h) {
               vm.parentsMsg = '必填项';
@@ -1185,6 +1245,7 @@
         .cancel {
           background: none;
           color: #333;
+          border: 1px solid #2f3861;
         }
         .submit {
           background: #eeeeee;
@@ -1232,7 +1293,7 @@
   .sign-wrap {
     /*height: 100%;*/
     /*overflow-y: scroll;*/
-    .el-autocomplete{
+    .el-autocomplete {
       display: block;
     }
     .el-input__inner {
@@ -1264,23 +1325,28 @@
       -webkit-text-fill-color: #fff !important;
     }
   }
-  .mb-20{
+
+  .mb-20 {
     margin-bottom: 30px;
     border-bottom: 1px solid #ccc;
     padding-bottom: 10px;
   }
-  .mb-5{
+
+  .mb-5 {
     margin-bottom: 20px;
   }
-  .text-red{
+
+  .text-red {
     color: red;
   }
-  .modal-item::before{
+
+  .modal-item::before {
     content: "*";
     color: red;
     padding-right: 8px;
   }
-  .el-dialog__body{
+
+  .el-dialog__body {
     padding: 20px !important;
   }
 </style>

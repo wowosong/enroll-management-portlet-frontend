@@ -141,16 +141,19 @@
       color: #fff;
       float: right;
       label {
+        display: inline-block;
+        line-height: 21px;
         cursor: pointer;
       }
       i {
         margin-right: 5px;
       }
       img {
-        width: 32px;
-        height: 32px;
+        width: 22px;
+        height: 21px;
         border-radius: 50%;
         margin-right: 8px;
+        vertical-align: bottom;
       }
     }
     img {

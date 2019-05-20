@@ -8,74 +8,144 @@
       <div class="hint_info">
 
         <!-- 完成报名 -->
-        <template v-if="stempInfo.ifEnter == null">
-          <p>您于<span class="color1">2019年07月01日</span>完成网上报名，请在<span class="color1">“报名信息”</span>页面完善信息~</p>
+        <template v-if="stempInfo.regStatus != 1">
+          <p>您于<span class="color1">{{stempInfo.createTime | dateFormatYmd}}</span>完成网上报名，请在<span
+            class="color1">“报名信息”</span>页面完善信息~
+          </p>
           <p>并按学校通知时间到<span class="color1">校现场确认</span>，打印面谈卡~</p>
         </template>
 
         <!-- 完成面谈卡 -->
-        <template>
-          <p>您于<span class="color1">2019年07月01日</span>到校办理了面谈卡~</p>
+        <template v-if="stempInfo.regStatus == 1 && stempInfo.ifEnter == null">
+          <p>您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了面谈卡~</p>
           <p>并按面谈卡的面谈时间到校<span class="color1">参加面谈</span>~</p>
         </template>
-
         <!-- 录取结果-->
-        <div v-if="stempInfo.ifPayment != 1">
-          <!-- 录取 -->
-          <template v-if="stempInfo.ifEnter == 1">
-            <!-- 预约缴费 -->
-            <template v-if="!reserveObj">
-              <div>您于<span class="block">2019年07月01日</span>被学校录取，并获得奖学金5000元/3年~</div>
-              <div class="over_hint">请在截止时间前完成缴费~(缴费截止时间：2019-06-10)</div>
-              <span class="btn" @click="viewScore()">查看成绩</span>
-              <div>
-                <!--<el-form-item label="预约缴费时间段:" prop="dataTime" required>-->
-                <!--<el-date-picker-->
-                <!--v-model="formData.dataTime"-->
-                <!--type="date"-->
-                <!--placeholder="选择日期" style="width:180px">-->
-                <!--</el-date-picker>-->
-                <!--<el-time-picker-->
-                <!--is-range-->
-                <!--v-model="formData.timeRang"-->
-                <!--range-separator="至"-->
-                <!--start-placeholder="开始时间"-->
-                <!--end-placeholder="结束时间"-->
-                <!--placeholder="选择时间范围" style="width:360px">-->
-                <!--</el-time-picker>-->
-                <!--</el-form-item>-->
-                <span style="color: #00ff00">预约线下缴费的时间段</span>（友情提示：为了节省您宝贵的时间，可进行缴费时间预约）
-                <reserve :planId="planId" @serReserve="serReserve"/>
-                <el-button style="width: 200px; position: relative; left: 33%;" size="mini" @click="submit()"
-                          type="primary" round>提交
-                </el-button>
-              </div>
-            </template>
+        <div v-if="!stempInfo.ifPayment">
+          <div v-if="stempInfo.ifEnter == 1">
+            <!-- 录取 -->
+            <template v-if="!expireFlag">
+              <!-- 预约缴费 -->
+              <template v-if="!reserveObj">
+                <div class="bottomBorder">
+                  <div>
+                    您于
+                    <span class="color1">
+                    {{stempInfo.admitTime | dateFormatYmd}}
+                  </span>
+                    被学校录取
+                    <span v-if="stempInfo.scholarship">
+                    ，并获得奖学金{{stempInfo.scholarship}}~
+                  </span>
+                  </div>
+                  <div class="over_hint">
+                    请在截止时间前完成缴费~
+                    <span class="color1">
+                    (缴费截止时间：{{stempInfo.paymentDeadline | dateFormatYmd}})
+                  </span>
+                  </div>
+                </div>
+                <!--<span class="btn" @click="viewScore()">查看成绩</span>-->
+                <div class="bottomBorder"
+                     v-if="nowStuInfo && nowStuInfo.scores && nowStuInfo.scores.length">
+                  <table class="my-table" v-if="!isPhone">
+                    <thead>
+                    <tr>
+                      <th>面谈卡编号</th>
+                      <th>姓名</th>
+                      <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                      <td>{{nowStuInfo.signCardCode}}</td>
+                      <td>{{nowStuInfo.stuName}}</td>
+                      <td v-for="stuScore in nowStuInfo.scores"><span>{{stuScore.testScore}}</span>
+                      </td>
+                    </tr>
+                  </table>
+                  <div v-if="isPhone" class="phone_scores">
+                    <div><span>面谈卡编号：</span>{{nowStuInfo.signCardCode}}</div>
+                    <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
+                    <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <!--<el-form-item label="预约缴费时间段:" prop="dataTime" required>-->
+                  <!--<el-date-picker-->
+                  <!--v-model="formData.dataTime"-->
+                  <!--type="date"-->
+                  <!--placeholder="选择日期" style="width:180px">-->
+                  <!--</el-date-picker>-->
+                  <!--<el-time-picker-->
+                  <!--is-range-->
+                  <!--v-model="formData.timeRang"-->
+                  <!--range-separator="至"-->
+                  <!--start-placeholder="开始时间"-->
+                  <!--end-placeholder="结束时间"-->
+                  <!--placeholder="选择时间范围" style="width:360px">-->
+                  <!--</el-time-picker>-->
+                  <!--</el-form-item>-->
+                  <span style="color: #00ff00">预约线下缴费的时间段</span>（友情提示：为了节省您宝贵的时间，可进行缴费时间预约）
+                  <reserve :planId="planId" @serReserve="serReserve"/>
+                  <el-button style="width: 200px; position: relative; left: 33%;" size="mini" @click="submit()"
+                             type="primary" round>提交
+                  </el-button>
+                </div>
+              </template>
 
-            <!-- 预约缴费成功 -->
-            <template v-if="reserveObj">
-              <div>
-                <i class="el-icon-circle-check" style="color: #00ff00">
-                  请在预约时间段前往学校缴费
-                </i>
-              </div>
-              <div style="color: #ff0000">
-                {{reserveObj.reserveDate | dateFormatYmd}}&nbsp;{{reserveObj.timeText}}
-              </div>
+              <!-- 预约缴费成功 -->
+              <template v-if="reserveObj">
+                <div>
+                  <i class="el-icon-circle-check" style="color: #00ff00">
+                    请在预约时间段前往学校缴费
+                  </i>
+                </div>
+                <div style="color: #ff0000">
+                  {{reserveObj.reserveDate | dateFormatYmd}}&nbsp;{{reserveObj.timeText}}
+                </div>
+              </template>
             </template>
-          </template>
-
+            <!-- 逾期未缴费 -->
+            <template v-if="expireFlag">
+              <p>您<span class="color1">逾期未缴费</span>，视为自动放弃录取资格~</p>
+            </template>
+          </div>
           <!-- 未录取 -->
           <template v-if="stempInfo.ifEnter == 0">
             <div>您<span class="color1">未已被录取</span></div>
             <div class="over_hint">人生的机会还有很多哦...</div>
-            <span class="btn" @click="viewScore()">查看成绩</span>
+            <!--<span class="btn" @click="viewScore()">查看成绩</span>-->
+            <div v-if="nowStuInfo && nowStuInfo.scores && nowStuInfo.scores.length">
+              <table class="my-table" v-if="!isPhone">
+                <thead>
+                <tr>
+                  <th>面谈卡编号</th>
+                  <th>姓名</th>
+                  <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
+                </tr>
+                </thead>
+                <tr>
+                  <td>{{nowStuInfo.signCardCode}}</td>
+                  <td>{{nowStuInfo.stuName}}</td>
+                  <td v-for="stuScore in nowStuInfo.scores"><span>{{stuScore.testScore}}</span>
+                  </td>
+                </tr>
+              </table>
+              <div v-if="isPhone" class="phone_scores">
+                <div><span>面谈卡编号：</span>{{nowStuInfo.signCardCode}}</div>
+                <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
+                <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}
+                </div>
+              </div>
+            </div>
           </template>
         </div>
-
         <!-- 缴费成功 -->
         <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null">
-          <p>您于<span class="color1">2019年07月01日</span>到校完成缴费，缴费金额<span class="color1">{{stempInfo.payAmount}}元</span>~</p>
+          <p>您于<span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
+            class="color1">{{stempInfo.payAmount}}元</span>~
+          </p>
           <table class="table_list" v-if="!isPhone">
             <thead>
             <tr>
@@ -103,12 +173,6 @@
           </div>
           <p class="pay_hint">友情提示：若需要退学退费，请线下联系学校财务。</p>
         </template>
-
-        <!-- 逾期未缴费 -->
-        <template v-if="reserveObj && reserveObj.ifPayment == 0 && reserveObj.paymentDeadline.getTime() + (24 * 60 * 60 * 1000) < new Date().getTime()">
-          <p>您<span class="color1">逾期未缴费</span>，视为自动放弃录取资格~</p>
-        </template>
-
         <!-- 分班结果 -->
         <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport == null">分班与寝室分配已公布~
           <table class="table_list" v-if="!isPhone">
@@ -143,42 +207,27 @@
             <div><span>所属寝室：</span>{{stempInfo.dormitoryName}}</div>
           </div>
         </template>
-
         <!-- 报到成功 -->
-        <template>您于<span class="color1">2019年07月01日</span>完成到校报到注册手续~</template>
-
+        <template v-if="stempInfo.ifReport == 1">您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>完成到校报到注册手续~
+        </template>
         <!-- 逾期未报到 -->
-        <template>您<span class="color1">逾期未到学校报到</span>，视为自动放弃入学资格~</template>
-
+        <template v-if="false">您<span class="color1">逾期未到学校报到</span>，视为自动放弃入学资格~</template>
       </div>
 
       <!-- 填写报到信息 -->
-      <template v-if="stempInfo.ifReport == 1">请按学校通知时间<span class="color1">到校报到</span>，并<span class="color1">填写报到信息</span>~
+      <template v-if="stempInfo.ifReport == 1">请按学校通知时间<span class="color1">到校报到</span>，并<span
+        class="color1">填写报到信息</span>~
         <!-- <reportInfo></reportInfo> -->
       </template>
     </div>
     <!--成绩-->
 
     <el-dialog title="查看成绩" :visible.sync="scoreDialogVisible" :width="isPhone ? '100%' : '800px'">
-      <table class="my-table" v-if="!isPhone">
-        <thead>
-        <tr>
-          <th>面谈卡编号</th>
-          <th>姓名</th>
-          <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
-        </tr>
-        </thead>
-        <tr>
-          <td>{{nowStuInfo.signCardCode}}</td>
-          <td>{{nowStuInfo.stuName}}</td>
-          <td v-for="stuScore in nowStuInfo.scores"><span>{{stuScore.testScore}}</span>
-          </td>
-        </tr>
-      </table>
       <div v-if="isPhone" class="phone_scores">
         <div><span>面谈卡编号：</span>{{nowStuInfo.signCardCode}}</div>
         <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
-        <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}</div>
+        <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}
+        </div>
       </div>
       <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="scoreDialogVisible = false">关 闭</el-button>
@@ -189,6 +238,7 @@
 <script>
   import reserve from "./reserve_comp"
   import reportInfo from "./report_info"
+
   export default {
     data() {
       return {
@@ -215,15 +265,17 @@
         },
         planId: "",
         reserveObj: null,
+        expireFlag: false,
       }
     },
-    computed:{
-        isPhone: function () {
-            return this.$store.state.isPhone
-        },
+    computed: {
+      isPhone: function () {
+        return this.$store.state.isPhone
+      },
     },
     mounted() {
-      this.query()
+      this.query();
+      this.viewScore();
     },
     components: {
       reserve,
@@ -243,7 +295,7 @@
           vm.getReserve(id)
         });
       },
-      getReserve(id){
+      getReserve(id) {
         const vm = this;
         http.get("/gateway/enroll/erPayment/reserve/" + id).then((xhr) => {
           if (xhr.data.code) {
@@ -261,6 +313,10 @@
             return;
           }
           vm.stempInfo = xhr.data
+          vm.expireFlag = false
+          if (vm.stempInfo.paymentDeadline) {
+            vm.expireFlag = new Date(vm.stempInfo.paymentDeadline).getTime() + (24 * 60 * 60 * 1000) < new Date().getTime();
+          }
           vm.planId = xhr.data.planId;
           if (vm.stempInfo.paymentReserve) {
             vm.getReserve(vm.stempInfo.paymentReserve);
@@ -290,12 +346,11 @@
       },
       viewScore() {
         let vm = this;
-        vm.scoreDialogVisible = true;
+        // vm.scoreDialogVisible = true;
         vm.tableQuery.filter.regId = vm.stempInfo.id;
         let obj = $.extend({}, vm.tableQuery, {
           filter: eduFilterParam(vm.tableQuery.filter)
         });
-
         http.get("/gateway/enroll/api/erEnter/page", {params: obj}).then(function (xhr) {
           vm.tableData = xhr.data;
           if (vm.tableData.aaData && vm.tableData.aaData.length > 0) {
@@ -420,6 +475,12 @@
 </style>
 <style lang="less" scoped>
   //warp
+  .bottomBorder {
+    border-bottom: 1px #e5e7ea solid;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+  }
+
   .is_phone {
     .block {
       display: inline;
@@ -458,31 +519,31 @@
       display: block;
       margin-top: 10px;
     }
-    .phone_scores{
-      &>div{
+    .phone_scores {
+      & > div {
         margin: 5px 0;
         text-align: left;
-        span{
+        span {
           display: inline-block;
           width: 88px;
           text-align: right;
         }
       }
     }
-    .pay_info{
-      border:1px solid #eee;
-      &>div{
+    .pay_info {
+      border: 1px solid #eee;
+      & > div {
         border-bottom: 1px solid #eee;
         text-align: left;
         padding: 5px 0;
-        span{
+        span {
           display: inline-block;
           width: 110px;
           text-align: right;
         }
       }
-      &>div:last-child{
-        border-bottom:none;
+      & > div:last-child {
+        border-bottom: none;
       }
     }
   }
