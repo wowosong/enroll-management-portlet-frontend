@@ -11,8 +11,7 @@
         <el-form :model="regInfo" :rules="rules" ref="ruleForm" :label-width="isPhone ? '102px' : '172px'">
           <p class="basic_tit">基本信息</p>
           <div class="user_img">
-            <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId" @click="uploadPicture">
-            <img src="@/imgs/404.png" v-else @click="uploadPicture">
+            <img :src="imgUrl+regInfo.photoId" @error="errorImg($event,'avatar')" @click="uploadPicture">
             <div class="upload_btn" @click="uploadPicture">上传照片<span>:</span></div>
             <p class="upload_hint">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
           </div>
@@ -180,8 +179,7 @@
           <el-form-item label="获奖附件:" label-width="82px">
             <div class="img_box">
               <div class="img_thumbnail">
-                <img v-if="!fileList || !fileList.length" src="@/imgs/404.png">
-                <img v-else :src="imgUrl+fileList[0].fileId">
+                <img @error="errorImg($event,'image')" :src="imgUrl+fileList[0].fileId">
                 <div class="big_btn_l" @click="showBigImg(fileList[0].fileId)"></div>
               </div>
               <div class="upload_item">
@@ -215,8 +213,7 @@
           <tbody>
           <tr>
             <td rowspan="4" width="30%">
-              <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId" class="user_img" @error="errorImg($event,'image')">
-              <img src="@/imgs/404.png" class="user_img" v-else>
+              <img :src="imgUrl+regInfo.photoId" class="user_img" @error="errorImg($event,'avatar')">
             </td>
             <td width="84px" align="right">学生姓名：</td>
             <td width="130px">{{regInfo.stuName}}</td>
@@ -228,7 +225,7 @@
             <td>{{regInfo.stuBirthday | dateFormatYmd}}</td>
             <td align="right">性别：</td>
             <td>{{genderMap[regInfo.stuGender]}}</td>
-          </tr> 
+          </tr>
           <tr>
             <td align="right">户籍所在地：</td>
             <td>{{regInfo.localStr}}</td>
@@ -489,8 +486,8 @@
           s_k:''
         },
         formRewards:{
-          s_c: "", 
-          s_d: "", 
+          s_c: "",
+          s_d: "",
           s_e: "",
           s_t: "",
           s_u: ""
@@ -938,7 +935,7 @@
     }
     .user_img {
       width: 130px;
-      height: 170px;
+      max-height: 170px;
       margin-left: 30px;
     }
   }
