@@ -6,7 +6,7 @@
                 <div class="plan_list" v-for="(item,index) in noticeList" :key="index">
                     <i class="ico"></i>
                     <div class="plan_tit text_one" @click="noticeDetail(item)">{{item.campusName}} {{item.noticeTitle}}</div>
-                    <span class="time">{{item.createTime | dateFormatYmdHms}}</span>
+                    <span class="time">{{item.publishTime | dateFormatYmdHms}}</span>
                 </div>
                 <div class="no_data" v-if="!noticeList || noticeList.length == 0"></div>
             </div>
