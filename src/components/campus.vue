@@ -57,28 +57,34 @@ export default {
 </script>
 <style lang="less" scoped>
     .campus_list{
-        padding:12px 20px 10px 20px;
+        padding:0px 20px 0 20px;
+        line-height: 16px;
+        margin: 12px 0;
         color: #666;
         cursor: pointer;
+        border-left: 4px solid #fff;
     }
     .campus_list:hover,
     .active{
-        color: #aa2f33;
+        color: #2f3861;
+        border-left: 4px solid #aa2f33;
     }
     .campus_tit{
-        border-left: 4px solid #aa2f33;
-        padding-left: 16px;
-        font-size: 16px;
-        font-weight: bold;
+        border-left: 4px solid #fff;
+        padding-left: 20px;
+        font-size: 14px;
+        // font-weight: bold;
         margin-bottom: 15px;
         line-height: 16px;
         cursor: pointer;
+        color:#666;
         img{
           display: none;
         }
     }
     .allInfo{
-      color: #aa2f33;
+      color: #2f3861;
+      border-left: 4px solid #aa2f33;
     }
     //warp版本
     .is_phone{
