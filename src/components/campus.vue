@@ -1,6 +1,6 @@
 <template>
     <div class="comm_item float_right campus_main">
-        <div class="campus_tit" @click="isShowMoreFn">全部校区<img src="../imgs/warp/down.png"></div>
+        <div class="campus_tit" @click="isShowMoreFn" :class="{allInfo:nowCampsId == ''}">全部校区<img src="../imgs/warp/down.png"></div>
         <div class="campus_layer" v-if="isShowMore">
           <div class="layer_main">
             <div v-for="(item,index) in campusList" :key="index" class="campus_list" :class="{active:nowCampsId == item.id}" @click="camputedFn(item)">{{item.cnName}}</div>
@@ -56,27 +56,41 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-    .campus_list{
-        padding:12px 20px 10px 20px;
+    .campus_list,.campus_tit{
+        padding:0px 20px 0 20px;
+        line-height: 16px;
+        margin-bottom: 26px;
         color: #666;
         cursor: pointer;
-    }
-    .campus_list:hover,
-    .active{
-        color: #aa2f33;
-    }
-    .campus_tit{
-        border-left: 4px solid #aa2f33;
-        padding-left: 16px;
-        font-size: 16px;
-        font-weight: bold;
-        margin-bottom: 15px;
-        line-height: 16px;
-        cursor: pointer;
+        border-left: 4px solid #fff;
         img{
           display: none;
         }
     }
+    .campus_list:hover,
+    .active,.allInfo{
+        color: #2f3861;
+        border-left: 4px solid #aa2f33;
+        font-weight: bold;
+    }
+    // .campus_tit{
+    //     border-left: 4px solid #fff;
+    //     padding-left: 20px;
+    //     font-size: 14px;
+    //     // font-weight: bold;
+    //     margin-bottom: 15px;
+    //     line-height: 16px;
+    //     cursor: pointer;
+    //     color:#666;
+    //     img{
+    //       display: none;
+    //     }
+    // }
+    // .allInfo{
+    //   color: #2f3861;
+    //   border-left: 4px solid #aa2f33;
+
+    // }
     //warp版本
     .is_phone{
       .campus_main{

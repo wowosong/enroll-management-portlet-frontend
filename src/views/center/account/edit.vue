@@ -15,10 +15,10 @@
             <el-form :model="formData" :rules="rules" ref="ruleForm" label-width="120px">
                 <template v-if="stempNum == 1">
                     <el-form-item label="当前登录名:">{{logonName}}</el-form-item>
-                    <el-form-item label="身份证号:" required>
+                    <el-form-item label="身份证号:" prop="idCard">
                         <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
-                    <el-form-item label="姓名:" required>
+                    <el-form-item label="姓名:" prop="userName">
                         <el-input v-model="formData.userName" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
                     <el-form-item label-width="0">
@@ -39,10 +39,10 @@
                 <div v-if="stempNum == 2 && type == 'password'">
                     <el-form-item label="当前登录名:">{{logonName}}</el-form-item>
                     <el-form-item label="新密码:" prop="newPass">
-                        <el-input v-model="formData.newPass" style="width:260px;" placeholder="请输入"></el-input>
+                        <input type="password" v-model="formData.newPass" style="width:260px;" placeholder="请输入" class="password_s">
                     </el-form-item>
                     <el-form-item label="确认新密码:" prop="newCheckPass">
-                        <el-input v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入"></el-input>
+                        <input type="password" v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入"  class="password_s">
                     </el-form-item>
                     <el-form-item label-width="0">
                         <div class="btn" @click="submit">确定</div>
@@ -61,6 +61,14 @@
             }
         },
         data(){
+            var validateCard = (rule, value, callback) => {
+                let pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+                if(!pattern.test(value)){
+                  callback(new Error('身份证号码格式有误'));
+                }else{
+                  callback();
+                }
+            }
             return{
               formData:{
                   idCard:'',
@@ -72,6 +80,13 @@
               },
               logonName:window.userInfo.logonName,
               rules:{
+                idCard:[
+                  { required: true, message: "身份证号不能为空!", trigger: "blur" },
+                  { validator: validateCard, trigger: 'blur' }
+                ],
+                userName:[
+                  { required: true, message: "姓名不能为空!", trigger: "blur" }
+                ],
                 newPass: [
                   { required: true, message: "新密码不能为空!", trigger: "blur" }
                 ],
@@ -79,27 +94,41 @@
                   { required: true, message: "确认密码不能为空!", trigger: "blur" }
                 ],
               },
-              stempNum:1
+              stempNum:1,
+              isNextFalg:false
             }
         },
         mounted () {
 
       },
       methods: {
+        isNextFalgFn(){
+          this.$refs.ruleForm.validateField('idCard');
+          this.$refs.ruleForm.validateField('userName');
+
+          let pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+          if(this.formData.idCard == '' || this.formData.userName == '' || !pattern.test(this.formData.idCard)){
+            return this.isNextFalg = false
+          }else{
+            return this.isNextFalg = true
+          }
+        },
         nextStep() {
           let vm = this;
-          if(vm.type == 'password') {
-            vm.formData.id = window.userInfo.id;
-          }
-          http.post(`/gateway/platform/jiaXiangUser`, vm.formData).then(xhr => {
-            if (xhr.data.code){}
-            if(xhr.data.data) {
-              vm.stempNum = 2
-            } else {
-              vm.$message('用户信息验证失败!');
-              return
+          if(this.isNextFalgFn()){
+            if(vm.type == 'password') {
+              vm.formData.id = window.userInfo.id;
             }
-          })
+            http.post(`/gateway/platform/jiaXiangUser`, vm.formData).then(xhr => {
+              if (xhr.data.code){}
+              if(xhr.data.data) {
+                vm.stempNum = 2
+              } else {
+                vm.$message('用户信息验证失败!');
+                return
+              }
+            })
+          }
         },
         submit(){
           let vm = this;
@@ -188,6 +217,12 @@
         display: inline-block;
         cursor: pointer;
         margin-left: 120px;
+    }
+    .password_s{
+      line-height: 40px;
+      border:1px solid #dcdfe6;
+      border-radius: 4px;
+      padding: 0 15px;
     }
 </style>
 <style lang="less" scoped>
