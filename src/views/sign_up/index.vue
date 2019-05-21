@@ -510,6 +510,8 @@
           return callback(new Error('必填项'));
         } else if (!this.regInfo.otherData['s_b']) {
           return callback(new Error('必填项'));
+        } else if (parseInt(this.regInfo.otherData["s_a"]) > parseInt(this.regInfo.otherData["s_b"])) {
+          return callback(new Error('排名不能高于年级人数'));
         } else {
           callback();
         }
@@ -739,10 +741,10 @@
 
         let loginForm = {
           grant_type: 'password',
-          username:vm.regInfo.phoneNum,
-          password:vm.regInfo.pwd?vm.regInfo.pwd : vm.regInfo.idCard.substring(vm.regInfo.idCard.length-6)
+          username: vm.regInfo.phoneNum,
+          password: vm.regInfo.pwd ? vm.regInfo.pwd : vm.regInfo.idCard.substring(vm.regInfo.idCard.length - 6)
         };
-        http.post('/gateway/auth/oauth/token',loginForm, {
+        http.post('/gateway/auth/oauth/token', loginForm, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': 'Basic YnJvd3Nlcjo='
@@ -979,6 +981,15 @@
       save(formName) {
         let vm = this;
         vm.userImgErr = false;
+        vm.parentsMsg = '';
+        for (let i = 0; i <= vm.regInfo.parents.length; i++) {
+          let mobileRes = /^1[34578]\d{9}$/;
+          if (vm.regInfo.parents[i] && vm.regInfo.parents[i]["s_h"] && !mobileRes.test(vm.regInfo.parents[i]["s_h"])) {
+            vm.parentsMsg = '手机格式不正确';
+            document.getElementById('regInfo_parents').scrollIntoView();
+            return false;
+          }
+        }
         this.$refs[formName].validate((valid) => {
           if (valid) {
             vm.saveFlag = true;
@@ -990,6 +1001,11 @@
               document.getElementById('regInfo_photoId').scrollIntoView();
               return false
             }
+            if (!vm.regInfo.parents[0]["s_g"] || !vm.regInfo.parents[0]["s_h"]) {
+              vm.parentsMsg = '必填项';
+              document.getElementById('regInfo_parents').scrollIntoView();
+              return false
+            }
             if (!vm.regInfo.stuName) return document.getElementById('regInfo_stuName').scrollIntoView();
             if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
             if (!vm.regInfo.stuBirthday) return document.getElementById('regInfo_stuBirthday').scrollIntoView();
@@ -998,12 +1014,6 @@
             if (!vm.regInfo.nowSchool) return document.getElementById('regInfo_nowSchool').scrollIntoView();
             if (!vm.regInfo.nowGrade) return document.getElementById('regInfo_nowGrade').scrollIntoView();
             if (!vm.regInfo.otherData['s_a'] || vm.regInfo.otherData['s_b']) return document.getElementById('regInfo_rank').scrollIntoView();
-            vm.parentsMsg = '';
-            if (!vm.regInfo.parents[0].s_g || !vm.regInfo.parents[0].s_h) {
-              vm.parentsMsg = '必填项';
-              document.getElementById('regInfo_parents').scrollIntoView();
-              return false
-            }
             return false;
           }
         });
