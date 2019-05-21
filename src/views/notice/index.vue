@@ -11,7 +11,7 @@
                 <div class="no_data" v-if="!noticeList || noticeList.length == 0"></div>
             </div>
         </div>
-        <campus @query="queryCampus"></campus>
+        <campus @query="queryCampus" :id="filter.schoolId" v-if="isShowCampu"></campus>
     </div>
 </template>
 <script>
@@ -27,11 +27,16 @@
                 campusId: '',
                 schoolId: '',
               },
+              isShowCampu:false
             }
         },
         mounted() {
           //初始化数据
           let vm = this;
+
+          vm.filter.schoolId = vm.$route.query ? vm.$route.query.id : ''
+          vm.isShowCampu = true
+
           http.get("/gateway/enroll/api/erNotice/portalQuery", {params: vm.filter}).then(function (xhr) {
             vm.noticeList = xhr.data.data;
           })
@@ -43,7 +48,7 @@
           queryCampus(data){
             //校区查询
             let vm = this;
-            vm.filter.campusId = data;
+            vm.filter.schoolId = data;
             http.get("/gateway/enroll/api/erNotice/portalQuery", {params: vm.filter}).then(function (xhr) {
               vm.noticeList = xhr.data.data;
             })
