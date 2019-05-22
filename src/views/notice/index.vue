@@ -43,7 +43,7 @@
           queryCampus(data){
             //校区查询
             let vm = this;
-            vm.filter.campusId = data;
+            vm.filter.schoolId = data;
             http.get("/gateway/enroll/api/erNotice/portalQuery", {params: vm.filter}).then(function (xhr) {
               vm.noticeList = xhr.data.data;
             })

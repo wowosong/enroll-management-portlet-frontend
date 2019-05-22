@@ -23,7 +23,7 @@
               {{regInfo.idCard}}
             </el-form-item>
             <el-form-item label="出生日期:" required style="margin-bottom:5px">
-              {{regInfo.stuBirthday}}
+              {{regInfo.stuBirthday | dateFormatYmd}}
             </el-form-item>
             <el-form-item label="性别:" required style="margin-bottom:5px">
               {{genderMap[regInfo.stuGender]}}
