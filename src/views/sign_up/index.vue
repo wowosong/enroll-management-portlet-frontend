@@ -803,7 +803,6 @@
               return ret
             }]
           }).then(function (xhr) {
-            vm.clData();
             if (xhr.data.code == '20001')
               return vm.$message.warning(xhr.data.message);
             if (xhr.data && xhr.data.access_token) {
@@ -815,7 +814,7 @@
               vm.$store.commit('setMenu', 'center');
               vm.$router.push({path: '/center'});
             }
-
+            vm.clData();
           })
         },
         getReg() {
