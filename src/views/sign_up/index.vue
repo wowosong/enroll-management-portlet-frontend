@@ -153,7 +153,7 @@
                 </template>
                 <!--pc 显示-->
                 <template v-else>
-                  <el-form-item label="最近一次年级排名/年级人数:" prop="rank" id="regInfo_rank">
+                  <el-form-item label="最近一次年级排名/年级人数:" prop="rank" id="regInfo_rank" v-if="planInfo.phaseName != '初中'">
                     <el-col :span="6" class="m-r-12">
                       <el-input type="number" min="1" step="1" placeholder="请填写"
                                 v-model="regInfo.otherData['s_a']"></el-input>
@@ -213,7 +213,7 @@
                     </span>
                   </div>
                 </div>
-                <div class="table-item">
+                <div class="table-item" v-if="planInfo.phaseName != '初中'">
                   <label>获奖信息:</label>
                   <div>
                     <table class="table">
@@ -270,7 +270,7 @@
                     <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖</div>
                   </div>
                 </div>
-                <div class="table-item">
+                <div class="table-item" v-if="planInfo.phaseName != '初中'">
                   <label>获奖附件:</label>
                   <div class="up_idcard clearfix">
                     <template v-if="fileList && fileList.length > 0">
