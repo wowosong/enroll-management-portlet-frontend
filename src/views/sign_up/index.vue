@@ -632,6 +632,12 @@
         const vm = this;
         vm.saving = true;
         vm.regInfo.stuBirthday = moment(vm.regInfo.stuBirthday).format('YYYY-MM-DD');
+
+        if(vm.regInfo.repwd != vm.regInfo.pwd) {
+          vm.$message.warning("两次密码不一致！");
+          vm.saving = false;
+          return;
+        }
         vm.regInfo.planId = vm.planId;
         vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade];
         vm.regInfo.rewardFile = [];
