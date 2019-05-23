@@ -784,7 +784,6 @@
         // 自动登陆
         login() {
           let vm = this;
-
           let loginForm = {
             grant_type: 'password',
             username: vm.regInfo.phoneNum,
@@ -804,8 +803,8 @@
               return ret
             }]
           }).then(function (xhr) {
+            vm.clData();
             if (xhr.data.code == '20001')
-              vm.clData();
               return vm.$message.warning(xhr.data.message);
             if (xhr.data && xhr.data.access_token) {
               console.log(xhr.data)
