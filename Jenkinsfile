@@ -18,12 +18,12 @@ node('nodejs-slave-123||nodejs-slave-148||nodejs-slave-149||nodejs-slave') {
         } else if (BRANCH_NAME == 'develop') {
             // 设置构建保留的最大个数，超过指定的个数则丢弃
             properties([buildDiscarder(logRotator(numToKeepStr: '3'))])
-            docker_image_name = 'microservice/dev/portlet-frontend'
+            docker_image_name = 'microservice/jiaxiang/dev/portlet-frontend'
             project_runtime = ''
         } else if (BRANCH_NAME == 'test') {
             // 设置构建保留的最大个数，超过指定的个数则丢弃
             properties([buildDiscarder(logRotator(numToKeepStr: '3'))])
-            docker_image_name = 'microservice/test/portlet-frontend'
+            docker_image_name = 'microservice/jiaxiang/test/portlet-frontend'
             project_runtime = ''
          }  else {
             error("分支参数设置错误，当前分支：$BRANCH_NAME")
