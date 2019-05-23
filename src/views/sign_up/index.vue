@@ -216,7 +216,7 @@
                   </div>
 
                   <div class="table-item" v-if="phaseName == '初中'" id="regInfo_eduConcept">
-                    <label class="fill">家庭教育观念:</label>
+                    <label class="fill">家庭教育理念:</label>
                     <el-input type="textarea" :maxlength="100" style="width: 600px" :rows="4" placeholder="请填写(限100字)"
                               v-model="regInfo.eduConcept"></el-input>
                     <div>
@@ -339,9 +339,9 @@
               </div>
               <!--间隔线-->
               <div class="line"></div>
-              <!--家庭教育观念-->
+              <!--家庭教育理念-->
               <div class="prize_info" v-if="phaseName == '初中'" id="regInfo_eduConcept">
-                <p class="item-tit open-info">家庭教育观念
+                <p class="item-tit open-info">家庭教育理念
                   <label class="error-info" style="font-size: 12px" v-if="eduMsg"><i
                     class="el-icon-circle-close"></i>{{eduMsg}}</label>
                 </p>
@@ -629,7 +629,7 @@
         awardTypes: [
           {value: '选项1', label: '奖项范围'}
         ],
-        // 家庭教育观念错误提示
+        // 家庭教育理念错误提示
         eduMsg: '',
         //  学段
         phaseName: '',
@@ -1051,7 +1051,7 @@
               return false;
             }
           }
-          // 家庭教育观念验证
+          // 家庭教育理念验证
           if (!vm.regInfo.eduConcept && vm.phaseName == '初中') {
             vm.eduMsg = '必填项';
             document.getElementById('regInfo_eduConcept').scrollIntoView();
