@@ -17,8 +17,8 @@
             <el-form-item label="登录名:" prop="logonName">
               <el-input v-model="formData.logonName" style="width:260px;" placeholder="请输入登录名"></el-input>
             </el-form-item>
-            <el-form-item label="身份证号:" prop="idCard">
-              <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入身份证号"></el-input>
+            <el-form-item label="证件号:" prop="idCard">
+              <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入证件号"></el-input>
             </el-form-item>
             <el-form-item label="姓名:" prop="userName">
               <el-input v-model="formData.userName" style="width:260px;" placeholder="请输入姓名"></el-input>
@@ -28,11 +28,11 @@
             </el-form-item>
           </template>
           <template v-if="stempNum == 2">
-            <el-form-item label="登录名:" required="">{{formData.logonName}}</el-form-item>
-            <el-form-item label="新密码:" prop="newPass">
+            <el-form-item label="登录名:">{{formData.logonName}}</el-form-item>
+            <el-form-item type="password" label="新密码:" prop="newPass">
               <el-input v-model="formData.newPass" style="width:260px;" placeholder="请输入"></el-input>
             </el-form-item>
-            <el-form-item label="确认新密码:" prop="newCheckPass">
+            <el-form-item type="password" label="确认新密码:" prop="newCheckPass">
               <el-input v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item>
@@ -65,7 +65,8 @@
             { required: true, message: '请输入登录名', trigger: 'blur' }
           ],
           idCard: [
-            { required: true, message: '请输入身份证号', trigger: 'blur' }
+            { required: true, message: '请输入证件号', trigger: 'blur' },
+            {min:9, message: '证件号格式错误', trigger: 'blur'},
           ],
           userName: [
             { required: true, message: '请输入姓名', trigger: 'blur' }

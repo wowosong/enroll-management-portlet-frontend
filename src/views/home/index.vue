@@ -45,9 +45,10 @@
         <div class="swiper-button-prev swiper-button-white"></div>
       </div>
       <div class="notice-main">
-        <div class="notice-title">通知公告<a @click="moreNotice()"><span>更多</span> <i class="iconfont">&#xe6e9;</i></a></div>
+        <div class="notice-title">通知公告<a @click="moreNotice()"><span>更多</span> <i class="iconfont">&#xe6e9;</i></a>
+        </div>
         <ul class="notice-list" v-if="noticeList && noticeList.length > 0">
-          <li v-for="(item,index) in noticeList" :key="index" v-if="index<5" >
+          <li v-for="(item,index) in noticeList" :key="index" v-if="index<5">
             <p @click="showNotice(item)">{{item.noticeTitle}}</p>
             <span>{{item.publishTime | dateFormatYmd}}</span>
           </li>
@@ -144,7 +145,7 @@
         this.$router.push({path: '/notice'});
       },
       showNotice(data) {
-        this.$router.push({path:'/notice/detail',query:{datail:data}});
+        this.$router.push({path: '/notice/detail', query: {datail: data}});
       },
       // 验证登陆信息是否可以提交
       vaildFn() {
@@ -206,10 +207,10 @@
               let dataToken = xhr.data;
               localStorage.setItem('accesstoken', JSON.stringify(dataToken));
               if (xhr.data && xhr.data.access_token) {
-                localStorage.setItem('active','center');
+                localStorage.setItem('active', 'center');
                 vm.$store.commit('changeLogin', true);
                 vm.$store.commit('setMenu', 'center');
-                vm.$router.push({path:'/center',query:{progress:true}});
+                vm.$router.push({path: '/center', query: {progress: true}});
               }
             }
           })
@@ -218,14 +219,14 @@
       // 首次报名 跳转计划列表
       goPlan() {
         // 设置导航栏状态
-        localStorage.setItem('active','plan');
+        localStorage.setItem('active', 'plan');
         this.$store.commit('setMenu', 'plan');
         this.$router.push({path: '/plan'});
       },
       // 查看报名 跳转个人中心
       goCenter() {
         // 设置导航栏状态
-        localStorage.setItem('active','center');
+        localStorage.setItem('active', 'center');
         this.$store.commit('setMenu', 'center');
         this.$router.push({path: '/center'})
       },
@@ -343,6 +344,7 @@
       margin-bottom: 20px;
     }
   }
+
   .fr {
     float: right;
   }
@@ -391,7 +393,7 @@
         color: #666;
         font-size: 14px;
         cursor: pointer;
-        &:hover{
+        &:hover {
           color: #aa2f33;
         }
         i {
@@ -406,14 +408,14 @@
         cursor: pointer;
         position: relative;
         line-height: 34px;
-        p{
+        p {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           margin-right: 100px;
         }
         span {
-          display:block;
+          display: block;
           color: #999;
           font-size: 12px;
           position: absolute;
