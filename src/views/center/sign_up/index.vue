@@ -162,8 +162,8 @@
             <div class="parents_info">
               <p class="basic_tit">监护人信息<span v-if="parentsLength < 2" @click="addparentFlagFn">添加</span></p>
               <div v-for="(i,index) in parentsLength" :key="index" class="phone_parents_item">
-                <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}<span class="edit_btn"
-                                                                              @click="editParentFn(index,regInfo.parents[i-1])"></span>
+                <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}
+                  <span v-if="index > 0" class="edit_btn" @click="editParentFn(index,regInfo.parents[i-1])"></span>
                 </div>
                 <div class="parent_about">
                   <span v-if="regInfo.parents[i-1]['s_h']">{{regInfo.parents[i-1]['s_h']}}</span>
@@ -679,7 +679,7 @@
                 return;
               }
               vm.getReg();
-              vm.idEdit = false;
+              // vm.idEdit = false;
             })
           }
         })
@@ -893,6 +893,11 @@
         this.isShowBigImg = !this.isShowBigImg
       },
       saveParent() {
+        let mobileRes = /^1[34578]\d{9}$/;
+        if(!mobileRes.test(this.formParent.s_h)){
+          this.$message.error('手机格式错误');
+          return
+        }
         this.regInfo.parents[this.addParentIndex] = _.cloneDeep(this.formParent)
         if (this.isAddparentItem) {
           this.parentsLength++
