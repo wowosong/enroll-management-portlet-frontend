@@ -1,6 +1,6 @@
 <template>
     <div class="comm_item float_right campus_main">
-        <div class="campus_tit" @click="isShowMoreFn" :class="{allInfo:nowCampsId == '' || !nowCampsId}">全部校区<img src="../imgs/warp/down.png"></div>
+        <div class="campus_tit" @click="isShowMoreFn" :class="{allInfo:nowCampsId == '' || !nowCampsId}">{{cnName}}<img src="../imgs/warp/down.png"></div>
         <div class="campus_layer" v-if="isShowMore">
           <div class="layer_main">
             <div v-for="(item,index) in campusList" :key="index" class="campus_list" :class="{active:nowCampsId == item.id}" @click="camputedFn(item)">{{item.cnName}}</div>
@@ -17,7 +17,8 @@ export default {
     return {
       campusList: [],
       isShowMore:true,
-      nowCampsId:''
+      nowCampsId:'',
+      cnName:'全部校区'
     }
   },
   computed:{
@@ -44,7 +45,9 @@ export default {
       })
     },
     camputedFn(item){
-      this.nowCampsId = item.id
+      this.cnName = item.cnName;
+      this.nowCampsId = item.id;
+      this.isShowMore = !this.isShowMore;
       this.$emit("query",item.id)
     },
     isShowMoreFn(){
