@@ -415,6 +415,24 @@
         <el-form-item label="奖项等级">
           <el-input v-model="formRewards.s_e" placeholder="请输入"></el-input>
         </el-form-item>
+        <el-form-item label="奖项范围:">
+          <el-select v-model="formRewards.s_t" clearable placeholder="请选择">
+            <el-option
+              v-for="item in enumMap['s_t']"
+              :key="item.seiValue"
+              :label="item.seiName"
+              :value="item.seiValue"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="奖项类别:">
+          <el-select v-model="formRewards.s_u" clearable placeholder="请选择">
+            <el-option
+              v-for="item in enumMap['s_u']"
+              :key="item.seiValue"
+              :label="item.seiName"
+              :value="item.seiValue"/>
+          </el-select>
+        </el-form-item>
         <div class="sign-btn">
           <span class="save" @click="saveRewards">保存</span>
         </div>
