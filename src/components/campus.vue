@@ -121,6 +121,7 @@ export default {
           border-top:1px solid #eee;
           padding: 13px 20px;
           line-height: 20px;
+          margin-bottom: 0;
         }
         .layer_main{
           position: absolute;top:0;left:0;right:0;
