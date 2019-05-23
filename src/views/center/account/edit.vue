@@ -15,7 +15,7 @@
             <el-form :model="formData" :rules="rules" ref="ruleForm" label-width="120px">
                 <template v-if="stempNum == 1">
                     <el-form-item label="当前登录名:">{{logonName}}</el-form-item>
-                    <el-form-item label="身份证号:" prop="idCard">
+                    <el-form-item label="证件号:" prop="idCard">
                         <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入"></el-input>
                     </el-form-item>
                     <el-form-item label="姓名:" prop="userName">
@@ -62,9 +62,9 @@
         },
         data(){
             var validateCard = (rule, value, callback) => {
-                let pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+                let pattern = /^[0-9]{9,}$/;
                 if(!pattern.test(value)){
-                  callback(new Error('身份证号码格式有误'));
+                  callback(new Error('证件号格式有误'));
                 }else{
                   callback();
                 }
@@ -81,7 +81,7 @@
               logonName:window.userInfo.logonName,
               rules:{
                 idCard:[
-                  { required: true, message: "身份证号不能为空!", trigger: "blur" },
+                  { required: true, message: "证件号不能为空!", trigger: "blur" },
                   { validator: validateCard, trigger: 'blur' }
                 ],
                 userName:[
@@ -106,7 +106,7 @@
           this.$refs.ruleForm.validateField('idCard');
           this.$refs.ruleForm.validateField('userName');
 
-          let pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+          let pattern = /^[0-9]{9,}$/;
           if(this.formData.idCard == '' || this.formData.userName == '' || !pattern.test(this.formData.idCard)){
             return this.isNextFalg = false
           }else{

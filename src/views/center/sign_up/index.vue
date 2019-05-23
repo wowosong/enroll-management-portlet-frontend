@@ -28,17 +28,22 @@
             <el-form-item label="性别:" required style="margin-bottom:5px">
               {{genderMap[regInfo.stuGender]}}
             </el-form-item>
-            <el-form-item label="户籍所在地:" prop="stuAdds">
+            <el-form-item label="户籍所在地:" prop="stuAdds" :required="isrequired">
+              <el-col :span="12">
               <el-cascader
                 style="width: 100%"
                 filterable
                 :options="addList"
                 v-model="regInfo.stuAdds"/>
+              </el-col>
             </el-form-item>
             <el-form-item label="现就读学校:" prop="nowSchool">
-              <el-autocomplete v-model="regInfo.nowSchool" :fetch-suggestions="querySearch" placeholder="请输入内容"/>
+              <el-col :span="12">
+              <el-autocomplete  style="width: 100%" v-model="regInfo.nowSchool" :fetch-suggestions="querySearch" placeholder="请填写"/>
+              </el-col>
             </el-form-item>
             <el-form-item label="现就读年级:" prop="nowGrade">
+              <el-col :span="12">
               <el-select clearable v-model="regInfo.nowGrade">
                 <el-option
                   v-for="item in gradeList"
@@ -46,8 +51,9 @@
                   :label="item.gradeName"
                   :value="item.id"/>
               </el-select>
+              </el-col>
             </el-form-item>
-            <el-form-item label="总分年级排名/年级人数:" class="long_label other_data_s_a" prop="otherData.s_a">
+            <el-form-item label="近次年级排名/年级人数:" class="long_label other_data_s_a" prop="otherData.s_a">
               <el-input
                 type="number"
                 min="1"
@@ -139,14 +145,14 @@
                         :value="item.seiValue"/>
                     </el-select>
                   <td>
-                  <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
-                    <el-option
-                      v-for="item in enumMap['s_u']"
-                      :key="item.seiValue"
-                      :label="item.seiName"
-                      :value="item.seiValue"/>
-                  </el-select>
-                </td>
+                    <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
+                      <el-option
+                        v-for="item in enumMap['s_u']"
+                        :key="item.seiValue"
+                        :label="item.seiName"
+                        :value="item.seiValue"/>
+                    </el-select>
+                  </td>
                 </tr>
                 </tbody>
               </table>
@@ -156,7 +162,9 @@
             <div class="parents_info">
               <p class="basic_tit">监护人信息<span v-if="parentsLength < 2" @click="addparentFlagFn">添加</span></p>
               <div v-for="(i,index) in parentsLength" :key="index" class="phone_parents_item">
-                <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}<span class="edit_btn" @click="editParentFn(index,regInfo.parents[i-1])"></span></div>
+                <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}<span class="edit_btn"
+                                                                              @click="editParentFn(index,regInfo.parents[i-1])"></span>
+                </div>
                 <div class="parent_about">
                   <span v-if="regInfo.parents[i-1]['s_h']">{{regInfo.parents[i-1]['s_h']}}</span>
                   <span v-if="regInfo.parents[i-1]['s_i']">{{regInfo.parents[i-1]['s_i']}}</span>
@@ -168,7 +176,9 @@
             <div class="reward_info">
               <p class="basic_tit">获奖信息<span v-if="rewardsLength < 3" @click="addrewardsFlagFn">添加</span></p>
               <div v-for="(i,index) in rewardsLength" :key="index" class="phone_parents_item">
-                <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn" @click="editRewardFn(index,regInfo.rewards[i-1])"></span></div>
+                <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn"
+                                                                              @click="editRewardFn(index,regInfo.rewards[i-1])"></span>
+                </div>
                 <div class="parent_about">
                   <span v-if="regInfo.rewards[i-1]['s_e']">{{regInfo.rewards[i-1]['s_e']}}</span>
                   <span v-if="regInfo.rewards[i-1]['s_c']">{{regInfo.rewards[i-1]['s_c']}}</span>
@@ -190,7 +200,7 @@
               </div>
 
               <el-upload
-               class="phone_upload_img"
+                class="phone_upload_img"
                 v-if="isPhone"
                 :action="uploadUrl"
                 :multiple="true"
@@ -251,7 +261,7 @@
           <tr>
             <td align="right">现就读年级：</td>
             <td>{{regInfo.nowGradeName}}</td>
-            <td align="right">总分年级排名/年级人数：</td>
+            <td align="right">近次年级排名/年级人数：</td>
             <td>{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</td>
           </tr>
           </tbody>
@@ -295,36 +305,37 @@
         </table>
         <table>
           <tbody>
-            <tr>
-              <td width="82px" valign="top" align="right">
-                <div style="line-height:30px">获奖信息：</div>
-              </td>
-              <td>
-                <table>
-                  <tr v-for="(item, idx) in regInfo.rewards" :key="idx">
-                    <td><div style="line-height:30px" v-if="item['s_c'] && item['s_d'] && item['s_e']">
+          <tr>
+            <td width="82px" valign="top" align="right">
+              <div style="line-height:30px">获奖信息：</div>
+            </td>
+            <td>
+              <table>
+                <tr v-for="(item, idx) in regInfo.rewards" :key="idx">
+                  <td>
+                    <div style="line-height:30px" v-if="item['s_c'] && item['s_d'] && item['s_e']">
                       {{item['s_c'] | dateFormatYmdW}} {{item['s_d']}} {{item['s_e']}}
                       {{itemMap['s_t'][item['s_t']]}} {{itemMap['s_u'][item['s_u']]}}
                     </div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td width="82px" valign="top" align="right">获奖附件：</td>
-              <td>
-                <div v-if="regInfo.rewardFile && regInfo.rewardFile.length > 0">
-                  <div class="img_thumbnail" v-for="(file,fid) in regInfo.rewardFile" :key="fid">
-                    <img
-                      v-if="file.fieldValue"
-                      :src="imgUrl+file.fieldValue"
-                      @error="errorImg($event,'image')">
-                    <div class="big_btn_l" @click="showBigImg(file.fieldValue)"></div>
-                  </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td width="82px" valign="top" align="right">获奖附件：</td>
+            <td>
+              <div v-if="regInfo.rewardFile && regInfo.rewardFile.length > 0">
+                <div class="img_thumbnail" v-for="(file,fid) in regInfo.rewardFile" :key="fid">
+                  <img
+                    v-if="file.fieldValue"
+                    :src="imgUrl+file.fieldValue"
+                    @error="errorImg($event,'image')">
+                  <div class="big_btn_l" @click="showBigImg(file.fieldValue)"></div>
                 </div>
-              </td>
-            </tr>
+              </div>
+            </td>
+          </tr>
           </tbody>
         </table>
         <!-- <div class="table-item">
@@ -406,18 +417,26 @@
       var parentsVFn = (rule, value, callback) => {
         let parents = this.regInfo.parents
         let isFlag = false
-          for(let i=0;i<parents.length;i++){
-            if(parents[i].s_g && parents[i].s_g != ''){
-              isFlag = true
-              break
-            }
+        for (let i = 0; i < parents.length; i++) {
+          if (parents[i].s_g && parents[i].s_g != '') {
+            isFlag = true
+            break
           }
-          if(!isFlag){
-            callback(new Error('必填'));
-          }else{
-            callback();
-          }
-      }
+        }
+        if (!isFlag) {
+          callback(new Error('必填'));
+        } else {
+          callback();
+        }
+      };
+      // 验证户籍所在地
+      let checkStuAdds = (rule, value, callback) => {
+        if (this.planInfo.phaseName == '初中' && !this.regInfo.stuAdds) {
+          return callback(new Error('必填项'));
+        } else {
+          callback();
+        }
+      };
       return {
         // 绑数据
         userInfo: window.userInfo,
@@ -461,7 +480,7 @@
         // 原始
         idEdit: false,
         isShowBigImg: false,
-        bigimgId:'',
+        bigimgId: '',
         bigFileId: '',
         bigImgUrl: '/gateway/zuul/filesystem/api/data/original/',
         imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
@@ -486,60 +505,59 @@
           },
         ],
         rules: {},
-        parentsLength:0,
-        rewardsLength:0,
-        addparentFlag:false,
-        addrewardsFlag:false,
-        addParentIndex:0,
-        addRewardsIndex:0,
-        isAddparentItem:false,
-        isAddRewardItem:false,
-        formParent:{
-          s_g:'',
-          s_h:'',
-          s_i:'',
-          s_j:'',
-          s_k:''
+        parentsLength: 0,
+        rewardsLength: 0,
+        addparentFlag: false,
+        addrewardsFlag: false,
+        addParentIndex: 0,
+        addRewardsIndex: 0,
+        isAddparentItem: false,
+        isAddRewardItem: false,
+        formParent: {
+          s_g: '',
+          s_h: '',
+          s_i: '',
+          s_j: '',
+          s_k: ''
         },
-        formRewards:{
+        formRewards: {
           s_c: "",
           s_d: "",
           s_e: "",
           s_t: "",
           s_u: ""
         },
+        //户籍所在地是否验证
+        isrequired: true,
         rules: {
-          stuAdds:[
-            { required: true, message: "必填", trigger: "blur" }
+          stuAdds: [{validator: checkStuAdds, message: '必填项', trigger: 'blur'}],
+          nowSchool: [
+            {required: true, message: "必填", trigger: "blur"}
           ],
-          nowSchool:[
-            { required: true, message: "必填", trigger: "blur" }
+          nowGrade: [
+            {required: true, message: "必填", trigger: "blur"}
           ],
-          nowGrade:[
-            { required: true, message: "必填", trigger: "blur" }
+          'otherData.s_a': [
+            {required: true, message: "必填", trigger: "blur"}
           ],
-          'otherData.s_a':[
-            { required: true, message: "必填", trigger: "blur" }
+          'otherData.s_b': [
+            {required: true, message: "必填", trigger: "blur"}
           ],
-          'otherData.s_b':[
-            { required: true, message: "必填", trigger: "blur" }
-          ],
-          'parentsV':[
-            { required: true,validator: parentsVFn, trigger: 'blur' }
+          'parentsV': [
+            {required: true, validator: parentsVFn, trigger: 'blur'}
           ]
         },
         uploadUrl: `/gateway/zuul/filesystem/api/upload/simpleupload?userId=${userInfo.id}`,
       }
     },
-    computed:{
-        isPhone: function () {
-            return this.$store.state.isPhone
-        },
+    computed: {
+      isPhone: function () {
+        return this.$store.state.isPhone
+      },
     },
     mounted() {
       const vm = this;
-
-      if(this.$store.state.isPhone){
+      if (this.$store.state.isPhone) {
         this.idEdit = true
       }
 
@@ -576,7 +594,7 @@
       saveInfo() {
         const vm = this;
         vm.$refs["ruleForm"].validate((valid) => {
-          if(valid){
+          if (valid) {
             vm.saving = true;
             vm.regInfo.planId = vm.planId;
             vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade]
@@ -663,7 +681,7 @@
               vm.getReg();
               vm.idEdit = false;
             })
-            }
+          }
         })
       },
       getReg() {
@@ -678,7 +696,7 @@
           vm.rewardsLength = data.rewards.length
           for (let i = 0; i < 3; i++) {
             if (!data.rewards[i]) {
-              let obj = {s_c: "", s_d: "", s_e: "",s_t: "",s_u: ""};
+              let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
               data.rewards[i] = obj;
             } else {
               // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
@@ -753,7 +771,7 @@
             }
           }
         });
-        console.log("vm.itemMap",vm.itemMap)
+        console.log("vm.itemMap", vm.itemMap)
       },
       getEnum() {
         let vm = this;
@@ -810,6 +828,9 @@
             return;
           }
           vm.planInfo = xhr.data.data;
+          if (vm.planInfo.phaseName != "初中") {
+            vm.isrequired = false
+          }
         });
       },
       pointFn(type) {
@@ -871,55 +892,55 @@
         this.bigimgId = id
         this.isShowBigImg = !this.isShowBigImg
       },
-      saveParent(){
+      saveParent() {
         this.regInfo.parents[this.addParentIndex] = _.cloneDeep(this.formParent)
-        if(this.isAddparentItem){
+        if (this.isAddparentItem) {
           this.parentsLength++
         }
-        this.$emit("changeTitle",'报名信息')
+        this.$emit("changeTitle", '报名信息')
         this.addparentFlag = false
       },
-      addparentFlagFn(){
-        for(let i in this.formParent){
+      addparentFlagFn() {
+        for (let i in this.formParent) {
           this.formParent[i] = ''
         }
         this.addParentIndex = this.parentsLength
         this.isAddparentItem = true
-        this.$emit("changeTitle",'新增监护人')
+        this.$emit("changeTitle", '新增监护人')
         this.addparentFlag = true
       },
-      editParentFn(index,item){
+      editParentFn(index, item) {
         this.addParentIndex = index
         this.formParent = item
         this.isAddparentItem = false
-        this.$emit("changeTitle",'编辑监护人')
+        this.$emit("changeTitle", '编辑监护人')
         this.addparentFlag = true
       },
-      saveRewards(){
+      saveRewards() {
         this.regInfo.rewards[this.addRewardsIndex] = _.cloneDeep(this.formRewards)
-        if(this.isAddRewardItem){
+        if (this.isAddRewardItem) {
           this.rewardsLength++
         }
-        this.$emit("changeTitle",'报名信息')
+        this.$emit("changeTitle", '报名信息')
         this.addrewardsFlag = false
       },
-      addrewardsFlagFn(){
-        for(let i in this.formRewards){
+      addrewardsFlagFn() {
+        for (let i in this.formRewards) {
           this.formRewards[i] = ''
         }
         this.addRewardsIndex = this.rewardsLength
         this.isAddRewardItem = true
-        this.$emit("changeTitle",'新增获奖信息')
+        this.$emit("changeTitle", '新增获奖信息')
         this.addrewardsFlag = true
       },
-      editRewardFn(index,item){
+      editRewardFn(index, item) {
         this.addRewardsIndex = index
         this.addrewardsFlag = true
         this.isAddRewardItem = false
-        this.$emit("changeTitle",'编辑获奖信息')
+        this.$emit("changeTitle", '编辑获奖信息')
         this.formRewards = item
       },
-      goBackFn(){
+      goBackFn() {
         this.addparentFlag = false
         this.addrewardsFlag = false
       }
@@ -985,7 +1006,7 @@
       cursor: pointer;
       background: url('~@/imgs/upload.png') no-repeat 40px center;
       padding-left: 20px;
-      span{
+      span {
         display: none;
       }
     }
@@ -1104,6 +1125,7 @@
       // height: 100%;
     }
   }
+
   .upload_item .card {
     float: left;
   }
@@ -1123,6 +1145,7 @@
   .area_margin {
     margin: 0 !important;
   }
+
   .sign-btn {
     text-align: center;
     span {
@@ -1135,6 +1158,7 @@
       border-radius: 4px;
       letter-spacing: 5px;
       display: inline-block;
+      cursor: pointer;
     }
     .save {
       background: #2f3861;
@@ -1142,6 +1166,7 @@
     .cancel {
       background: none;
       color: #333;
+      border: 1px solid #2f3861;
     }
     .submit {
       background: #eeeeee;
@@ -1149,173 +1174,175 @@
       color: #333;
     }
   }
-  .basic_tit{
+
+  .basic_tit {
     display: none;
   }
 </style>
 <style lang="less" scoped>
-    //warp版本
-    .is_phone{
-      .user_school{
-        text-align: center;
-        margin: 30px 0 10px 0;
-      }
-      .import_hint{
-        display: block;
-        float: none;
-        border-top:10px solid #eee;
-        padding: 10px 20px;
-        margin-top: 20px;
-        text-align: left;
-      }
-      .show_edit{
-        .user_img{
-          position: static;
-          width: auto;
-          margin: 0 20px;
-          img{
-            // float: right;
-            width: 70px;
-            height: 80px;
-          }
-          div,p{
-            // margin-right: 90px;
-          }
-          .upload_btn{
-            border:none;
-            background: none;
-            padding-left: 0;
-            margin-top: 0;
-            float: left;
-            width: 100px;
-            text-align: right;
-            padding-right: 12px;
-            span{
-              display: inline-block;
-            }
-          }
-          p{
-            margin-top: 0;
-            margin-left: 102px;
-          }
-        }
-        .basic_info{
-          padding: 0 20px 10px 20px;
-          margin: 0;
-          margin-bottom: 20px;
-          border-bottom:10px solid #eee;
-        }
-      }
-      .basic_tit{
-        border-left:3px solid #aa2f33;
-        line-height: 16px;
-        font-size: 16px;
-        font-weight: bold;
-        margin-left: 20px;
-        padding-left: 4px;
-        margin-bottom: 20px;
-        span{
-          float: right;
-          color: #aa2f33;
-          margin-right: 20px;
-          font-weight: normal;
-          font-size: 14px;
-        }
-      }
-      .phone_parents_item{
-        border-bottom:1px solid #eee;
-        margin-left: 20px;
-        padding: 20px 20px 20px 0;
-        .parent_name{
-          font-weight: bold;
-          .edit_btn{
-            width: 15px;
-            height: 15px;
-            background: url(~@/imgs/warp/edit.png) no-repeat;
-            background-size: 100%;
-            float: right;
-          }
-        }
-        .parent_about{
-          margin-top: 10px;
-          span{
-            border:1px solid #2f3861;
-            color: #2f3861;
-            padding: 2px 5px;
-            line-height: 16px;
-            display: inline-block;
-            vertical-align: top;
-          }
-        }
-        .parent_address{
-          margin-top: 10px;
-        }
-      }
-      .phone_parents_item:last-child{
-         border-bottom:none;
-      }
-      .parents_info{
-        border-bottom:10px solid #eee;
-        margin-bottom: 20px;
-      }
-      .cancel{
-        display: none;
-      }
-      .save{
-        display: block;
+  //warp版本
+  .is_phone {
+    .user_school {
+      text-align: center;
+      margin: 30px 0 10px 0;
+    }
+    .import_hint {
+      display: block;
+      float: none;
+      border-top: 10px solid #eee;
+      padding: 10px 20px;
+      margin-top: 20px;
+      text-align: left;
+    }
+    .show_edit {
+      .user_img {
+        position: static;
         width: auto;
-        border-radius: 0;
-        margin-bottom: 20px;
-      }
-      .basic_tit{
-        display: block;
-      }
-      .addparentFlag,
-      .addrewardsFlag{
-        padding:20px;
-        .save{
-          margin: 0;
+        margin: 0 20px;
+        img {
+          // float: right;
+          width: 70px;
+          height: 80px;
         }
-      }
-      .prove{
-        display: none;
-      }
-      .img_box{
-        &>div{
-          width: 30%;
-          height: 70px;
+        div, p {
+          // margin-right: 90px;
+        }
+        .upload_btn {
+          border: none;
+          background: none;
+          padding-left: 0;
+          margin-top: 0;
           float: left;
-          .up_idcard{
-            width: 100%;
-            height: 70px;
-            line-height: 70px;
+          width: 100px;
+          text-align: right;
+          padding-right: 12px;
+          span {
+            display: inline-block;
           }
         }
+        p {
+          margin-top: 0;
+          margin-left: 102px;
+        }
       }
-      .phone_upload_img{
+      .basic_info {
+        padding: 0 20px 10px 20px;
+        margin: 0;
+        margin-bottom: 20px;
+        border-bottom: 10px solid #eee;
+      }
+    }
+    .basic_tit {
+      border-left: 3px solid #aa2f33;
+      line-height: 16px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-left: 20px;
+      padding-left: 4px;
+      margin-bottom: 20px;
+      span {
+        float: right;
+        color: #aa2f33;
+        margin-right: 20px;
+        font-weight: normal;
+        font-size: 14px;
+      }
+    }
+    .phone_parents_item {
+      border-bottom: 1px solid #eee;
+      margin-left: 20px;
+      padding: 20px 20px 20px 0;
+      .parent_name {
+        font-weight: bold;
+        .edit_btn {
+          width: 15px;
+          height: 15px;
+          background: url(~@/imgs/warp/edit.png) no-repeat;
+          background-size: 100%;
+          float: right;
+        }
+      }
+      .parent_about {
+        margin-top: 10px;
+        span {
+          border: 1px solid #2f3861;
+          color: #2f3861;
+          padding: 2px 5px;
+          line-height: 16px;
+          display: inline-block;
+          vertical-align: top;
+        }
+      }
+      .parent_address {
+        margin-top: 10px;
+      }
+    }
+    .phone_parents_item:last-child {
+      border-bottom: none;
+    }
+    .parents_info {
+      border-bottom: 10px solid #eee;
+      margin-bottom: 20px;
+    }
+    .cancel {
+      display: none;
+    }
+    .save {
+      display: block;
+      width: auto;
+      border-radius: 0;
+      margin-bottom: 20px;
+    }
+    .basic_tit {
+      display: block;
+    }
+    .addparentFlag,
+    .addrewardsFlag {
+      padding: 20px;
+      .save {
+        margin: 0;
+      }
+    }
+    .prove {
+      display: none;
+    }
+    .img_box {
+      & > div {
         width: 30%;
         height: 70px;
-        border: 1px solid #ccc;
-        .file-list{
-          height: 100%;
+        float: left;
+        .up_idcard {
           width: 100%;
+          height: 70px;
           line-height: 70px;
-          text-align: center;
-        }
-        img{
-          width: 60%;
-          height: 60%;
-          vertical-align: middle;
         }
       }
-      .img_thumbnail{
-        width: 30%;
-        height: 70px;
+    }
+    .phone_upload_img {
+      width: 30%;
+      height: 70px;
+      border: 1px solid #ccc;
+      .file-list {
+        height: 100%;
+        width: 100%;
+        line-height: 70px;
+        text-align: center;
+      }
+      img {
+        width: 60%;
+        height: 60%;
+        vertical-align: middle;
       }
     }
-    .other_data_s_a,.other_data_s_b{
-      display: inline-block;
+    .img_thumbnail {
+      width: 30%;
+      height: 70px;
     }
+  }
+
+  .other_data_s_a, .other_data_s_b {
+    display: inline-block;
+  }
 </style>
 <style lang="less">
   .table_list {
@@ -1323,17 +1350,18 @@
       border: none;
     }
   }
-  .is_phone{
-    .long_label{
-      .el-form-item__label{
+
+  .is_phone {
+    .long_label {
+      .el-form-item__label {
         line-height: 20px;
       }
     }
-    .phone_upload_img{
-        .el-upload{
-          width: 100%;
-          height: 100%;
-        }
+    .phone_upload_img {
+      .el-upload {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 </style>
