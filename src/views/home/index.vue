@@ -49,7 +49,7 @@
         <ul class="notice-list" v-if="noticeList && noticeList.length > 0">
           <li v-for="(item,index) in noticeList" :key="index" v-if="index<5" >
             <p @click="showNotice(item)">{{item.noticeTitle}}</p>
-            <span>{{item.createTime | dateFormatYmd}}</span>
+            <span>{{item.publishTime | dateFormatYmd}}</span>
           </li>
         </ul>
         <!--暂无数据-->

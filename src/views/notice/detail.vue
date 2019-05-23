@@ -18,7 +18,7 @@
             </div>
             <div class="no_data" v-if="!datail || datail.noticeContent == ''"></div>
         </div>
-        <campus></campus>
+        <campus @query="goNoticeListFn"></campus>
     </div>
 </template>
 <script>
@@ -38,6 +38,14 @@
         let vm = this;
         vm.datail = vm.$route.query.datail
       },
+      methods: {
+        down(file){
+          window.filesystemSingleDownload([{id:file.fileId},{filename:file.fileName}])
+        },
+        goNoticeListFn(data){
+            this.$router.push({path:'/notice',query:{id:data}});
+        }
+      }
     }
 </script>
 
