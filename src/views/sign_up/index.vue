@@ -709,6 +709,8 @@
           }
         }
         vm.regInfo.creatorId = "00001111000011110000111100001111";
+        vm.regInfo.campusName = vm.planInfo.campusId;
+        
         http.post("/gateway/enroll/api/erRegister", vm.regInfo).then((xhr) => {
           vm.saving = false;
           if (xhr.data.code) {
