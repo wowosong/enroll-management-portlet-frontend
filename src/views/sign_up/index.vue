@@ -616,7 +616,7 @@
         // 获奖信息是否展开
         prizeOpen: true,
         // 上传图片 请求地址
-        uploadUrl: `${window.systemParameter.fileSystemWriteUrl}/api/upload/simpleupload?userId=00000000000000000000000000000000`,
+        uploadUrl: `/gateway/zuul/filesystem/api/upload/simpleupload?userId=${userInfo.id}`,
         // 监护人错误提示
         parentsMsg: '',
         // 登录密码框是否显示

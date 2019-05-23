@@ -178,16 +178,32 @@
           </template>
           <el-form-item label="获奖附件:" label-width="82px">
             <div class="img_box">
-              <div class="img_thumbnail" v-if="fileList && fileList.length>0">
-                <img @error="errorImg($event,'image')" :src="imgUrl+fileList[0].fileId">
-                <div class="big_btn_l" @click="showBigImg(fileList[0].fileId)"></div>
+              <div class="img_thumbnail" v-for="(file,fid) in fileList" :key="fid" v-if="fileList && fileList.length>0">
+                <img @error="errorImg($event,'image')" :src="imgUrl+file.fileId">
+                <div class="big_btn_l" @click="showBigImg(file.fileId)"></div>
               </div>
-              <div class="upload_item">
+              <div class="upload_item" v-if="!isPhone">
                 <div class="up_idcard" @click="uploadEnclosure">
                   <template><img src="@/imgs/upload.png">上传证件</template>
                 </div>
                 <div class="hint prove">证明您的获奖情况</div>
               </div>
+
+              <el-upload
+               class="phone_upload_img"
+                v-if="isPhone"
+                :action="uploadUrl"
+                :multiple="true"
+                :show-file-list="false"
+                :file-list="fileList"
+                :accept="'image/*'"
+                :on-success="phoneEnclosure">
+                <div class="file-list">
+                  <span>
+                      <img src="@/imgs/warp/default.png" class="org-img">
+                  </span>
+                </div>
+              </el-upload>
             </div>
           </el-form-item>
         </el-form>
@@ -299,12 +315,12 @@
               <td width="82px" valign="top" align="right">获奖附件：</td>
               <td>
                 <div v-if="regInfo.rewardFile && regInfo.rewardFile.length > 0">
-                  <div class="img_thumbnail">
+                  <div class="img_thumbnail" v-for="(file,fid) in regInfo.rewardFile" :key="fid">
                     <img
-                      v-if="regInfo.rewardFile[0].fieldValue"
-                      :src="imgUrl+regInfo.rewardFile[0].fieldValue"
+                      v-if="file.fieldValue"
+                      :src="imgUrl+file.fieldValue"
                       @error="errorImg($event,'image')">
-                    <div class="big_btn_l" @click="showBigImg(regInfo.rewardFile[0].fieldValue)"></div>
+                    <div class="big_btn_l" @click="showBigImg(file.fieldValue)"></div>
                   </div>
                 </div>
               </td>
@@ -511,7 +527,8 @@
           'parentsV':[
             { required: true,validator: parentsVFn, trigger: 'blur' }
           ]
-        }
+        },
+        uploadUrl: `/gateway/zuul/filesystem/api/upload/simpleupload?userId=${userInfo.id}`,
       }
     },
     computed:{
@@ -841,6 +858,13 @@
               fileId: _.trim(f.id),
             });
           }
+        });
+      },
+      //手机上传获奖附件
+      phoneEnclosure(file) {
+        this.fileList.push({
+          fileName: file.data.filename,
+          fileId: _.trim(file.data.id),
         });
       },
       showBigImg(id) {
@@ -1268,6 +1292,26 @@
           }
         }
       }
+      .phone_upload_img{
+        width: 30%;
+        height: 70px;
+        border: 1px solid #ccc;
+        .file-list{
+          height: 100%;
+          width: 100%;
+          line-height: 70px;
+          text-align: center;
+        }
+        img{
+          width: 60%;
+          height: 60%;
+          vertical-align: middle;
+        }
+      }
+      .img_thumbnail{
+        width: 30%;
+        height: 70px;
+      }
     }
     .other_data_s_a,.other_data_s_b{
       display: inline-block;
@@ -1284,6 +1328,12 @@
       .el-form-item__label{
         line-height: 20px;
       }
+    }
+    .phone_upload_img{
+        .el-upload{
+          width: 100%;
+          height: 100%;
+        }
     }
   }
 </style>

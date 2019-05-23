@@ -5,8 +5,9 @@
             {{title}}
         </div>
         <div class="user_info">
-            <img src="@/imgs/avatar.png">
-            <p>张三山</p>
+            <img v-if="accountAvatar" :src="avatar_url + accountAvatar">
+            <img v-else src="@/imgs/avatar.png">
+            <p>{{userName}}</p>
         </div>
         <div class="comm_item float_left">
            <div class="center_tabs clearfix">
@@ -41,7 +42,10 @@
                 tabIndex:0,
                 left:30,
                 title:'个人中心',
-                titleList:['报名信息','招生进度','账号安全']
+                titleList:['报名信息','招生进度','账号安全'],
+                userName:userInfo.userName,
+                avatar_url: window.systemParameter.FILE_SYSTEM_URL + "/file/thumbnail/",
+                accountAvatar:userInfo.accountAvatar
             }
         },
         computed:{
