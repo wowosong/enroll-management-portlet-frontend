@@ -12,10 +12,10 @@ input {
 }
 
 /*!*解决移动端滑动卡顿*!*/
-#app .main {
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-}
+/*#app .main {*/
+  /*overflow: auto;*/
+  /*-webkit-overflow-scrolling: touch;*/
+/*}*/
 
 /*#app .main .sign-wrap {*/
   /*min-height: 101%;*/

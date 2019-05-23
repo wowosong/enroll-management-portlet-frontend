@@ -318,20 +318,20 @@
                   <span v-else @click="guardianOpen = !guardianOpen">收起 <i class="el-icon-arrow-up"></i> </span>
                 </p>
                 <template v-for="i in 2" v-if="guardianOpen">
-                  <el-form-item label="姓名:">
+                  <el-form-item label="姓名:" :required="i==1 ? true:false">
                     <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_g']"/>
                   </el-form-item>
-                  <el-form-item label="手机:">
+                  <el-form-item label="手机:" :required="i==1 ? true:false">
                     <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"
                               @blur="setLoginName"/>
                   </el-form-item>
-                  <el-form-item label="学历:">
+                  <el-form-item label="学历:" :required="i==1 ? true:false">
                     <el-input :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
                   </el-form-item>
-                  <el-form-item label="工作单位:">
+                  <el-form-item label="工作单位:" :required="i==1 ? true:false">
                     <el-input :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
                   </el-form-item>
-                  <el-form-item label="职务:">
+                  <el-form-item label="职务:" :required="i==1 ? true:false">
                     <el-input :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
                   </el-form-item>
                   <div class="line-1" v-if="i==1"></div>
@@ -596,19 +596,19 @@
         imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
         // 表单验证
         rules: {
-          stuName: [{required: true, message: '必填项', trigger: 'change'}],
+          stuName: [{required: true, message: '必填项', trigger: 'blur'}],
           idCard: [
             {required: true, message: '必填项', trigger: 'blur'},
             {min: 9, message: '格式错误', trigger: 'blur'}
           ],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
-          phoneNum: [{required: true, message: '必填项', trigger: 'change'}],
+          phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
           // repwd: [{required: true, message: '必填项', trigger: 'blur'}],
           stuAdds: [{validator: checkStuAdds, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
-          nowSchool: [{required: true, message: '必填项', trigger: 'change'}],
-          nowGrade: [{required: true, message: '必填项', trigger: 'change'}],
+          nowSchool: [{required: true, message: '必填项', trigger: 'blur'}],
+          nowGrade: [{required: true, message: '必填项', trigger: 'blur'}],
           rank: [{validator: checkRank, required: true, trigger: 'blur'}]
         },
         //  监护人信息是否展开
@@ -784,7 +784,6 @@
         // 自动登陆
         login() {
           let vm = this;
-
           let loginForm = {
             grant_type: 'password',
             username: vm.regInfo.phoneNum,
@@ -804,8 +803,8 @@
               return ret
             }]
           }).then(function (xhr) {
+            vm.clData();
             if (xhr.data.code == '20001')
-              vm.clData();
               return vm.$message.warning(xhr.data.message);
             if (xhr.data && xhr.data.access_token) {
               console.log(xhr.data)
@@ -1070,7 +1069,7 @@
               if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
               if (!vm.regInfo.nowSchool) return document.getElementById('regInfo_nowSchool').scrollIntoView();
               if (!vm.regInfo.nowGrade) return document.getElementById('regInfo_nowGrade').scrollIntoView();
-              if (!vm.regInfo.otherData['s_a'] || vm.regInfo.otherData['s_b']) return document.getElementById('regInfo_rank').scrollIntoView();
+              if (vm.phaseName != '初中' && !vm.regInfo.otherData['s_a'] || vm.phaseName != '初中' && vm.regInfo.otherData['s_b']) return document.getElementById('regInfo_rank').scrollIntoView();
               return false;
             }
           });
