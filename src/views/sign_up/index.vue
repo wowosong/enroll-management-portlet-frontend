@@ -596,7 +596,7 @@
         imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
         // 表单验证
         rules: {
-          stuName: [{required: true, message: '必填项', trigger: 'blur'}],
+          stuName: [{required: true, message: '必填项', trigger: 'change'}],
           idCard: [
             {required: true, message: '必填项', trigger: 'blur'},
             {min: 9, message: '格式错误', trigger: 'blur'}
@@ -607,8 +607,8 @@
           stuAdds: [{validator: checkStuAdds, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
-          nowSchool: [{required: true, message: '必填项', trigger: 'blur'}],
-          nowGrade: [{required: true, message: '必填项', trigger: 'blur'}],
+          nowSchool: [{required: true, message: '必填项', trigger: 'change'}],
+          nowGrade: [{required: true, message: '必填项', trigger: 'change'}],
           rank: [{validator: checkRank, required: true, trigger: 'blur'}]
         },
         //  监护人信息是否展开
@@ -804,7 +804,9 @@
               return ret
             }]
           }).then(function (xhr) {
-            if (xhr.data.code == '20001') return vm.$message.warning(xhr.data.message);
+            if (xhr.data.code == '20001')
+              vm.clData();
+              return vm.$message.warning(xhr.data.message);
             if (xhr.data && xhr.data.access_token) {
               console.log(xhr.data)
               let dataToken = xhr.data;
