@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div class="title">
+      <span @click="goBack"></span>
+      <a @click="$router.back('/')">嘉祥招生门户</a>
+    </div>
     <div class="login">
       <div class="user-error" v-if="userError">{{userError}}</div>
       <div class="pwd-error" v-if="pwdError">{{pwdError}}</div>
@@ -74,6 +78,9 @@
           return false
         }
         return true
+      },
+      goBack(){
+        this.$router.back(-1)
       },
       // 登录
       login() {
@@ -193,5 +200,25 @@
   }
   .fr{
     float: right;
+  }
+  .title{
+    background: #2f3861;
+    text-align: center;
+    position: relative;
+    height: 45px;
+    line-height: 45px;
+    color: #fff;
+    font-size: 16px;
+    display: block;
+    a{
+      color: #fff;
+    }
+    span{
+      background: url(~@/imgs/warp/back.png) no-repeat center;
+      background-size: 11px 20px;
+      position: absolute;top:0;left:5px;
+      width: 45px;
+      height: 45px;
+    }
   }
 </style>
