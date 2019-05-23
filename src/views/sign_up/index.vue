@@ -437,7 +437,7 @@
                       <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                     </template>
                   </el-form-item>
-                  <el-form-item label="设置密码:" prop="pwd">
+                  <el-form-item label="设置密码:">
                     <el-col :span="18">
                       <el-input v-show="showInput" v-if="!isPwd" type="password" v-model="regInfo.pwd"
                                 placeholder="默认密码 (证件号后六位)">
@@ -546,6 +546,15 @@
           callback();
         }
       };
+      // 验证登录密码
+      let checkpwd = (rule, value, callback) => {
+        if (this.regInfo.pwd != this.regInfo.repwd) {
+          return callback(new Error('密码不一致'));
+        } else {
+          callback();
+        }
+      };
+
       return {
         // 绑数据
         planInfo: {},
@@ -603,7 +612,7 @@
           ],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
-          // repwd: [{required: true, message: '必填项', trigger: 'blur'}],
+          repwd: [{validator: checkpwd, trigger: 'blur'}],
           stuAdds: [{validator: checkStuAdds, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],

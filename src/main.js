@@ -177,9 +177,23 @@ window.logout = function () {
     http.get('/gateway/auth/logout', {
       headers: {Authorization: 'Bearer ' + localtoken.access_token},
     }).then((xhr) => {
+      // 清空用户信息
+      store.commit('getUserInfo', {});
+      // 重置登录状态
+      store.commit('changeLogin', false);
+      // 设置导航栏状态
+      store.commit('setMenu', 'home');
+      localStorage.setItem('active', 'home');
       router.push('/')
     })
   } else {
+    // 清空用户信息
+    store.commit('getUserInfo', {});
+    // 重置登录状态
+    store.commit('changeLogin', false);
+    // 设置导航栏状态
+    store.commit('setMenu', 'home');
+    localStorage.setItem('active', 'home');
     router.push('/')
   }
 }
@@ -198,14 +212,14 @@ if (isPhone) {
 
 
 let localtoken = localStorage.getItem('accesstoken') ? JSON.parse(localStorage.getItem('accesstoken')) : '';
-let active = localStorage.getItem('active')?localStorage.getItem('active'):'home';
+let active = localStorage.getItem('active') ? localStorage.getItem('active') : 'home';
 // 初始化 store
 const store = new Vuex.Store({
   state: {
     isLogin: localtoken ? true : false,
     userInfo: {},
     isPhone: window.isPhone,
-    active:active
+    active: active
   },
   mutations: {
     changeLogin(state, value) {
