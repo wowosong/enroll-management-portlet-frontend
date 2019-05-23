@@ -1029,7 +1029,7 @@
           vm.parentsMsg = '';
           vm.eduMsg = '';
           // 身份证验证
-          if (!vm.regInfo.photoId) {
+          if (vm.phaseName != '初中' && !vm.regInfo.photoId) {
             if (!vm.isLogin) {
               vm.userImgErr = true;
             }
