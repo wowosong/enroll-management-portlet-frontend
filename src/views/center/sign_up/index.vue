@@ -461,7 +461,6 @@
       };
       return {
         // 绑数据
-        userInfo: window.userInfo,
         planInfo: {},
         rewardRows: 3,
         regInfo: {
@@ -578,25 +577,27 @@
       isPhone: function () {
         return this.$store.state.isPhone
       },
+      userInfo: function () {
+        return this.$store.state.userInfo
+      },
     },
     mounted() {
       const vm = this;
-      if (this.$store.state.isPhone) {
-        this.idEdit = true
+      if (vm.$store.state.isPhone) {
+        vm.idEdit = true
       }
-
       vm.getEnum();
       vm.getAddList();
       vm.getGradeList();
-      http.get("/gateway/enroll/api/erRegister/byPhone", {params: {phoneNum: vm.userInfo.idCard}}).then((xhr) => {
-        if (xhr.data.code) {
-          return;
-        }
-        vm.planId = xhr.data.data.planId;
-        vm.regId = xhr.data.data.regId;
-        vm.getPlanInfo();
-        vm.getReg();
-      })
+        http.get("/gateway/enroll/api/erRegister/byPhone", {params: {phoneNum: vm.$store.state.userInfo.idCard}}).then((xhr) => {
+          if (xhr.data.code) {
+            return;
+          }
+          vm.planId = xhr.data.data.planId;
+          vm.regId = xhr.data.data.regId;
+          vm.getPlanInfo();
+          vm.getReg();
+        })
     },
     methods: {
       querySearch(queryString, cb) {

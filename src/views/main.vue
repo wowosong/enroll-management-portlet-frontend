@@ -68,6 +68,7 @@
         }).then(xhr => {
           window.userInfo = xhr.data.data;
           vm.$store.commit('getUserInfo', xhr.data.data);
+          // console.log('11111111111111111',vm.$store.state.userInfo)
           vm.getSystemParam();
         })
       },
