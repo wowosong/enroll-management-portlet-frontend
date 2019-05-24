@@ -673,7 +673,7 @@
                 }
               }
             }
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < vm.regInfo.rewards.length; i++) {
               let reward = vm.regInfo.rewards[i];
               for (let key in reward) {
                 let value = reward[key];
@@ -693,7 +693,8 @@
                   vm.$set(reward, key, value + "#," + value);
                 }
               }
-              if (i < 2) {
+            }
+            for (let i = 0; i < 2; i++) {
                 let parent = vm.regInfo.parents[i];
                 for (let key in parent) {
                   let value = parent[key];
@@ -701,7 +702,6 @@
                     vm.$set(parent, key, value + "#," + value);
                   }
                 }
-              }
             }
             if (vm.regInfo.otherData) {
               for (let key in vm.regInfo.otherData) {
