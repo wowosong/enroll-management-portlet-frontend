@@ -1,29 +1,19 @@
 <template>
   <div>
-    <div class="title">
-      <span @click="goBack"></span>
-      <a @click="$router.back('/')">嘉祥招生门户</a>
-    </div>
     <div class="login">
+      <div class="msg">提示：验证码为证件号后六位。</div>
       <div class="user-error" v-if="userError">{{userError}}</div>
       <div class="pwd-error" v-if="pwdError">{{pwdError}}</div>
       <div class="login-item m-b-16">
         <i class="iconfont">&#xe602;</i>
-        <input v-model="loginForm.username" placeholder="手机号"/>
+        <input v-model="loginForm.username" placeholder="手机号(第一监护人手机)"/>
       </div>
       <div class="login-item">
         <i class="iconfont">&#xe609;</i>
-        <input type="password" maxlength="18" @blur="changePwd" v-model="loginForm.password" v-if="isPwd" placeholder="初始化密码为证件号后六位"/>
-        <input type="text" maxlength="18" @blur="changePwd" v-model="loginForm.password" v-if="!isPwd" placeholder="初始化密码为证件号后六位"/>
-        <i class="iconfont fr pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
-        <i class="iconfont fr pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
-      </div>
-      <div class="pwd-wrap clearfix">
-        <el-checkbox v-model="isRemember">记住密码</el-checkbox>
-        <a @click="$router.push('/reset')">忘记密码</a>
+        <input v-model="loginForm.password"  placeholder="请输入验证码(用于核实填写人身份)"/>
       </div>
       <div class="login-btn" @click="login">
-        <a>登录</a>
+        <a>验证</a>
       </div>
     </div>
   </div>
@@ -31,16 +21,11 @@
 
 <script>
   export default {
-    name: "login",
     data() {
       return {
-        // 是否记住密码
-        isRemember: true,
-        // 是否明文密码
-        isPwd: true,
         // 登录错误提示
         userError: '',
-        pwdError: '',
+        pwdError:'',
         // 登录信息
         loginForm: {
           username: '',
@@ -50,57 +35,34 @@
       }
     },
     mounted(){
-      // 是否记住密码
-      let loginInfo = localStorage.getItem('loginInfo') ? localStorage.getItem('loginInfo') : '';
-      if (loginInfo) {
-        let temp = loginInfo.split('&');
-        this.loginForm.username = temp[0];
-        this.loginForm.password = temp[1];
-      }
+
     },
     methods: {
-      changePwd(){
-        if(this.loginForm.password && this.loginForm.password.length== 18){
-          this.pwdError = '密码长度不能超过18位';
-          this.userError = '';
-        }
-      },
       // 验证登陆信息是否可以提交
       vaildFn() {
         let vm = this;
-        let mobileRes = /^\d{8,15}?$/;
+        let mobileRes = /^1[34578]\d{9}$/;
         vm.userError = '';
         vm.pwdError = '';
-        // if (!mobileRes.test(vm.loginForm.username)) {
-        //   vm.userError = '请输入正确格式的手机号码';
-        //   return false
-        // }
         if (!vm.loginForm.username) {
           vm.userError = '请输入手机号码';
           return false
         }
+        if (!mobileRes.test(vm.loginForm.username)) {
+          vm.userError = '请输入正确格式的手机号码';
+          return false
+        }
         if (!vm.loginForm.password) {
-          vm.pwdError = '请输入密码';
+          vm.pwdError = '请输入验证码';
           return false
         }
         return true
-      },
-      goBack(){
-        this.$router.back(-1)
       },
       // 登录
       login() {
         let vm = this;
         let flag = this.vaildFn();
         if (flag) {
-          // 记住密码 用户信息存localStorage
-          let loginInfo = '';
-          loginInfo = vm.loginForm.username + "&" + vm.loginForm.password;
-          if (vm.isRemember) {
-            localStorage.setItem('loginInfo', loginInfo)
-          } else {
-            localStorage.removeItem('loginInfo')
-          }
           http.post('/gateway/auth/oauth/token', vm.loginForm, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
@@ -116,15 +78,12 @@
             }]
           }).then(function (xhr) {
             if (xhr.data.code == '20001') {
-              vm.userError = xhr.data.message;
+              vm.pwdError = xhr.data.message;
             } else {
               let dataToken = xhr.data;
               localStorage.setItem('accesstoken', JSON.stringify(dataToken));
               if (xhr.data && xhr.data.access_token) {
-                vm.$store.commit('changeLogin', true);
-                localStorage.setItem('active','center');
-                vm.$store.commit('setMenu', 'center');
-                vm.$router.push({path:'/center',query:{progress:true}});
+                vm.$router.push({path:'/register_sheet',query:{enroll:true}});
               }
             }
           })
@@ -137,18 +96,23 @@
 <style lang="less" scoped>
   .login {
     width: 85%;
-    margin: 62px auto 0;
+    margin: 22px auto 0;
     box-sizing: border-box;
     position: relative;
     .pwd-error, .user-error {
       position: absolute;
       color: #f40002;
     }
+    .msg{
+      color: #f40002;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
     .pwd-error {
-      top: 98px;
+      top: 126px;
     }
     .user-error {
-      top: 40px;
+      top: 68px;
     }
     h1 {
       padding-left: 16px;
@@ -181,17 +145,12 @@
       width: 200px;
       height: 100%;
     }
-    .pwd-wrap {
-      margin-top: 30px;
-      a {
-        float: right;
-      }
-    }
     .login-btn {
       text-align: center;
       background: #2f3861;
       border-radius: 4px;
       margin-top: 22px;
+      margin-bottom: 22px;
       a {
         display: block;
         height: 44px;
@@ -203,28 +162,5 @@
   }
   .m-b-16 {
     margin-bottom: 16px;
-  }
-  .fr{
-    float: right;
-  }
-  .title{
-    background: #2f3861;
-    text-align: center;
-    position: relative;
-    height: 45px;
-    line-height: 45px;
-    color: #fff;
-    font-size: 16px;
-    display: block;
-    a{
-      color: #fff;
-    }
-    span{
-      background: url(~@/imgs/warp/back.png) no-repeat center;
-      background-size: 11px 20px;
-      position: absolute;top:0;left:5px;
-      width: 45px;
-      height: 45px;
-    }
   }
 </style>

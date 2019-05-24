@@ -20,7 +20,7 @@
             <el-form-item label="学生姓名:" required style="margin-bottom:5px">
               {{regInfo.stuName}}
             </el-form-item>
-            <el-form-item label="身份证号:" required style="margin-bottom:5px">
+            <el-form-item label="证件号:" required style="margin-bottom:5px">
               {{regInfo.idCard}}
             </el-form-item>
             <el-form-item label="出生日期:" required style="margin-bottom:5px">
@@ -54,7 +54,7 @@
                 </el-select>
               </el-col>
             </el-form-item>
-            <el-form-item :label="isPhone ? '近次年级排名:' : '近次年级排名/年级人数:'" class="long_label other_data_s_a"
+            <el-form-item :label="isPhone ? '初三年级综合排名:' : '初三年级综合排名/年级人数:'" class="long_label other_data_s_a"
                           prop="otherData.s_a" v-if="planInfo.phaseName != '初中'">
               <el-input
                 type="number"
@@ -122,7 +122,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="i in 3" :key="i">
+                <tr v-for="i in rewardRows" :key="i">
                   <td>
                     <el-date-picker
                       placeholder="年/月/日"
@@ -157,6 +157,12 @@
                         :label="item.seiName"
                         :value="item.seiValue"/>
                     </el-select>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: right;">
+                    <el-button type="primary" @click="addRewardRows()">添加一行</el-button>
+                    <el-button type="primary" @click="delRewardRows()">删除一行</el-button>
                   </td>
                 </tr>
                 </tbody>
@@ -236,7 +242,7 @@
           <img src="@/imgs/404.png" class="user_img" v-else>
         </div>
         <div><span>学生姓名：</span>{{regInfo.stuName}}</div>
-        <div><span>身份证号：</span>{{regInfo.idCard}}</div>
+        <div><span>证件号：</span>{{regInfo.idCard}}</div>
         <div><span>出生日期：</span>{{regInfo.stuBirthday | dateFormatYmd}}</div>
         <div><span>性别：</span>{{genderMap[regInfo.stuGender]}}</div>
         <div><span>户籍所在地：</span>{{regInfo.localStr}}</div>
@@ -251,7 +257,7 @@
             </td>
             <td width="84px" align="right">学生姓名：</td>
             <td width="130px">{{regInfo.stuName}}</td>
-            <td width="162px" align="right">身份证号：</td>
+            <td width="162px" align="right">证件号：</td>
             <td>{{regInfo.idCard}}</td>
           </tr>
           <tr>
@@ -269,7 +275,7 @@
           <tr>
             <td align="right">现就读年级：</td>
             <td>{{regInfo.nowGradeName}}</td>
-            <td align="right" v-if="planInfo.phaseName != '初中'">近次年级排名/年级人数：</td>
+            <td align="right" v-if="planInfo.phaseName != '初中'">初三年级综合排名/年级人数：</td>
             <td v-if="planInfo.phaseName != '初中'">{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</td>
           </tr>
           </tbody>
@@ -471,6 +477,7 @@
         // 绑数据
         userInfo: window.userInfo,
         planInfo: {},
+        rewardRows:3,
         regInfo: {
           otherData: {},
           parents: [
@@ -621,6 +628,20 @@
         vm.getReg();
         vm.idEdit = false;
       },
+      addRewardRows() {
+        let vm = this;
+        if(vm.rewardRows < 8) {
+          let obj = { s_c: "", s_d: "", s_e: "", s_t: "" , s_u: ""};
+          vm.regInfo.rewards[++vm.rewardRows] = obj
+        }
+      },
+      delRewardRows() {
+        let vm = this;
+        if(vm.rewardRows != 1) {
+          let obj = { s_c: "", s_d: "", s_e: "", s_t: "" , s_u: ""};
+          vm.regInfo.rewards[vm.rewardRows--] = obj
+        }
+      },
       saveInfo() {
         const vm = this;
         vm.$refs["ruleForm"].validate((valid) => {
@@ -723,16 +744,22 @@
           if (xhr.code) {
             return;
           }
+          vm.rewardRows = 3;
           let data = xhr.data;
+          if (data.rewards && data.rewards.length) {
+            vm.rewardRows = data.rewards.length;
+          }
           vm.parentsLength = data.parents.length
           vm.rewardsLength = data.rewards.length
-          for (let i = 0; i < 3; i++) {
+          for (let i = 0; i < vm.rewardRows; i++) {
             if (!data.rewards[i]) {
               let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
               data.rewards[i] = obj;
             } else {
               // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
             }
+          }
+          for (let i = 0; i < 2; i++) {
             if (i != 2 && !data.parents[i]) {
               data.parents[i] = {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""};
             }
@@ -869,7 +896,7 @@
         document.getElementById(type).scrollIntoView();
         this.current = type
       },
-      // 根据身份证号码识别出生日期
+      // 根据证件号码识别出生日期
       idCardNumFn() {
         let vm = this;
         vm.regInfo.idCard = $.trim(vm.regInfo.idCard);

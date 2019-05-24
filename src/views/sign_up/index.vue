@@ -89,7 +89,7 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item label="户籍所在地:" prop="stuAdds" :required="isrequired" id="regInfo_stuAdds">
+                <el-form-item v-if="phaseName != '高中'" prop="stuAdds" label="户籍所在地:" :rules="[{ required: true, message: '必填项', trigger: 'blur' }]" id="regInfo_stuAdds">
                   <el-col :span="12" class="width_750">
                     <el-cascader
                       placeholder="请填写"
@@ -102,6 +102,16 @@
                   <template slot="error" slot-scope="scope">
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
+                </el-form-item>
+                <el-form-item v-if="phaseName == '高中'" label="户籍所在地:">
+                  <el-col :span="12" class="width_750">
+                    <el-cascader
+                      placeholder="请填写"
+                      style="width: 100%"
+                      filterable
+                      :options="addList"
+                      v-model="regInfo.stuAdds"/>
+                  </el-col>
                 </el-form-item>
                 <el-form-item label="现就读学校:" prop="nowSchool" id="regInfo_nowSchool">
                   <el-col :span="12" class="width_750">
@@ -129,8 +139,8 @@
                   </template>
                 </el-form-item>
                 <!--手机浏览器显示-->
-                <template v-if="isPhone && phaseName != '初中'">
-                  <el-form-item label="近次年级排名" prop="rank" id="regInfo_rank">
+                <template v-if="isPhone && phaseName == '高中'">
+                  <el-form-item label="初三年级综合排名" prop="rank" id="regInfo_rank">
                     <el-col :span="12">
                       <el-input type="number" min="1" step="1" placeholder="请填写"
                                 v-model="regInfo.otherData['s_a']"></el-input>
@@ -152,8 +162,8 @@
                   </el-form-item>
                 </template>
                 <!--pc 显示-->
-                <template v-if="!isPhone && phaseName != '初中'">
-                  <el-form-item label="近次年级排名/年级人数:" prop="rank" id="regInfo_rank">
+                <template v-if="!isPhone && phaseName == '高中'">
+                  <el-form-item label="初三年级综合排名/年级人数:" prop="rank" id="regInfo_rank">
                     <el-col :span="6" class="m-r-12">
                       <el-input type="number" min="1" step="1" placeholder="请填写"
                                 v-model="regInfo.otherData['s_a']"></el-input>
@@ -215,7 +225,7 @@
                     </div>
                   </div>
 
-                  <div class="table-item" v-if="phaseName == '初中'" id="regInfo_eduConcept">
+                  <div class="table-item" v-if="phaseName != '高中'" id="regInfo_eduConcept">
                     <label class="fill">家庭教育理念:</label>
                     <el-input type="textarea" :maxlength="100" style="width: 600px" :rows="4" placeholder="请填写(限100字)"
                               v-model="regInfo.eduConcept"></el-input>
@@ -225,7 +235,7 @@
                     </span>
                     </div>
                   </div>
-                  <div class="table-item" v-if="phaseName  != '初中'">
+                  <div class="table-item" v-if="phaseName  == '高中'">
                     <label>获奖信息:</label>
                     <div>
                       <table class="table">
@@ -239,7 +249,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="i in 3" :key="i" class="input-no-border">
+                        <tr v-for="i in rewardRows" :key="i" class="input-no-border">
                           <td>
                             <el-date-picker
                               placeholder="年/月/日"
@@ -277,12 +287,18 @@
                             </el-select>
                           </td>
                         </tr>
+                        <tr>
+                          <td style="text-align: right;">
+                            <el-button type="primary" @click="addRewardRows()">添加一行</el-button>
+                            <el-button type="primary" @click="delRewardRows()">删除一行</el-button>
+                          </td>
+                        </tr>
                         </tbody>
                       </table>
                       <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖</div>
                     </div>
                   </div>
-                  <div class="table-item" v-if="phaseName  != '初中'">
+                  <div class="table-item" v-if="phaseName  == '高中'">
                     <label>获奖附件:</label>
                     <div class="up_idcard clearfix">
                       <template v-if="fileList && fileList.length > 0">
@@ -296,7 +312,7 @@
                        <span @click="uploadEnclosure">
                       <img src="@/imgs/upload.png">上传证件
                       </span>
-                        <div class="hint">证明您的获奖情况</div>
+                        <div class="hint">请上传证书扫描件（照片和扫描件，图片的形式）</div>
                       </div>
                     </div>
                   </div>
@@ -340,7 +356,7 @@
               <!--间隔线-->
               <div class="line"></div>
               <!--家庭教育理念-->
-              <div class="prize_info" v-if="phaseName == '初中'" id="regInfo_eduConcept">
+              <div class="prize_info" v-if="phaseName != '高中'" id="regInfo_eduConcept">
                 <p class="item-tit open-info">家庭教育理念
                   <label class="error-info" style="font-size: 12px" v-if="eduMsg"><i
                     class="el-icon-circle-close"></i>{{eduMsg}}</label>
@@ -349,9 +365,9 @@
                           v-model="regInfo.eduConcept"></el-input>
               </div>
               <!--间隔线-->
-              <div class="line"></div>
+              <div class="line" v-if="phaseName  != '高中'"></div>
               <!--获奖信息-->
-              <div class="prize_info" v-if="phaseName  != '初中'">
+              <div class="prize_info" v-if="phaseName  == '高中'">
                 <p class="item-tit open-info">
                   获奖信息
                   <span v-if="!prizeOpen" @click="prizeOpen = !prizeOpen">展开<i
@@ -387,7 +403,7 @@
                     </el-select>
                   </el-form-item>
                   <div class="line-1" v-if="i == 3"></div>
-                  <el-form-item label="获奖附件:" v-if="i == 3" class="file-wrap">
+                  <el-form-item label="获奖附件:" v-if="i == 3" class="file-wrap" style="line-height: 1">
                     <div class="file-list">
                       <span v-for="(item,index) in fileList" :key="index">
                             <div class="cover"></div>
@@ -410,12 +426,13 @@
                       </div>
                     </el-upload>
                   </el-form-item>
+                  <div v-if="i == 3" style="text-align: center;font-size: 12px;color: #F56C6C;margin-bottom: 8px">请上传证书扫描件（照片和扫描件，图片的形式）</div>
                   <div class="line-1" v-if="i == 1 || i == 2"></div>
                 </template>
               </div>
             </template>
             <!--间隔线-->
-            <div class="line" v-if="phaseName  != '初中'"></div>
+            <div class="line" v-if="phaseName  == '高中'"></div>
             <!--登录密码-->
             <div class="sign-pwd" id="pwd">
               <p class="item-tit">登录密码</p>
@@ -439,14 +456,14 @@
                   </el-form-item>
                   <el-form-item label="设置密码:">
                     <el-col :span="18">
-                      <el-input v-show="showInput" v-if="!isPwd" type="password" v-model="regInfo.pwd"
+                      <el-input v-show="showInput" :maxlenght="18" v-if="!isPwd" type="password" v-model="regInfo.pwd"
                                 placeholder="默认密码 (证件号后六位)">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
                           <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
                         </template>
                       </el-input>
-                      <el-input v-show="showInput" v-if="isPwd" type="text" v-model="regInfo.pwd">
+                      <el-input v-show="showInput" :maxlenght="18" v-if="isPwd" type="text" v-model="regInfo.pwd">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
                           <i class="iconfont pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
@@ -456,14 +473,14 @@
                   </el-form-item>
                   <el-form-item label="确认密码:" prop="repwd">
                     <el-col :span="18">
-                      <el-input v-show="showInput" v-if="!isRePwd" type="password" v-model="regInfo.repwd"
+                      <el-input v-show="showInput" :maxlenght="18" v-if="!isRePwd" type="password" v-model="regInfo.repwd"
                                 placeholder="默认密码 (证件号后六位)">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
                           <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
                         </template>
                       </el-input>
-                      <el-input v-show="showInput" v-if="isRePwd" type="text" v-model="regInfo.repwd">
+                      <el-input v-show="showInput" :maxlenght="18" v-if="isRePwd" type="text" v-model="regInfo.repwd">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
                           <i class="iconfont pointer" v-if="!isRePwd" @click="isRePwd = !isRePwd">&#xe6b8;</i>
@@ -528,11 +545,11 @@
     data() {
       // 验证排名/年级人数
       let checkRank = (rule, value, callback) => {
-        if (this.phaseName != '初中' && !this.regInfo.otherData['s_a']) {
+        if (this.phaseName == '高中' && !this.regInfo.otherData['s_a']) {
           return callback(new Error('必填项'));
-        } else if (this.phaseName != '初中' && !this.regInfo.otherData['s_b']) {
+        } else if (this.phaseName == '高中' && !this.regInfo.otherData['s_b']) {
           return callback(new Error('必填项'));
-        } else if (this.phaseName != '初中' && parseInt(this.regInfo.otherData["s_a"]) > parseInt(this.regInfo.otherData["s_b"] && this.phaseName != '初中')) {
+        } else if (this.phaseName == '高中' && parseInt(this.regInfo.otherData["s_a"]) > parseInt(this.regInfo.otherData["s_b"])) {
           return callback(new Error('排名不能高于年级人数'));
         } else {
           callback();
@@ -540,6 +557,7 @@
       };
       // 验证户籍所在地
       let checkStuAdds = (rule, value, callback) => {
+        console.log(value)
         if (this.phaseName == '初中' && !this.regInfo.stuAdds) {
           return callback(new Error('必填项'));
         } else {
@@ -561,6 +579,7 @@
         regInfo: {
           photoId: "",
           regStatus: 0,
+          rewardRows:3,
           otherData: {},
           eduConcept: '',
           parents: [
@@ -655,8 +674,9 @@
       mounted() {
         const vm = this;
         vm.phaseName = vm.$route.query.phaseName;
+        console.log(vm.phaseName)
         vm.planId = vm.$route.query.id;
-        if (vm.phaseName != "初中") {
+        if (vm.phaseName == "高中") {
           vm.isrequired = false
         }
         // 查询性别
@@ -681,6 +701,20 @@
           return (restaurant) => {
             return (restaurant.seiName.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
           };
+        },
+        addRewardRows() {
+          let vm = this;
+          if(vm.rewardRows < 8) {
+            let obj = { s_c: "", s_d: "", s_e: "", s_t: "" , s_u: ""};
+            vm.regInfo.rewards[++vm.rewardRows] = obj
+          }
+        },
+        delRewardRows() {
+          let vm = this;
+          if(vm.rewardRows != 1) {
+            let obj = { s_c: "", s_d: "", s_e: "", s_t: "" , s_u: ""};
+            vm.regInfo.rewards[vm.rewardRows--] = obj
+          }
         },
         saveInfo() {
           const vm = this;
@@ -833,14 +867,20 @@
             if (xhr.code) {
               return;
             }
+            vm.rewardRows = 3;
             let data = xhr.data;
-            for (let i = 0; i < 3; i++) {
+            if (data.rewards && data.rewards.length) {
+              vm.rewardRows = data.rewards.length;
+            }
+            for (let i = 0; i < vm.rewardRows; i++) {
               if (!data.rewards[i]) {
                 let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
                 data.rewards[i] = obj;
               } else {
                 // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
               }
+            }
+            for (let i = 0; i < 2; i++) {
               if (i != 2 && !data.parents[i]) {
                 data.parents[i] = {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""};
               }
@@ -1038,7 +1078,7 @@
           vm.parentsMsg = '';
           vm.eduMsg = '';
           // 身份证验证
-          if (vm.phaseName != '初中' && !vm.regInfo.photoId) {
+          if (vm.phaseName == '高中' && !vm.regInfo.photoId) {
             if (!vm.isLogin) {
               vm.userImgErr = true;
             }
@@ -1061,7 +1101,7 @@
             }
           }
           // 家庭教育理念验证
-          if (!vm.regInfo.eduConcept && vm.phaseName == '初中') {
+          if (!vm.regInfo.eduConcept && vm.phaseName != '高中') {
             vm.eduMsg = '必填项';
             document.getElementById('regInfo_eduConcept').scrollIntoView();
             return false
@@ -1077,7 +1117,7 @@
               if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
               if (!vm.regInfo.nowSchool) return document.getElementById('regInfo_nowSchool').scrollIntoView();
               if (!vm.regInfo.nowGrade) return document.getElementById('regInfo_nowGrade').scrollIntoView();
-              if (vm.phaseName != '初中' && !vm.regInfo.otherData['s_a'] || vm.phaseName != '初中' && vm.regInfo.otherData['s_b']) return document.getElementById('regInfo_rank').scrollIntoView();
+              if (vm.phaseName == '高中' && !vm.regInfo.otherData['s_a'] || vm.phaseName == '高中' && vm.regInfo.otherData['s_b']) return document.getElementById('regInfo_rank').scrollIntoView();
               return false;
             }
           });

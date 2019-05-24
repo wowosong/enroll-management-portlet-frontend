@@ -13,18 +13,18 @@ module.exports = {
     // proxyTable: {},
     proxyTable: {
       '/platform': {
-        target: 'http://119.23.47.139',
+        target: 'http://microtest.hanboard.com.cn:8084',
         changeOrigin: true,
         secure: false
       },
       '/gateway': {
-        target: 'http://119.23.47.139',
+        target: 'http://microtest.hanboard.com.cn:8084',
         changeOrigin: true,
         secure: false
       },
       '/enroll': {
         // target:'http://microtest.hanboard.com.cn:8084',
-        target: 'http://119.23.47.139',
+        target: 'http://microtest.hanboard.com.cn:8084',
         changeOrigin: true,
         secure: false
       },
