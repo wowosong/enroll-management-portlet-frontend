@@ -548,7 +548,7 @@
       };
       // 验证登录密码
       let checkpwd = (rule, value, callback) => {
-        if (this.regInfo.pwd != this.regInfo.repwd) {
+        if (this.regInfo.pwd && this.regInfo.pwd != this.regInfo.repwd && this.regInfo.repwd) {
           return callback(new Error('密码不一致'));
         } else {
           callback();
