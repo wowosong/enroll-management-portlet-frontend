@@ -3,7 +3,8 @@
     <header>
       <div class="main-wrap">
         <div class="logo-wrap clearfix">
-          <img src="@/imgs/logo.png" @click="goHome" class="logo">
+          <img v-if="!$route.query.enroll" src="@/imgs/logo.png" @click="goHome" class="logo">
+          <img v-else src="@/imgs/logo2.png"  width="175px" height="29px">
           <div class="menu-main">
             <ul>
               <li @click="goHome" :class="active=='home'?'active':''">首页</li>
@@ -11,11 +12,11 @@
               <li v-if="isLogin" @click="goCenter" :class="active=='center'?'active':''">个人中心</li>
             </ul>
           </div>
-          <template v-if="!isLogin">
+          <template v-if="!isLogin && !$route.query.enroll">
             <a v-if="!isPhone" @click="goPlan"><i class="iconfont">&#xe619;</i>首次报名</a>
             <a v-else @click="goLogin">登录</a>
           </template>
-          <template v-else>
+          <template v-if="isLogin && !$route.query.enroll">
             <a>
               <label @click="goCenter">
                 <img v-if="userInfo.accountAvatar" :src="avatar_url+userInfo.accountAvatar">
@@ -39,6 +40,7 @@
       }
     },
     mounted() {
+      console.log(this.$route.query.enroll)
     },
     computed: {
       userInfo: function () {
@@ -53,11 +55,6 @@
       active:function () {
         return this.$store.state.active
       }
-    },
-    watch: {
-      // '$store.state.isPhone': function () {
-      //   console.log( this.$store.state.isPhone)
-      // }
     },
     methods: {
       // logo 跳转首页

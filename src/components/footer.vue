@@ -2,7 +2,7 @@
   <div class="container footer">
     <footer>
       <div class="main-wrap">
-        <p class="edition-wrap" v-if="isPhone">
+        <p class="edition-wrap" v-if="isPhone && !$route.query.enroll">
           <span @click="changeBrowser(false)">电脑版</span>
           <span @click="changeBrowser(true)">手机版</span>
         </p>

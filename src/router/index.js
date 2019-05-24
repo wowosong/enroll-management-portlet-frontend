@@ -27,9 +27,11 @@ import login from '../views/wrap/login'
 // 忘记密码
 import reset from '../views/wrap/reset_pwd'
 
-import checking from '../views/enroll/index'
-// 招生系统扫码跳转
 
+// 招生系统扫码跳转
+import checking from '../views/enroll/index'
+// 扫码验证登记表
+import register_sheet from '../views/enroll/register_sheet'
 const list = [{
   path: '',
   component: main,
@@ -79,6 +81,11 @@ const list = [{
       path: '/checking',
       name: 'checking',
       component: checking,
+    },
+    {
+      path: '/register_sheet',
+      name: 'register_sheet',
+      component: register_sheet,
     }
   ],
 },
