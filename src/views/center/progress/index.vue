@@ -12,13 +12,13 @@
           <p>您于<span class="color1">{{stempInfo.createTime | dateFormatYmd}}</span>完成网上报名，请在<span
             class="color1">“报名信息”</span>页面完善信息~
           </p>
-          <p>并按学校通知时间到<span class="color1">校现场确认</span>，打印面谈卡~</p>
+          <p>并按学校通知时间到<span class="color1">校现场确认</span>，打印证件号~</p>
         </template>
 
-        <!-- 完成面谈卡 -->
+        <!-- 完成测试卡 -->
         <template v-if="stempInfo.regStatus == 1 && stempInfo.ifEnter == null">
-          <p>您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了面谈卡~</p>
-          <p>并按面谈卡的面谈时间到校<span class="color1">参加面谈</span>~</p>
+          <p>您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了测试卡~</p>
+          <p>并按测试卡的面谈时间到校<span class="color1">参加面谈</span>~</p>
         </template>
         <!-- 录取结果-->
         <div v-if="!stempInfo.ifPayment">
@@ -51,7 +51,7 @@
                   <table class="my-table" v-if="!isPhone">
                     <thead>
                     <tr>
-                      <th>面谈卡编号</th>
+                      <th>测试卡编号</th>
                       <th>姓名</th>
                       <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
                     </tr>
@@ -64,7 +64,7 @@
                     </tr>
                   </table>
                   <div v-if="isPhone" class="phone_scores">
-                    <div><span>面谈卡编号：</span>{{nowStuInfo.signCardCode}}</div>
+                    <div><span>测试卡编号：</span>{{nowStuInfo.signCardCode}}</div>
                     <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
                     <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}
                     </div>
@@ -120,7 +120,7 @@
               <table class="my-table" v-if="!isPhone">
                 <thead>
                 <tr>
-                  <th>面谈卡编号</th>
+                  <th>测试卡编号</th>
                   <th>姓名</th>
                   <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
                 </tr>
@@ -133,7 +133,7 @@
                 </tr>
               </table>
               <div v-if="isPhone" class="phone_scores">
-                <div><span>面谈卡编号：</span>{{nowStuInfo.signCardCode}}</div>
+                <div><span>测试卡编号：</span>{{nowStuInfo.signCardCode}}</div>
                 <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
                 <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}
                 </div>
@@ -149,7 +149,7 @@
           <table class="table_list" v-if="!isPhone">
             <thead>
             <tr>
-              <th>面谈卡号</th>
+              <th>测试卡号</th>
               <th>姓名</th>
               <th>身份证号</th>
               <th>奖学金（元）</th>
@@ -165,7 +165,7 @@
             </tr>
           </table>
           <div v-if="isPhone" class="pay_info">
-            <div><span>面谈卡号：</span>{{stempInfo.signCardCode}}</div>
+            <div><span>测试卡号：</span>{{stempInfo.signCardCode}}</div>
             <div><span>姓名：</span>{{stempInfo.stuName}}</div>
             <div><span>身份证号：</span>{{stempInfo.idCard}}</div>
             <div><span>奖学金(元)：</span>{{stempInfo.scholarship}}</div>
@@ -178,7 +178,7 @@
           <table class="table_list" v-if="!isPhone">
             <thead>
             <tr>
-              <th>面谈卡编号</th>
+              <th>测试卡编号</th>
               <th>姓名</th>
               <th>身份证号</th>
               <th>校区</th>
@@ -198,7 +198,7 @@
             </tr>
           </table>
           <div v-if="isPhone" class="pay_info">
-            <div><span>面谈卡号：</span>{{stempInfo.signCardCode}}</div>
+            <div><span>测试卡号：</span>{{stempInfo.signCardCode}}</div>
             <div><span>姓名：</span>{{stempInfo.stuName}}</div>
             <div><span>身份证号：</span>{{stempInfo.idCard}}</div>
             <div><span>校区：</span>{{stempInfo.campusName}}</div>
@@ -224,7 +224,7 @@
 
     <el-dialog title="查看成绩" :visible.sync="scoreDialogVisible" :width="isPhone ? '100%' : '800px'">
       <div v-if="isPhone" class="phone_scores">
-        <div><span>面谈卡编号：</span>{{nowStuInfo.signCardCode}}</div>
+        <div><span>测试卡编号：</span>{{nowStuInfo.signCardCode}}</div>
         <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
         <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}
         </div>

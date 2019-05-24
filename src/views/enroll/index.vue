@@ -21,7 +21,6 @@
 
 <script>
   export default {
-    name: "index",
     data() {
       return {
         // 登录错误提示
@@ -163,8 +162,5 @@
   }
   .m-b-16 {
     margin-bottom: 16px;
-  }
-  .fr{
-    float: right;
   }
 </style>

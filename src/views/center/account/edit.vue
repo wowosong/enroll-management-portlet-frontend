@@ -39,10 +39,10 @@
                 <div v-if="stempNum == 2 && type == 'password'">
                     <el-form-item label="当前登录名:">{{logonName}}</el-form-item>
                     <el-form-item label="新密码:" prop="newPass">
-                        <input type="password" v-model="formData.newPass" style="width:260px;" placeholder="请输入" class="password_s">
+                        <input type="password" maxlength="18" @blur="changePwd" v-model="formData.newPass" style="width:260px;" placeholder="请输入" class="password_s">
                     </el-form-item>
                     <el-form-item label="确认新密码:" prop="newCheckPass">
-                        <input type="password" v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入"  class="password_s">
+                        <input type="password" maxlength="18" @blur="changePwd" v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入"  class="password_s">
                     </el-form-item>
                     <el-form-item label-width="0">
                         <div class="btn" @click="submit">确定</div>
@@ -62,7 +62,7 @@
         },
         data(){
             var validateCard = (rule, value, callback) => {
-                let pattern = /^[0-9]{9,}$/;
+                let pattern = /^\d{9,}?$/;
                 if(!pattern.test(value)){
                   callback(new Error('证件号格式有误'));
                 }else{
@@ -102,11 +102,16 @@
 
       },
       methods: {
+        changePwd(){
+          if(this.formData.newPass && this.formData.newPass.length== 18){
+            vm.$message('密码长度不能超过18位!');
+          }
+        },
         isNextFalgFn(){
           this.$refs.ruleForm.validateField('idCard');
           this.$refs.ruleForm.validateField('userName');
 
-          let pattern = /^[0-9]{9,}$/;
+          let pattern = /^\d{9,}?$/;
           if(this.formData.idCard == '' || this.formData.userName == '' || !pattern.test(this.formData.idCard)){
             return this.isNextFalg = false
           }else{

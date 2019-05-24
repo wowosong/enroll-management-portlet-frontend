@@ -255,6 +255,9 @@ input {
   height: auto;
   float: left;
 }
+#app .sign-wrap .sign-left .sign-main .prize_info .file-wrap .el-form-item__content{
+  line-height: 1;
+}
 
 #app .sign-wrap .sign-left .sign-main .prize_info .file-wrap .file-list {
   display: flex;
