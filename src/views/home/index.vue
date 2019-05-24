@@ -17,8 +17,8 @@
           </div>
           <div class="login-item">
             <i class="iconfont">&#xe69e;</i>
-            <input type="password" maxlength="18" @blur="changePwd" v-model="loginForm.password" v-if="isPwd" placeholder="初始化密码为证件号后六位"/>
-            <input type="text" maxlength="18" @blur="changePwd" v-model="loginForm.password" v-if="!isPwd" placeholder="初始化密码为证件号后六位"/>
+            <input type="password" maxlength="19" @blur="changePwd" v-model="loginForm.password" v-if="isPwd" placeholder="初始化密码为证件号后六位"/>
+            <input type="text" maxlength="19" @blur="changePwd" v-model="loginForm.password" v-if="!isPwd" placeholder="初始化密码为证件号后六位"/>
             <i class="iconfont fr pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
             <i class="iconfont fr pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
           </div>
@@ -263,20 +263,24 @@
     position: relative;
     height: 100%;
     .sign-btn {
-      width: 168px;
-      height: 73px;
-      line-height: 73px;
-      background: url(~css_img/btn.png) no-repeat center;
-      background-size: cover;
+      width: 250px;
+      height: 80px;
+      line-height: 80px;
+      background: -webkit-linear-gradient(left,#ff7d94, #f79c6e);
+      background: -o-linear-gradient(left,#ff7d94, #f79c6e);
+      background: -moz-linear-gradient(left,#ff7d94, #f79c6e);
+      background: linear-gradient(to right,#ff7d94, #f79c6e); /* 标准的语法（必须放在最后） */
+      border-radius: 40px;
       text-align: center;
       position: absolute;
       left: 47%;
-      bottom: 50px;
+      bottom: 42px;
       transform: translateX(-47%);
       a {
         display: block;
         color: #fff;
-        font-size: 20px;
+        font-size: 36px;
+        font-weight: bold;
       }
     }
     .login {
