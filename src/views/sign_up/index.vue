@@ -802,6 +802,15 @@
               }
             }
           }
+          for (let i = 0; i < 3; i++) {
+            let reward = vm.regInfo.rewards[i];
+            for (let key in reward) {
+              let value = reward[key];
+              if (value) {
+                vm.$set(reward, key, value.split("#,")[0]);
+              }
+            }
+          }
         },
         // 自动登陆
         login() {
@@ -828,7 +837,6 @@
             if (xhr.data.code == '20001')
               return vm.$message.warning(xhr.data.message);
             if (xhr.data && xhr.data.access_token) {
-              console.log(xhr.data)
               let dataToken = xhr.data;
               localStorage.setItem('accesstoken', JSON.stringify(dataToken));
               localStorage.setItem('active', 'center');

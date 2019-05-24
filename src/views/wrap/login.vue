@@ -13,8 +13,8 @@
       </div>
       <div class="login-item">
         <i class="iconfont">&#xe609;</i>
-        <input type="password" maxlength="18" @blur="changePwd" v-model="loginForm.password" v-if="isPwd" placeholder="初始化密码为证件号后六位"/>
-        <input type="text" maxlength="18" @blur="changePwd" v-model="loginForm.password" v-if="!isPwd" placeholder="初始化密码为证件号后六位"/>
+        <input type="password" maxlength="19" @blur="changePwd" v-model="loginForm.password" v-if="isPwd" placeholder="初始化密码为证件号后六位"/>
+        <input type="text" maxlength="19" @blur="changePwd" v-model="loginForm.password" v-if="!isPwd" placeholder="初始化密码为证件号后六位"/>
         <i class="iconfont fr pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
         <i class="iconfont fr pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
       </div>
@@ -60,7 +60,7 @@
     },
     methods: {
       changePwd(){
-        if(this.loginForm.password && this.loginForm.password.length== 18){
+        if(this.loginForm.password && this.loginForm.password.length > 18){
           this.pwdError = '密码长度不能超过18位';
           this.userError = '';
         }
