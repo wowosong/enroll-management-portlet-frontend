@@ -12,7 +12,7 @@
           <p>您于<span class="color1">{{stempInfo.createTime | dateFormatYmd}}</span>完成网上报名，请在<span
             class="color1">“报名信息”</span>页面完善信息~
           </p>
-          <p>并按学校通知时间到<span class="color1">校现场确认</span>，打印{{str}}卡~</p>
+          <p>并按学校通知时间<span class="color1">到校现场确认</span>，打印{{str}}卡~</p>
         </template>
 
         <!-- 完成测试卡 -->
