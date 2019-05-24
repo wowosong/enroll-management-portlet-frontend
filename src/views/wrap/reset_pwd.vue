@@ -29,10 +29,10 @@
           <template v-if="stempNum == 2">
             <el-form-item label="登录名:">{{formData.logonName}}</el-form-item>
             <el-form-item label="新密码:" prop="newPass">
-              <el-input type="password" maxlength="18" @blur="changePwd" v-model="formData.newPass" style="width:260px;" placeholder="请输入新密码"></el-input>
+              <el-input type="password" maxlength="19" @blur="changePwd" v-model="formData.newPass" style="width:260px;" placeholder="请输入新密码"></el-input>
             </el-form-item>
             <el-form-item label="确认新密码:" prop="newCheckPass">
-              <el-input type="password" maxlength="18" @blur="changePwd" v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入再次新密码"></el-input>
+              <el-input type="password" maxlength="19" @blur="changePwd" v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入再次新密码"></el-input>
             </el-form-item>
             <el-form-item  v-if="msgError">
               <span class="error">{{msgError}}</span>
@@ -87,7 +87,7 @@
     },
     methods: {
       changePwd(){
-        if(this.formData.newPass && this.formData.newPass.length== 18){
+        if(this.formData.newPass && this.formData.newPass.length > 18){
           this.msgError = '密码长度不能超过18位';
         }
       },

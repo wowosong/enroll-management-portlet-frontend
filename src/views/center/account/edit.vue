@@ -39,10 +39,10 @@
                 <div v-if="stempNum == 2 && type == 'password'">
                     <el-form-item label="当前登录名:">{{logonName}}</el-form-item>
                     <el-form-item label="新密码:" prop="newPass">
-                        <input type="password" maxlength="18" @blur="changePwd" v-model="formData.newPass" style="width:260px;" placeholder="请输入" class="password_s">
+                        <input type="password" maxlength="19" @blur="changePwd" v-model="formData.newPass" style="width:260px;" placeholder="请输入" class="password_s">
                     </el-form-item>
                     <el-form-item label="确认新密码:" prop="newCheckPass">
-                        <input type="password" maxlength="18" @blur="changePwd" v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入"  class="password_s">
+                        <input type="password" maxlength="19" @blur="changePwd" v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入"  class="password_s">
                     </el-form-item>
                     <el-form-item label-width="0">
                         <div class="btn" @click="submit">确定</div>
