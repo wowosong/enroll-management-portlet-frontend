@@ -1,6 +1,13 @@
 <template>
     <div class="comm_item float_right campus_main">
-        <div class="campus_tit" @click="isShowMoreFn" :class="{allInfo:nowCampsId == '' || !nowCampsId}">{{cnName}}<img src="../imgs/warp/down.png"></div>
+        <div class="campus_tit" @click="isShowMoreFn" :class="{allInfo:nowCampsId == '' || !nowCampsId}">
+          <template v-if="!isPhone">
+            全部校区
+          </template>
+          <template v-else>
+            {{cnName}}
+          </template>
+          <img src="../imgs/warp/down.png"></div>
         <div class="campus_layer" v-if="isShowMore">
           <div class="layer_main">
             <div v-for="(item,index) in campusList" :key="index" class="campus_list" :class="{active:nowCampsId == item.id}" @click="camputedFn(item)">{{item.cnName}}</div>
@@ -47,7 +54,9 @@ export default {
     camputedFn(item){
       this.cnName = item.cnName;
       this.nowCampsId = item.id;
-      this.isShowMore = !this.isShowMore;
+      if(this.isPhone){
+        this.isShowMore = !this.isShowMore;
+      }
       this.$emit("query",item.id)
     },
     isShowMoreFn(){

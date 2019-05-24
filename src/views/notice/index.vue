@@ -1,5 +1,6 @@
 <template>
     <div class="comm_main clearfix">
+      <campus @query="queryCampus" :id="filter.schoolId" v-if="isShowCampu"></campus>
         <div class="comm_item float_left">
             <div class="item_tit">通知公告</div>
             <div class="plan_cont">
@@ -11,7 +12,7 @@
                 <div class="no_data" v-if="!noticeList || noticeList.length == 0"></div>
             </div>
         </div>
-        <campus @query="queryCampus" :id="filter.schoolId" v-if="isShowCampu"></campus>
+
     </div>
 </template>
 <script>

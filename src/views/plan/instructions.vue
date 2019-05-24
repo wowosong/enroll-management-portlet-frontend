@@ -10,7 +10,7 @@
         <p>4. 学生必须严格遵守国家法律法规和学校规章制度，凡是学生违反校纪校规，学校有权根据学校管理条例对学生做出处理；</p>
         <p>5. 学生在校期间，学生监护人按照相关法律法规对学生进行教育和管理，并承担相应监护责任。</p>
       </div>
-      <el-checkbox v-model="isAgree" class="agree">我已同意并了解《报名须知》事项。</el-checkbox>
+      <el-checkbox v-model="isAgree" class="agree">我已同意并了解《招生须知》事项。</el-checkbox>
       <p class="agree_hint">我承诺我所填写信息均真实有效,我愿意承担因信息不真实而应承担的责任</p>
       <div class="btn " :class="{dis_btn:!isAgree}" @click="isAgreeGo">下一步</div>
     </div>

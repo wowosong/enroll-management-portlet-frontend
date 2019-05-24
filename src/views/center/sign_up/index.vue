@@ -54,8 +54,8 @@
                 </el-select>
               </el-col>
             </el-form-item>
-            <el-form-item :label="isPhone ? '初三年级综合排名:' : '初三年级综合排名/年级人数:'" class="long_label other_data_s_a"
-                          prop="otherData.s_a" v-if="planInfo.phaseName != '初中'">
+            <el-form-item label="初三年级综合排名" class="long_label other_data_s_a"
+                          prop="otherData.s_a" v-if="planInfo.phaseName == '高中'">
               <el-input
                 type="number"
                 min="1"
@@ -63,9 +63,7 @@
                 v-model="regInfo.otherData['s_a']"
                 placeholder="年级排名"
                 :style="{width: isPhone ? '100%' : '128px'}"/>
-            </el-form-item>
-            <el-form-item :label="isPhone ? '年级人数:' : ''" class="long_label other_data_s_b" prop="otherData.s_b"
-                          :label-width="isPhone ? '112px' : '0px'" v-if="planInfo.phaseName == '高中'">
+              / 年级排名
               <el-input
                 type="number"
                 min="1"
@@ -159,14 +157,16 @@
                     </el-select>
                   </td>
                 </tr>
-                <tr>
-                  <td style="text-align: right;">
-                    <el-button type="primary" @click="addRewardRows()">添加一行</el-button>
-                    <el-button type="primary" @click="delRewardRows()">删除一行</el-button>
-                  </td>
-                </tr>
                 </tbody>
               </table>
+              <div class="reward-bottom">
+                <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖 省级 艺术奖 （说明：最少1行，最多8行）</div>
+                <div class="sign-btn reward-btn">
+                  <span class="save" @click="addRewardRows">添加一行</span>
+                  <span class="cancel" @click="delRewardRows">删除一行</span>
+                </div>
+              </div>
+
             </el-form-item>
           </template>
           <template v-if="isPhone">
@@ -201,13 +201,14 @@
             <div class="img_box">
               <div class="img_thumbnail" v-for="(file,fid) in fileList" :key="fid" v-if="fileList && fileList.length>0">
                 <img @error="errorImg($event,'image')" :src="imgUrl+file.fileId">
-                <div class="big_btn_l" @click="showBigImg(file.fileId)"></div>
+                <i class="big_btn_l el-icon-close delete-icon" @click="fileList.splice(fid, 1)"></i>
+                <!--<div class="big_btn_l" @click="showBigImg(file.fileId)"></div>-->
               </div>
               <div class="upload_item" v-if="!isPhone">
                 <div class="up_idcard" @click="uploadEnclosure">
                   <template><img src="@/imgs/upload.png">上传证件</template>
                 </div>
-                <div class="hint prove">证明您的获奖情况</div>
+                <div class="hint prove">请上传证书扫描件：格式为jpg、png等图片形式</div>
               </div>
 
               <el-upload
@@ -237,18 +238,6 @@
         </div>
       </div>
       <div class="show_info" v-if="!idEdit">
-        <!-- <div>
-          <img :src="imgUrl+regInfo.photoId" v-if="regInfo.photoId">
-          <img src="@/imgs/404.png" class="user_img" v-else>
-        </div>
-        <div><span>学生姓名：</span>{{regInfo.stuName}}</div>
-        <div><span>证件号：</span>{{regInfo.idCard}}</div>
-        <div><span>出生日期：</span>{{regInfo.stuBirthday | dateFormatYmd}}</div>
-        <div><span>性别：</span>{{genderMap[regInfo.stuGender]}}</div>
-        <div><span>户籍所在地：</span>{{regInfo.localStr}}</div>
-        <div><span>现就读学校：</span>{{regInfo.nowSchool}}</div>
-        <div><span>现就读年级：</span>{{regInfo.nowGradeName}}</div>
-        <div><span>总分年级排名/年级人数：</span>{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</div> -->
         <table>
           <tbody>
           <tr>
@@ -275,8 +264,8 @@
           <tr>
             <td align="right">现就读年级：</td>
             <td>{{regInfo.nowGradeName}}</td>
-            <td align="right" v-if="planInfo.phaseName != '初中'">初三年级综合排名/年级人数：</td>
-            <td v-if="planInfo.phaseName != '初中'">{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</td>
+            <td align="right" v-if="planInfo.phaseName == '高中'">初三年级综合排名/年级人数：</td>
+            <td v-if="planInfo.phaseName == '高中'">{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</td>
           </tr>
           </tbody>
         </table>
@@ -345,7 +334,7 @@
                     v-if="file.fieldValue"
                     :src="imgUrl+file.fieldValue"
                     @error="errorImg($event,'image')">
-                  <div class="big_btn_l" @click="showBigImg(file.fieldValue)"></div>
+                  <div class="big_btn_l big_btn_bg" @click="showBigImg(file.fieldValue)"></div>
                 </div>
               </div>
             </td>
@@ -356,25 +345,6 @@
           </tr>
           </tbody>
         </table>
-        <!-- <div class="table-item">
-            <div v-if="regInfo.rewards && regInfo.rewards.length">
-              <label>获奖信息:</label>
-              <div v-for="(item, idx) in regInfo.rewards" :key="idx">
-                {{item['s_c']}} {{item['s_d']}} {{item['s_e']}}
-              </div>
-              <div v-if="regInfo.rewardFile && regInfo.rewardFile.length ">
-                <label>获奖附件:</label>
-                <div class="up_idcard" @click="showBig">
-                  <img
-                    v-if="regInfo.rewardFile[0].fieldValue"
-                    :src="imgUrl+regInfo.rewardFile[0].fieldValue"
-                    @error="errorImg($event,'image')">
-                  <div class="big_btn_l" @click="showBigImg()"></div>
-                  <i class="el-icon-zoom-in"></i>
-                </div>
-              </div>
-            </div>
-          </div> -->
       </div>
       <div class="big_img" v-if="isShowBigImg">
         <div class="img_main">
@@ -473,11 +443,23 @@
           callback();
         }
       };
+      // 验证户籍所在地
+      let otherDataVFn = (rule, value, callback) => {
+        if (this.phaseName == '高中' && !this.regInfo.otherData['s_a']) {
+          return callback(new Error('必填项'));
+        } else if (this.phaseName == '高中' && !this.regInfo.otherData['s_b']) {
+          return callback(new Error('必填项'));
+        } else if (this.phaseName == '高中' && parseInt(this.regInfo.otherData["s_a"]) > parseInt(this.regInfo.otherData["s_b"])) {
+          return callback(new Error('排名不能高于年级人数'));
+        } else {
+          callback();
+        }
+      };
       return {
         // 绑数据
         userInfo: window.userInfo,
         planInfo: {},
-        rewardRows:3,
+        rewardRows: 3,
         regInfo: {
           otherData: {},
           parents: [
@@ -575,7 +557,7 @@
             {required: true, message: "必填", trigger: "blur"}
           ],
           'otherData.s_a': [
-            {required: true, message: "必填", trigger: "blur"}
+            {validator: otherDataVFn,required: true, trigger: "blur"}
           ],
           'otherData.s_b': [
             {required: true, message: "必填", trigger: "blur"}
@@ -630,16 +612,16 @@
       },
       addRewardRows() {
         let vm = this;
-        if(vm.rewardRows < 8) {
-          let obj = { s_c: "", s_d: "", s_e: "", s_t: "" , s_u: ""};
-          vm.regInfo.rewards[++vm.rewardRows] = obj
+        if (vm.rewardRows < 8) {
+          let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
+          vm.regInfo.rewards[vm.rewardRows++] = obj
         }
       },
       delRewardRows() {
         let vm = this;
-        if(vm.rewardRows != 1) {
-          let obj = { s_c: "", s_d: "", s_e: "", s_t: "" , s_u: ""};
-          vm.regInfo.rewards[vm.rewardRows--] = obj
+        if (vm.rewardRows != 1) {
+          let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
+          vm.regInfo.rewards[--vm.rewardRows] = obj
         }
       },
       saveInfo() {
@@ -953,7 +935,7 @@
       },
       saveParent() {
         let mobileRes = /^1[34578]\d{9}$/;
-        if(!mobileRes.test(this.formParent.s_h)){
+        if (!mobileRes.test(this.formParent.s_h)) {
           this.$message.error('手机格式错误');
           return
         }
@@ -1130,9 +1112,16 @@
       bottom: 2px;
       left: 2px;
       z-index: 1;
-      background: url(~@/imgs/big_btn.png) no-repeat rgba(0, 0, 0, .2);
-      background-position: 115px 65px;
       cursor: pointer;
+      background-color:  rgba(0, 0, 0, .4);
+      color: #fff;
+      font-size: 18px;
+      text-align: right;
+    }
+    .big_btn_bg{
+      background-image: url(~@/imgs/big_btn.png);
+      background-repeat: no-repeat;
+      background-position: 115px 65px;
     }
   }
 
@@ -1183,7 +1172,6 @@
     width: 150px;
     border-radius: 2px;
     text-align: center;
-    width: 150px;
     color: #999;
     display: inline-block;
     vertical-align: top;
@@ -1210,7 +1198,7 @@
     background-size: 100% 100%;
     padding-left: 18px;
     display: inline-block;
-    margin-top: 70px;
+    margin-top: 50px;
   }
 
   .area_margin {
@@ -1259,11 +1247,195 @@
   }
 </style>
 <style lang="less" scoped>
+  .basic_tit {
+    border-left: 3px solid #aa2f33;
+    line-height: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 20px;
+    padding-left: 4px;
+    margin-bottom: 20px;
+    span {
+      float: right;
+      color: #aa2f33;
+      margin-right: 20px;
+      font-weight: normal;
+      font-size: 14px;
+    }
+  }
+
+
+  .reward-bottom{
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .table-item-tag {
+      color: #999;
+      font-size: 12px;
+      margin-top: 5px;
+      line-height: normal;
+    }
+    .reward-btn {
+      float: right;
+      span{
+        width: auto;
+        height: auto;
+        letter-spacing: 0;
+        line-height: normal;
+        padding: 3px 6px;
+        margin: 0;
+      }
+    }
+  }
+
+
+  .phone_parents_item {
+    border-bottom: 1px solid #eee;
+    margin-left: 20px;
+    padding: 20px 20px 20px 0;
+    .parent_name {
+      font-weight: bold;
+      .edit_btn {
+        width: 15px;
+        height: 15px;
+        background: url(~@/imgs/warp/edit.png) no-repeat;
+        background-size: 100%;
+        float: right;
+      }
+    }
+    .parent_about {
+      margin-top: 10px;
+      span {
+        border: 1px solid #2f3861;
+        color: #2f3861;
+        padding: 2px 5px;
+        line-height: 16px;
+        display: inline-block;
+        vertical-align: top;
+      }
+    }
+    .parent_address {
+      margin-top: 10px;
+    }
+  }
+
+  .phone_parents_item:last-child {
+    border-bottom: none;
+  }
+
+  .parents_info {
+    border-bottom: 10px solid #eee;
+    margin-bottom: 20px;
+  }
+
+  .cancel {
+    display: none;
+  }
+
+  .save {
+    display: block;
+    width: auto;
+    border-radius: 0;
+    margin-bottom: 20px;
+  }
+
+  .basic_tit {
+    display: block;
+  }
+
+  .addparentFlag,
+  .addrewardsFlag {
+    padding: 20px;
+    .save {
+      margin: 0;
+    }
+  }
+
+  .prove {
+    display: none;
+  }
+
+  .other_data_s_a, .other_data_s_b {
+    display: inline-block;
+  }
+</style>
+<style lang="less">
+  .basic_info {
+    .table_list {
+      .el-input__inner {
+        border: none;
+      }
+    }
+
+    .is_phone {
+      .long_label {
+        .el-form-item__label {
+          line-height: 20px;
+        }
+      }
+      .phone_upload_img {
+        .el-upload {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+    .error_item {
+      .el-form-item__error {
+        display: inline-block;
+        position: static;
+        margin-left: 20px;
+      }
+    }
+
+    .el-form-item__error {
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background: url(~@/imgs/error.png) no-repeat;
+        background-size: 100%;
+        float: left;
+        margin-right: 4px;
+        margin-top: -2px;
+      }
+    }
+  }
+</style>
+<style lang="less" scoped>
   //warp版本
   .is_phone {
     .user_school {
       text-align: center;
       margin: 30px 0 10px 0;
+    }
+    .img_box {
+      & > div {
+        width: 30%;
+        height: 70px;
+        float: left;
+        .up_idcard {
+          width: 100%;
+          height: 70px;
+          line-height: 70px;
+        }
+      }
+
+      .img_thumbnail {
+        width: 30%;
+        height: 70px;
+        margin-bottom: 20px;
+        margin-right: 3%;
+      }
+      .el-autocomplete, .el-cascader, .el-select {
+        width: 100%;
+      }
+      .other_data_s_a,
+      .other_data_s_b {
+        display: block;
+      }
     }
     .import_hint {
       display: block;
@@ -1352,169 +1524,6 @@
       margin: 0;
       margin-bottom: 20px;
       border-bottom: 10px solid #eee;
-    }
-  }
-
-  .basic_tit {
-    border-left: 3px solid #aa2f33;
-    line-height: 16px;
-    font-size: 16px;
-    font-weight: bold;
-    margin-left: 20px;
-    padding-left: 4px;
-    margin-bottom: 20px;
-    span {
-      float: right;
-      color: #aa2f33;
-      margin-right: 20px;
-      font-weight: normal;
-      font-size: 14px;
-    }
-  }
-
-  .phone_parents_item {
-    border-bottom: 1px solid #eee;
-    margin-left: 20px;
-    padding: 20px 20px 20px 0;
-    .parent_name {
-      font-weight: bold;
-      .edit_btn {
-        width: 15px;
-        height: 15px;
-        background: url(~@/imgs/warp/edit.png) no-repeat;
-        background-size: 100%;
-        float: right;
-      }
-    }
-    .parent_about {
-      margin-top: 10px;
-      span {
-        border: 1px solid #2f3861;
-        color: #2f3861;
-        padding: 2px 5px;
-        line-height: 16px;
-        display: inline-block;
-        vertical-align: top;
-      }
-    }
-    .parent_address {
-      margin-top: 10px;
-    }
-  }
-
-  .phone_parents_item:last-child {
-    border-bottom: none;
-  }
-
-  .parents_info {
-    border-bottom: 10px solid #eee;
-    margin-bottom: 20px;
-  }
-
-  .cancel {
-    display: none;
-  }
-
-  .save {
-    display: block;
-    width: auto;
-    border-radius: 0;
-    margin-bottom: 20px;
-  }
-
-  .basic_tit {
-    display: block;
-  }
-
-  .addparentFlag,
-  .addrewardsFlag {
-    padding: 20px;
-    .save {
-      margin: 0;
-    }
-  }
-
-  .prove {
-    display: none;
-  }
-
-  .img_box {
-    & > div {
-      width: 30%;
-      height: 70px;
-      float: left;
-      .up_idcard {
-        width: 100%;
-        height: 70px;
-        line-height: 70px;
-      }
-    }
-
-    .img_thumbnail {
-      width: 30%;
-      height: 70px;
-      margin-bottom: 20px;
-      margin-right: 3%;
-    }
-    .el-autocomplete, .el-cascader, .el-select {
-      width: 100%;
-    }
-    .other_data_s_a,
-    .other_data_s_b {
-      display: block;
-    }
-  }
-
-  .img_thumbnail {
-    width: 30%;
-    height: 70px;
-  }
-
-  .other_data_s_a, .other_data_s_b {
-    display: inline-block;
-  }
-</style>
-<style lang="less">
-  .basic_info {
-    .table_list {
-      .el-input__inner {
-        border: none;
-      }
-    }
-
-    .is_phone {
-      .long_label {
-        .el-form-item__label {
-          line-height: 20px;
-        }
-      }
-      .phone_upload_img {
-        .el-upload {
-          width: 100%;
-          height: 100%;
-        }
-      }
-    }
-    .error_item {
-      .el-form-item__error {
-        display: inline-block;
-        position: static;
-        margin-left: 20px;
-      }
-    }
-
-    .el-form-item__error {
-      &::before {
-        content: "";
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        background: url(~@/imgs/error.png) no-repeat;
-        background-size: 100%;
-        float: left;
-        margin-right: 4px;
-        margin-top: -2px;
-      }
     }
   }
 </style>

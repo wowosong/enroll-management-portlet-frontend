@@ -289,7 +289,7 @@
                         </tr>
                         </tbody>
                       </table>
-                      <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖</div>
+                      <div class="table-item-tag">填写示例：2018年3月1日   四川省级科创比赛   一等奖  省级  艺术奖  （说明：最少1行，最多8行）</div>
                     </div>
                   </div>
                   <div class="table-item" v-if="phaseName  == '高中'">

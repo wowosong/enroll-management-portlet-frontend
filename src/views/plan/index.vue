@@ -46,7 +46,11 @@
       },
       signUp(item) {
         if (item.publishStatus != 1) return;
-        this.$router.push({path: '/fillInstructions', query: item});
+        let obj = {
+          id:item.id,
+          phaseName:item.phaseName
+        };
+        this.$router.push({path: '/fillInstructions', query: obj});
       },
       enrollmentGuide(item) {
         if (item.auditStatus != 3 && item.erEnrollmentGuide.publishStatus != 1) {
