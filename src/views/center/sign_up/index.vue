@@ -55,7 +55,7 @@
               </el-col>
             </el-form-item>
             <el-form-item :label="isPhone ? '近次年级排名:' : '近次年级排名/年级人数:'" class="long_label other_data_s_a"
-                          prop="otherData.s_a" v-if="planInfo.phaseName == '高中'">
+                          prop="otherData.s_a" v-if="planInfo.phaseName != '初中'">
               <el-input
                 type="number"
                 min="1"
@@ -269,8 +269,8 @@
           <tr>
             <td align="right">现就读年级：</td>
             <td>{{regInfo.nowGradeName}}</td>
-            <td align="right">近次年级排名/年级人数：</td>
-            <td>{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</td>
+            <td align="right" v-if="planInfo.phaseName != '初中'">近次年级排名/年级人数：</td>
+            <td v-if="planInfo.phaseName != '初中'">{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</td>
           </tr>
           </tbody>
         </table>
