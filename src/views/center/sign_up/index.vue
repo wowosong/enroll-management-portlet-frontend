@@ -4,11 +4,12 @@
       <div class="user_school">
         <span class="school_item">报名校区：{{planInfo.campusName}}</span>
         <span class="school_item">报名年级：{{planInfo.gradeName}}</span>
-        <span v-if="!idEdit && regInfo.regStatus == 0" class="float_r edit_btn" @click="idEdit = true">修改</span>
-        <span v-if="idEdit" class="import_hint float_r">提示：报名提交后不支持修改"必填项"，只支持修改"非必填项</span>
+        <span v-if="!idEdit && regInfo.regStatus == 0 && planInfo.publishStatus == 1" class="float_r edit_btn"
+              @click="idEdit = true">修改</span>
+        <!-- <span v-if="idEdit" class="import_hint float_r">提示：报名提交后不支持修改"必填项"，只支持修改"非必填项</span> -->
       </div>
       <div class="show_edit" v-if="idEdit">
-        <el-form :model="regInfo" :rules="rules" ref="ruleForm" :label-width="isPhone ? '102px' : '172px'">
+        <el-form :model="regInfo" :rules="rules" ref="ruleForm" :label-width="isPhone ? '112px' : '172px'">
           <p class="basic_tit">基本信息</p>
           <div class="user_img">
             <img :src="imgUrl+regInfo.photoId" @error="errorImg($event,'avatar')" @click="uploadPicture">
@@ -28,46 +29,54 @@
             <el-form-item label="性别:" required style="margin-bottom:5px">
               {{genderMap[regInfo.stuGender]}}
             </el-form-item>
-            <el-form-item label="户籍所在地:" prop="stuAdds">
-              <el-cascader
-                style="width: 100%"
-                filterable
-                :options="addList"
-                v-model="regInfo.stuAdds"/>
+            <el-form-item label="户籍所在地:" prop="stuAdds" :required="isrequired">
+              <el-col :span="12">
+                <el-cascader
+                  filterable
+                  :options="addList"
+                  v-model="regInfo.stuAdds"/>
+              </el-col>
             </el-form-item>
             <el-form-item label="现就读学校:" prop="nowSchool">
-              <el-autocomplete v-model="regInfo.nowSchool" :fetch-suggestions="querySearch" placeholder="请输入内容"/>
+              <el-col :span="12">
+                <el-autocomplete style="width: 100%" v-model="regInfo.nowSchool" :fetch-suggestions="querySearch"
+                                 placeholder="请填写"/>
+              </el-col>
             </el-form-item>
             <el-form-item label="现就读年级:" prop="nowGrade">
-              <el-select clearable v-model="regInfo.nowGrade">
-                <el-option
-                  v-for="item in gradeList"
-                  :key="item.id"
-                  :label="item.gradeName"
-                  :value="item.id"/>
-              </el-select>
+              <el-col :span="12">
+                <el-select clearable v-model="regInfo.nowGrade">
+                  <el-option
+                    v-for="item in gradeList"
+                    :key="item.id"
+                    :label="item.gradeName"
+                    :value="item.id"/>
+                </el-select>
+              </el-col>
             </el-form-item>
-            <el-form-item label="总分年级排名/年级人数:" class="long_label other_data_s_a" prop="otherData.s_a">
+            <el-form-item :label="isPhone ? '近次年级排名:' : '近次年级排名/年级人数:'" class="long_label other_data_s_a"
+                          prop="otherData.s_a" v-if="planInfo.phaseName != '初中'">
               <el-input
                 type="number"
                 min="1"
                 step="1"
                 v-model="regInfo.otherData['s_a']"
                 placeholder="年级排名"
-                style="width:98px"/>
+                :style="{width: isPhone ? '100%' : '128px'}"/>
             </el-form-item>
-            <el-form-item class="long_label other_data_s_b" prop="otherData.s_b" label-width="0">
+            <el-form-item :label="isPhone ? '年级人数:' : ''" class="long_label other_data_s_b" prop="otherData.s_b"
+                          :label-width="isPhone ? '112px' : '0px'" v-if="planInfo.phaseName == '高中'">
               <el-input
                 type="number"
                 min="1"
                 step="1"
                 v-model="regInfo.otherData['s_b']"
                 placeholder="年级人数"
-                style="width:98px"/>
+                :style="{width: isPhone ? '100%' : '128px'}"/>
             </el-form-item>
           </div>
           <template v-if="!isPhone">
-            <el-form-item label="监护人:" label-width="82px" prop="parentsV">
+            <el-form-item label="监护人:" label-width="102px" prop="parentsV">
               <table class="table_list">
                 <thead>
                 <tr>
@@ -81,10 +90,12 @@
                 <tbody>
                 <tr v-for="i in 2" :key="i">
                   <td>
-                    <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
+                    <template v-if="i == 1">{{regInfo.parents[i-1]['s_g']}}</template>
+                    <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']" v-else/>
                   </td>
                   <td>
-                    <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
+                    <template v-if="i == 1">{{regInfo.parents[i-1]['s_h']}}</template>
+                    <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']" v-else/>
                   </td>
                   <td>
                     <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
@@ -99,11 +110,11 @@
                 </tbody>
               </table>
             </el-form-item>
-            <el-form-item label="获奖信息:" label-width="82px">
+            <el-form-item label="获奖信息:" label-width="102px" v-if="planInfo.phaseName  != '初中'">
               <table class="table_list">
                 <thead>
                 <tr>
-                  <th>获奖时间</th>
+                  <th width="145px">获奖时间</th>
                   <th>获奖名称</th>
                   <th>奖项等级</th>
                   <th>奖项范围</th>
@@ -139,14 +150,14 @@
                         :value="item.seiValue"/>
                     </el-select>
                   <td>
-                  <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
-                    <el-option
-                      v-for="item in enumMap['s_u']"
-                      :key="item.seiValue"
-                      :label="item.seiName"
-                      :value="item.seiValue"/>
-                  </el-select>
-                </td>
+                    <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
+                      <el-option
+                        v-for="item in enumMap['s_u']"
+                        :key="item.seiValue"
+                        :label="item.seiName"
+                        :value="item.seiValue"/>
+                    </el-select>
+                  </td>
                 </tr>
                 </tbody>
               </table>
@@ -156,7 +167,9 @@
             <div class="parents_info">
               <p class="basic_tit">监护人信息<span v-if="parentsLength < 2" @click="addparentFlagFn">添加</span></p>
               <div v-for="(i,index) in parentsLength" :key="index" class="phone_parents_item">
-                <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}<span class="edit_btn" @click="editParentFn(index,regInfo.parents[i-1])"></span></div>
+                <div class="parent_name">{{regInfo.parents[i-1]['s_g']}}
+                  <span v-if="index > 0" class="edit_btn" @click="editParentFn(index,regInfo.parents[i-1])"></span>
+                </div>
                 <div class="parent_about">
                   <span v-if="regInfo.parents[i-1]['s_h']">{{regInfo.parents[i-1]['s_h']}}</span>
                   <span v-if="regInfo.parents[i-1]['s_i']">{{regInfo.parents[i-1]['s_i']}}</span>
@@ -165,10 +178,12 @@
                 <div class="parent_address">{{regInfo.parents[i-1]['s_k']}}</div>
               </div>
             </div>
-            <div class="reward_info">
+            <div class="reward_info" v-if="planInfo.phaseName  != '初中'">
               <p class="basic_tit">获奖信息<span v-if="rewardsLength < 3" @click="addrewardsFlagFn">添加</span></p>
               <div v-for="(i,index) in rewardsLength" :key="index" class="phone_parents_item">
-                <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn" @click="editRewardFn(index,regInfo.rewards[i-1])"></span></div>
+                <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn"
+                                                                              @click="editRewardFn(index,regInfo.rewards[i-1])"></span>
+                </div>
                 <div class="parent_about">
                   <span v-if="regInfo.rewards[i-1]['s_e']">{{regInfo.rewards[i-1]['s_e']}}</span>
                   <span v-if="regInfo.rewards[i-1]['s_c']">{{regInfo.rewards[i-1]['s_c']}}</span>
@@ -176,7 +191,7 @@
               </div>
             </div>
           </template>
-          <el-form-item label="获奖附件:" label-width="82px">
+          <el-form-item label="获奖附件:" label-width="102px" v-if="planInfo.phaseName  != '初中'">
             <div class="img_box">
               <div class="img_thumbnail" v-for="(file,fid) in fileList" :key="fid" v-if="fileList && fileList.length>0">
                 <img @error="errorImg($event,'image')" :src="imgUrl+file.fileId">
@@ -190,7 +205,7 @@
               </div>
 
               <el-upload
-               class="phone_upload_img"
+                class="phone_upload_img"
                 v-if="isPhone"
                 :action="uploadUrl"
                 :multiple="true"
@@ -205,6 +220,9 @@
                 </div>
               </el-upload>
             </div>
+          </el-form-item>
+          <el-form-item label="家庭教育理念:" label-width="102px" v-if="planInfo.phaseName == '初中'">
+            <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="regInfo.eduConcept"></el-input>
           </el-form-item>
         </el-form>
         <div class="sign-btn">
@@ -251,15 +269,15 @@
           <tr>
             <td align="right">现就读年级：</td>
             <td>{{regInfo.nowGradeName}}</td>
-            <td align="right">总分年级排名/年级人数：</td>
-            <td>{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</td>
+            <td align="right" v-if="planInfo.phaseName != '初中'">近次年级排名/年级人数：</td>
+            <td v-if="planInfo.phaseName != '初中'">{{regInfo.otherData['s_a']}}/{{regInfo.otherData['s_b']}}</td>
           </tr>
           </tbody>
         </table>
         <table>
           <tbody>
           <tr>
-            <td width="82px" valign="top" align="right">监护人：</td>
+            <td width="102px" valign="top" align="right">监护人：</td>
             <td>
               <table class="table_list">
                 <thead>
@@ -295,36 +313,41 @@
         </table>
         <table>
           <tbody>
-            <tr>
-              <td width="82px" valign="top" align="right">
-                <div style="line-height:30px">获奖信息：</div>
-              </td>
-              <td>
-                <table>
-                  <tr v-for="(item, idx) in regInfo.rewards" :key="idx">
-                    <td><div style="line-height:30px" v-if="item['s_c'] && item['s_d'] && item['s_e']">
+          <tr v-if="planInfo.phaseName  != '初中'">
+            <td width="102px" valign="top" align="right">
+              <div style="line-height:30px">获奖信息：</div>
+            </td>
+            <td>
+              <table>
+                <tr v-for="(item, idx) in regInfo.rewards" :key="idx">
+                  <td>
+                    <div style="line-height:30px" v-if="item['s_c'] && item['s_d'] && item['s_e']">
                       {{item['s_c'] | dateFormatYmdW}} {{item['s_d']}} {{item['s_e']}}
                       {{itemMap['s_t'][item['s_t']]}} {{itemMap['s_u'][item['s_u']]}}
                     </div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td width="82px" valign="top" align="right">获奖附件：</td>
-              <td>
-                <div v-if="regInfo.rewardFile && regInfo.rewardFile.length > 0">
-                  <div class="img_thumbnail" v-for="(file,fid) in regInfo.rewardFile" :key="fid">
-                    <img
-                      v-if="file.fieldValue"
-                      :src="imgUrl+file.fieldValue"
-                      @error="errorImg($event,'image')">
-                    <div class="big_btn_l" @click="showBigImg(file.fieldValue)"></div>
-                  </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr v-if="planInfo.phaseName  != '初中'">
+            <td width="102px" valign="top" align="right">获奖附件：</td>
+            <td>
+              <div v-if="regInfo.rewardFile && regInfo.rewardFile.length > 0">
+                <div class="img_thumbnail" v-for="(file,fid) in regInfo.rewardFile" :key="fid">
+                  <img
+                    v-if="file.fieldValue"
+                    :src="imgUrl+file.fieldValue"
+                    @error="errorImg($event,'image')">
+                  <div class="big_btn_l" @click="showBigImg(file.fieldValue)"></div>
                 </div>
-              </td>
-            </tr>
+              </div>
+            </td>
+          </tr>
+          <tr v-if="planInfo.phaseName == '初中'">
+            <td width="102px" valign="top" align="right">家庭教育理念：</td>
+            <td>{{regInfo.eduConcept}}</td>
+          </tr>
           </tbody>
         </table>
         <!-- <div class="table-item">
@@ -392,6 +415,24 @@
         <el-form-item label="奖项等级">
           <el-input v-model="formRewards.s_e" placeholder="请输入"></el-input>
         </el-form-item>
+        <el-form-item label="奖项范围:">
+          <el-select v-model="formRewards.s_t" clearable placeholder="请选择">
+            <el-option
+              v-for="item in enumMap['s_t']"
+              :key="item.seiValue"
+              :label="item.seiName"
+              :value="item.seiValue"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="奖项类别:">
+          <el-select v-model="formRewards.s_u" clearable placeholder="请选择">
+            <el-option
+              v-for="item in enumMap['s_u']"
+              :key="item.seiValue"
+              :label="item.seiName"
+              :value="item.seiValue"/>
+          </el-select>
+        </el-form-item>
         <div class="sign-btn">
           <span class="save" @click="saveRewards">保存</span>
         </div>
@@ -406,18 +447,26 @@
       var parentsVFn = (rule, value, callback) => {
         let parents = this.regInfo.parents
         let isFlag = false
-          for(let i=0;i<parents.length;i++){
-            if(parents[i].s_g && parents[i].s_g != ''){
-              isFlag = true
-              break
-            }
+        for (let i = 0; i < parents.length; i++) {
+          if (parents[i].s_g && parents[i].s_g != '') {
+            isFlag = true
+            break
           }
-          if(!isFlag){
-            callback(new Error('必填'));
-          }else{
-            callback();
-          }
-      }
+        }
+        if (!isFlag) {
+          callback(new Error('必填'));
+        } else {
+          callback();
+        }
+      };
+      // 验证户籍所在地
+      let checkStuAdds = (rule, value, callback) => {
+        if (this.planInfo.phaseName == '初中' && !this.regInfo.stuAdds) {
+          return callback(new Error('必填项'));
+        } else {
+          callback();
+        }
+      };
       return {
         // 绑数据
         userInfo: window.userInfo,
@@ -461,7 +510,7 @@
         // 原始
         idEdit: false,
         isShowBigImg: false,
-        bigimgId:'',
+        bigimgId: '',
         bigFileId: '',
         bigImgUrl: '/gateway/zuul/filesystem/api/data/original/',
         imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
@@ -486,60 +535,59 @@
           },
         ],
         rules: {},
-        parentsLength:0,
-        rewardsLength:0,
-        addparentFlag:false,
-        addrewardsFlag:false,
-        addParentIndex:0,
-        addRewardsIndex:0,
-        isAddparentItem:false,
-        isAddRewardItem:false,
-        formParent:{
-          s_g:'',
-          s_h:'',
-          s_i:'',
-          s_j:'',
-          s_k:''
+        parentsLength: 0,
+        rewardsLength: 0,
+        addparentFlag: false,
+        addrewardsFlag: false,
+        addParentIndex: 0,
+        addRewardsIndex: 0,
+        isAddparentItem: false,
+        isAddRewardItem: false,
+        formParent: {
+          s_g: '',
+          s_h: '',
+          s_i: '',
+          s_j: '',
+          s_k: ''
         },
-        formRewards:{
+        formRewards: {
           s_c: "",
           s_d: "",
           s_e: "",
           s_t: "",
           s_u: ""
         },
+        //户籍所在地是否验证
+        isrequired: true,
         rules: {
-          stuAdds:[
-            { required: true, message: "必填", trigger: "blur" }
+          stuAdds: [{validator: checkStuAdds, message: '必填项', trigger: 'blur'}],
+          nowSchool: [
+            {required: true, message: "必填", trigger: "blur"}
           ],
-          nowSchool:[
-            { required: true, message: "必填", trigger: "blur" }
+          nowGrade: [
+            {required: true, message: "必填", trigger: "blur"}
           ],
-          nowGrade:[
-            { required: true, message: "必填", trigger: "blur" }
+          'otherData.s_a': [
+            {required: true, message: "必填", trigger: "blur"}
           ],
-          'otherData.s_a':[
-            { required: true, message: "必填", trigger: "blur" }
+          'otherData.s_b': [
+            {required: true, message: "必填", trigger: "blur"}
           ],
-          'otherData.s_b':[
-            { required: true, message: "必填", trigger: "blur" }
-          ],
-          'parentsV':[
-            { required: true,validator: parentsVFn, trigger: 'blur' }
+          'parentsV': [
+            {required: true, validator: parentsVFn, trigger: 'blur'}
           ]
         },
-        uploadUrl: `/gateway/zuul/filesystem/api/upload/simpleupload?userId=${userInfo.id}`,
+        uploadUrl: `/gateway/zuul/filesystem/api/upload/simpleupload?userId=${userInfo.id}`
       }
     },
-    computed:{
-        isPhone: function () {
-            return this.$store.state.isPhone
-        },
+    computed: {
+      isPhone: function () {
+        return this.$store.state.isPhone
+      },
     },
     mounted() {
       const vm = this;
-
-      if(this.$store.state.isPhone){
+      if (this.$store.state.isPhone) {
         this.idEdit = true
       }
 
@@ -576,7 +624,7 @@
       saveInfo() {
         const vm = this;
         vm.$refs["ruleForm"].validate((valid) => {
-          if(valid){
+          if (valid) {
             vm.saving = true;
             vm.regInfo.planId = vm.planId;
             vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade]
@@ -661,9 +709,11 @@
                 return;
               }
               vm.getReg();
-              vm.idEdit = false;
+              if (!isPhone) {
+                vm.idEdit = false;
+              }
             })
-            }
+          }
         })
       },
       getReg() {
@@ -678,7 +728,7 @@
           vm.rewardsLength = data.rewards.length
           for (let i = 0; i < 3; i++) {
             if (!data.rewards[i]) {
-              let obj = {s_c: "", s_d: "", s_e: "",s_t: "",s_u: ""};
+              let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
               data.rewards[i] = obj;
             } else {
               // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
@@ -753,7 +803,7 @@
             }
           }
         });
-        console.log("vm.itemMap",vm.itemMap)
+        console.log("vm.itemMap", vm.itemMap)
       },
       getEnum() {
         let vm = this;
@@ -810,6 +860,9 @@
             return;
           }
           vm.planInfo = xhr.data.data;
+          if (vm.planInfo.phaseName != "初中") {
+            vm.isrequired = false
+          }
         });
       },
       pointFn(type) {
@@ -871,55 +924,60 @@
         this.bigimgId = id
         this.isShowBigImg = !this.isShowBigImg
       },
-      saveParent(){
+      saveParent() {
+        let mobileRes = /^1[34578]\d{9}$/;
+        if(!mobileRes.test(this.formParent.s_h)){
+          this.$message.error('手机格式错误');
+          return
+        }
         this.regInfo.parents[this.addParentIndex] = _.cloneDeep(this.formParent)
-        if(this.isAddparentItem){
+        if (this.isAddparentItem) {
           this.parentsLength++
         }
-        this.$emit("changeTitle",'报名信息')
+        this.$emit("changeTitle", '报名信息')
         this.addparentFlag = false
       },
-      addparentFlagFn(){
-        for(let i in this.formParent){
+      addparentFlagFn() {
+        for (let i in this.formParent) {
           this.formParent[i] = ''
         }
         this.addParentIndex = this.parentsLength
         this.isAddparentItem = true
-        this.$emit("changeTitle",'新增监护人')
+        this.$emit("changeTitle", '新增监护人')
         this.addparentFlag = true
       },
-      editParentFn(index,item){
+      editParentFn(index, item) {
         this.addParentIndex = index
         this.formParent = item
         this.isAddparentItem = false
-        this.$emit("changeTitle",'编辑监护人')
+        this.$emit("changeTitle", '编辑监护人')
         this.addparentFlag = true
       },
-      saveRewards(){
+      saveRewards() {
         this.regInfo.rewards[this.addRewardsIndex] = _.cloneDeep(this.formRewards)
-        if(this.isAddRewardItem){
+        if (this.isAddRewardItem) {
           this.rewardsLength++
         }
-        this.$emit("changeTitle",'报名信息')
+        this.$emit("changeTitle", '报名信息')
         this.addrewardsFlag = false
       },
-      addrewardsFlagFn(){
-        for(let i in this.formRewards){
+      addrewardsFlagFn() {
+        for (let i in this.formRewards) {
           this.formRewards[i] = ''
         }
         this.addRewardsIndex = this.rewardsLength
         this.isAddRewardItem = true
-        this.$emit("changeTitle",'新增获奖信息')
+        this.$emit("changeTitle", '新增获奖信息')
         this.addrewardsFlag = true
       },
-      editRewardFn(index,item){
+      editRewardFn(index, item) {
         this.addRewardsIndex = index
         this.addrewardsFlag = true
         this.isAddRewardItem = false
-        this.$emit("changeTitle",'编辑获奖信息')
+        this.$emit("changeTitle", '编辑获奖信息')
         this.formRewards = item
       },
-      goBackFn(){
+      goBackFn() {
         this.addparentFlag = false
         this.addrewardsFlag = false
       }
@@ -928,7 +986,9 @@
 </script>
 <style lang="less" scoped>
   .user_school {
-    margin: 30px 0 30px 0;
+    margin: 30px 0 30px 35px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E6E6E6;
   }
 
   .import_hint {
@@ -956,6 +1016,10 @@
     table {
       width: 100%;
       margin-bottom: 10px;
+      & > tbody > tr > td {
+        padding: 10px 0;
+        vertical-align: top;
+      }
     }
     .user_img {
       width: 130px;
@@ -983,9 +1047,9 @@
       color: #666;
       margin-top: 20px;
       cursor: pointer;
-      background: url('~@/imgs/upload.png') no-repeat 40px center;
+      background: url('~@/imgs/upload.png') no-repeat 25px center;
       padding-left: 20px;
-      span{
+      span {
         display: none;
       }
     }
@@ -1027,6 +1091,7 @@
     padding: 4px;
     position: relative;
     vertical-align: top;
+    margin-right: 30px;
     img {
       width: 100%;
       height: 100%;
@@ -1096,7 +1161,7 @@
     display: inline-block;
     vertical-align: top;
     cursor: pointer;
-    margin-left: 30px;
+    // margin-left: 30px;
     img {
       vertical-align: middle;
       margin-right: 5px;
@@ -1104,6 +1169,7 @@
       // height: 100%;
     }
   }
+
   .upload_item .card {
     float: left;
   }
@@ -1123,6 +1189,7 @@
   .area_margin {
     margin: 0 !important;
   }
+
   .sign-btn {
     text-align: center;
     span {
@@ -1135,13 +1202,15 @@
       border-radius: 4px;
       letter-spacing: 5px;
       display: inline-block;
+      cursor: pointer;
     }
     .save {
       background: #2f3861;
     }
     .cancel {
       background: none;
-      color: #333;
+      color: #2f3861;;
+      border: 1px solid #2f3861;
     }
     .submit {
       background: #eeeeee;
@@ -1149,191 +1218,276 @@
       color: #333;
     }
   }
-  .basic_tit{
+
+  .basic_tit {
     display: none;
+  }
+
+  .el-autocomplete, .el-cascader, .el-select {
+    width: 260px;
+  }
+
+  table .el-select {
+    width: 145px;
   }
 </style>
 <style lang="less" scoped>
-    //warp版本
-    .is_phone{
-      .user_school{
-        text-align: center;
-        margin: 30px 0 10px 0;
-      }
-      .import_hint{
-        display: block;
-        float: none;
-        border-top:10px solid #eee;
-        padding: 10px 20px;
-        margin-top: 20px;
-        text-align: left;
-      }
-      .show_edit{
-        .user_img{
-          position: static;
-          width: auto;
-          margin: 0 20px;
-          img{
-            // float: right;
-            width: 70px;
-            height: 80px;
-          }
-          div,p{
-            // margin-right: 90px;
-          }
-          .upload_btn{
-            border:none;
-            background: none;
-            padding-left: 0;
-            margin-top: 0;
-            float: left;
-            width: 100px;
-            text-align: right;
-            padding-right: 12px;
-            span{
-              display: inline-block;
-            }
-          }
-          p{
-            margin-top: 0;
-            margin-left: 102px;
-          }
-        }
-        .basic_info{
-          padding: 0 20px 10px 20px;
-          margin: 0;
-          margin-bottom: 20px;
-          border-bottom:10px solid #eee;
-        }
-      }
-      .basic_tit{
-        border-left:3px solid #aa2f33;
-        line-height: 16px;
-        font-size: 16px;
-        font-weight: bold;
-        margin-left: 20px;
-        padding-left: 4px;
-        margin-bottom: 20px;
-        span{
-          float: right;
-          color: #aa2f33;
-          margin-right: 20px;
-          font-weight: normal;
-          font-size: 14px;
-        }
-      }
-      .phone_parents_item{
-        border-bottom:1px solid #eee;
-        margin-left: 20px;
-        padding: 20px 20px 20px 0;
-        .parent_name{
-          font-weight: bold;
-          .edit_btn{
-            width: 15px;
-            height: 15px;
-            background: url(~@/imgs/warp/edit.png) no-repeat;
-            background-size: 100%;
-            float: right;
-          }
-        }
-        .parent_about{
-          margin-top: 10px;
-          span{
-            border:1px solid #2f3861;
-            color: #2f3861;
-            padding: 2px 5px;
-            line-height: 16px;
-            display: inline-block;
-            vertical-align: top;
-          }
-        }
-        .parent_address{
-          margin-top: 10px;
-        }
-      }
-      .phone_parents_item:last-child{
-         border-bottom:none;
-      }
-      .parents_info{
-        border-bottom:10px solid #eee;
-        margin-bottom: 20px;
-      }
-      .cancel{
-        display: none;
-      }
-      .save{
-        display: block;
+  //warp版本
+  .is_phone {
+    .user_school {
+      text-align: center;
+      margin: 30px 0 10px 0;
+    }
+    .import_hint {
+      display: block;
+      float: none;
+      border-top: 10px solid #eee;
+      padding: 10px 20px;
+      margin-top: 20px;
+      text-align: left;
+    }
+    .show_edit {
+      .user_img {
+        position: static;
         width: auto;
-        border-radius: 0;
-        margin-bottom: 20px;
-      }
-      .basic_tit{
-        display: block;
-      }
-      .addparentFlag,
-      .addrewardsFlag{
-        padding:20px;
-        .save{
-          margin: 0;
+        margin: 0 20px;
+        img {
+          // float: right;
+          width: 70px;
+          height: 80px;
         }
-      }
-      .prove{
-        display: none;
-      }
-      .img_box{
-        &>div{
-          width: 30%;
-          height: 70px;
+        div, p {
+          // margin-right: 90px;
+        }
+        .upload_btn {
+          border: none;
+          background: none;
+          padding-left: 0;
+          margin-top: 0;
           float: left;
-          .up_idcard{
-            width: 100%;
-            height: 70px;
-            line-height: 70px;
+          width: 100px;
+          text-align: right;
+          padding-right: 12px;
+          span {
+            display: inline-block;
           }
         }
-      }
-      .phone_upload_img{
-        width: 30%;
-        height: 70px;
-        border: 1px solid #ccc;
-        .file-list{
-          height: 100%;
-          width: 100%;
-          line-height: 70px;
-          text-align: center;
-        }
-        img{
-          width: 60%;
-          height: 60%;
-          vertical-align: middle;
+        p {
+          margin-top: 0;
+          margin-left: 102px;
         }
       }
-      .img_thumbnail{
-        width: 30%;
-        height: 70px;
+      .basic_info {
+        padding: 0 20px 10px 0px;
+        margin: 0;
+        margin-bottom: 20px;
+        border-bottom: 10px solid #eee;
       }
     }
-    .other_data_s_a,.other_data_s_b{
-      display: inline-block;
+    .basic_tit {
+      border-left: 3px solid #aa2f33;
+      line-height: 16px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-left: 20px;
+      padding-left: 4px;
+      margin-bottom: 20px;
+      span {
+        float: right;
+        color: #aa2f33;
+        margin-right: 20px;
+        font-weight: normal;
+        font-size: 14px;
+      }
+      div, p {
+        // margin-right: 90px;
+      }
+      .upload_btn {
+        border: none;
+        background: none;
+        padding-left: 0;
+        margin-top: 0;
+        float: left;
+        width: 100px;
+        text-align: right;
+        padding-right: 12px;
+        span {
+          display: inline-block;
+        }
+      }
+      p {
+        margin-top: 0;
+        margin-left: 102px;
+      }
     }
-</style>
-<style lang="less">
-  .table_list {
-    .el-input__inner {
-      border: none;
+    .basic_info {
+      padding: 0 20px 10px 20px;
+      margin: 0;
+      margin-bottom: 20px;
+      border-bottom: 10px solid #eee;
     }
   }
-  .is_phone{
-    .long_label{
-      .el-form-item__label{
-        line-height: 20px;
+
+  .basic_tit {
+    border-left: 3px solid #aa2f33;
+    line-height: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 20px;
+    padding-left: 4px;
+    margin-bottom: 20px;
+    span {
+      float: right;
+      color: #aa2f33;
+      margin-right: 20px;
+      font-weight: normal;
+      font-size: 14px;
+    }
+  }
+
+  .phone_parents_item {
+    border-bottom: 1px solid #eee;
+    margin-left: 20px;
+    padding: 20px 20px 20px 0;
+    .parent_name {
+      font-weight: bold;
+      .edit_btn {
+        width: 15px;
+        height: 15px;
+        background: url(~@/imgs/warp/edit.png) no-repeat;
+        background-size: 100%;
+        float: right;
       }
     }
-    .phone_upload_img{
-        .el-upload{
+    .parent_about {
+      margin-top: 10px;
+      span {
+        border: 1px solid #2f3861;
+        color: #2f3861;
+        padding: 2px 5px;
+        line-height: 16px;
+        display: inline-block;
+        vertical-align: top;
+      }
+    }
+    .parent_address {
+      margin-top: 10px;
+    }
+  }
+
+  .phone_parents_item:last-child {
+    border-bottom: none;
+  }
+
+  .parents_info {
+    border-bottom: 10px solid #eee;
+    margin-bottom: 20px;
+  }
+
+  .cancel {
+    display: none;
+  }
+
+  .save {
+    display: block;
+    width: auto;
+    border-radius: 0;
+    margin-bottom: 20px;
+  }
+
+  .basic_tit {
+    display: block;
+  }
+
+  .addparentFlag,
+  .addrewardsFlag {
+    padding: 20px;
+    .save {
+      margin: 0;
+    }
+  }
+
+  .prove {
+    display: none;
+  }
+
+  .img_box {
+    & > div {
+      width: 30%;
+      height: 70px;
+      float: left;
+      .up_idcard {
+        width: 100%;
+        height: 70px;
+        line-height: 70px;
+      }
+    }
+
+    .img_thumbnail {
+      width: 30%;
+      height: 70px;
+      margin-bottom: 20px;
+      margin-right: 3%;
+    }
+    .el-autocomplete, .el-cascader, .el-select {
+      width: 100%;
+    }
+    .other_data_s_a,
+    .other_data_s_b {
+      display: block;
+    }
+  }
+
+  .img_thumbnail {
+    width: 30%;
+    height: 70px;
+  }
+
+  .other_data_s_a, .other_data_s_b {
+    display: inline-block;
+  }
+</style>
+<style lang="less">
+  .basic_info {
+    .table_list {
+      .el-input__inner {
+        border: none;
+      }
+    }
+
+    .is_phone {
+      .long_label {
+        .el-form-item__label {
+          line-height: 20px;
+        }
+      }
+      .phone_upload_img {
+        .el-upload {
           width: 100%;
           height: 100%;
         }
+      }
+    }
+    .error_item {
+      .el-form-item__error {
+        display: inline-block;
+        position: static;
+        margin-left: 20px;
+      }
+    }
+
+    .el-form-item__error {
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background: url(~@/imgs/error.png) no-repeat;
+        background-size: 100%;
+        float: left;
+        margin-right: 4px;
+        margin-top: -2px;
+      }
     }
   }
 </style>

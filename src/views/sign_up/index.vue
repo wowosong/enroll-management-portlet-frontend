@@ -216,7 +216,7 @@
                   </div>
 
                   <div class="table-item" v-if="phaseName == '初中'" id="regInfo_eduConcept">
-                    <label class="fill">家庭教育观念:</label>
+                    <label class="fill">家庭教育理念:</label>
                     <el-input type="textarea" :maxlength="100" style="width: 600px" :rows="4" placeholder="请填写(限100字)"
                               v-model="regInfo.eduConcept"></el-input>
                     <div>
@@ -339,9 +339,9 @@
               </div>
               <!--间隔线-->
               <div class="line"></div>
-              <!--家庭教育观念-->
+              <!--家庭教育理念-->
               <div class="prize_info" v-if="phaseName == '初中'" id="regInfo_eduConcept">
-                <p class="item-tit open-info">家庭教育观念
+                <p class="item-tit open-info">家庭教育理念
                   <label class="error-info" style="font-size: 12px" v-if="eduMsg"><i
                     class="el-icon-circle-close"></i>{{eduMsg}}</label>
                 </p>
@@ -437,7 +437,7 @@
                       <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                     </template>
                   </el-form-item>
-                  <el-form-item label="设置密码:" prop="pwd">
+                  <el-form-item label="设置密码:">
                     <el-col :span="18">
                       <el-input v-show="showInput" v-if="!isPwd" type="password" v-model="regInfo.pwd"
                                 placeholder="默认密码 (证件号后六位)">
@@ -546,6 +546,15 @@
           callback();
         }
       };
+      // 验证登录密码
+      let checkpwd = (rule, value, callback) => {
+        if (this.regInfo.pwd && this.regInfo.pwd != this.regInfo.repwd && this.regInfo.repwd) {
+          return callback(new Error('密码不一致'));
+        } else {
+          callback();
+        }
+      };
+
       return {
         // 绑数据
         planInfo: {},
@@ -603,7 +612,7 @@
           ],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
-          // repwd: [{required: true, message: '必填项', trigger: 'blur'}],
+          repwd: [{validator: checkpwd, trigger: 'blur'}],
           stuAdds: [{validator: checkStuAdds, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
@@ -616,7 +625,7 @@
         // 获奖信息是否展开
         prizeOpen: true,
         // 上传图片 请求地址
-        uploadUrl: `/gateway/zuul/filesystem/api/upload/simpleupload?userId=${userInfo.id}`,
+        uploadUrl: `/gateway/zuul/filesystem/api/upload/simpleupload?userId=00000000000000000000000000000000`,
         // 监护人错误提示
         parentsMsg: '',
         // 登录密码框是否显示
@@ -629,7 +638,7 @@
         awardTypes: [
           {value: '选项1', label: '奖项范围'}
         ],
-        // 家庭教育观念错误提示
+        // 家庭教育理念错误提示
         eduMsg: '',
         //  学段
         phaseName: '',
@@ -1029,7 +1038,7 @@
           vm.parentsMsg = '';
           vm.eduMsg = '';
           // 身份证验证
-          if (!vm.regInfo.photoId) {
+          if (vm.phaseName != '初中' && !vm.regInfo.photoId) {
             if (!vm.isLogin) {
               vm.userImgErr = true;
             }
@@ -1051,7 +1060,7 @@
               return false;
             }
           }
-          // 家庭教育观念验证
+          // 家庭教育理念验证
           if (!vm.regInfo.eduConcept && vm.phaseName == '初中') {
             vm.eduMsg = '必填项';
             document.getElementById('regInfo_eduConcept').scrollIntoView();
