@@ -108,7 +108,7 @@
                 </tbody>
               </table>
             </el-form-item>
-            <el-form-item label="获奖信息:" label-width="102px" v-if="planInfo.phaseName  != '初中'">
+            <el-form-item label="获奖信息:" label-width="102px" v-if="planInfo.phaseName  == '高中'">
               <table class="table_list">
                 <thead>
                 <tr>
@@ -160,7 +160,7 @@
                 </tbody>
               </table>
               <div class="reward-bottom">
-                <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖 省级 艺术奖 （说明：最少1行，最多8行）</div>
+                <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖 省级 艺术奖</div>
                 <div class="sign-btn reward-btn">
                   <span class="save" @click="addRewardRows">添加一行</span>
                   <span class="cancel" @click="delRewardRows">删除一行</span>
@@ -184,7 +184,7 @@
                 <div class="parent_address">{{regInfo.parents[i-1]['s_k']}}</div>
               </div>
             </div>
-            <div class="reward_info" v-if="planInfo.phaseName  != '初中'">
+            <div class="reward_info" v-if="planInfo.phaseName  == '高中'">
               <p class="basic_tit">获奖信息<span v-if="rewardsLength < 3" @click="addrewardsFlagFn">添加</span></p>
               <div v-for="(i,index) in rewardsLength" :key="index" class="phone_parents_item">
                 <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn"
@@ -197,38 +197,40 @@
               </div>
             </div>
           </template>
-          <el-form-item label="获奖附件:" label-width="102px" v-if="planInfo.phaseName  != '初中'">
-            <div class="img_box">
-              <div class="img_thumbnail" v-for="(file,fid) in fileList" :key="fid" v-if="fileList && fileList.length>0">
-                <img @error="errorImg($event,'image')" :src="imgUrl+file.fileId">
-                <i class="big_btn_l el-icon-close delete-icon" @click="fileList.splice(fid, 1)"></i>
-                <!--<div class="big_btn_l" @click="showBigImg(file.fileId)"></div>-->
-              </div>
-              <div class="upload_item" v-if="!isPhone">
-                <div class="up_idcard" @click="uploadEnclosure">
-                  <template><img src="@/imgs/upload.png">上传证件</template>
+          <template v-if="planInfo.phaseName  == '高中'">
+            <el-form-item label="获奖附件:" label-width="102px">
+              <div class="img_box">
+                <div class="img_thumbnail" v-for="(file,fid) in fileList" :key="fid" v-if="fileList && fileList.length>0">
+                  <img @error="errorImg($event,'image')" :src="imgUrl+file.fileId">
+                  <i class="big_btn_l el-icon-close delete-icon" @click="fileList.splice(fid, 1)"></i>
+                  <!--<div class="big_btn_l" @click="showBigImg(file.fileId)"></div>-->
                 </div>
-                <div class="hint prove">请上传证书扫描件：格式为jpg、png等图片形式</div>
-              </div>
+                <div class="upload_item" v-if="!isPhone">
+                  <div class="up_idcard" @click="uploadEnclosure">
+                    <template><img src="@/imgs/upload.png">上传证件</template>
+                  </div>
+                  <div class="hint prove">请上传证书扫描件：格式为jpg、png等图片形式</div>
+                </div>
 
-              <el-upload
-                class="phone_upload_img"
-                v-if="isPhone"
-                :action="uploadUrl"
-                :multiple="true"
-                :show-file-list="false"
-                :file-list="fileList"
-                :accept="'image/*'"
-                :on-success="phoneEnclosure">
-                <div class="file-list">
+                <el-upload
+                  class="phone_upload_img"
+                  v-if="isPhone"
+                  :action="uploadUrl"
+                  :multiple="true"
+                  :show-file-list="false"
+                  :file-list="fileList"
+                  :accept="'image/*'"
+                  :on-success="phoneEnclosure">
+                  <div class="file-list">
                   <span>
                       <img src="@/imgs/warp/default.png" class="org-img">
                   </span>
-                </div>
-              </el-upload>
-            </div>
-          </el-form-item>
-          <el-form-item label="家庭教育理念:" label-width="102px" v-if="planInfo.phaseName == '初中'">
+                  </div>
+                </el-upload>
+              </div>
+            </el-form-item>
+          </template>
+          <el-form-item prop="eduConcept"  v-if="planInfo.phaseName  != '高中'" label="家庭教育理念:" label-width="110px">
             <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="regInfo.eduConcept"></el-input>
           </el-form-item>
         </el-form>
@@ -245,8 +247,8 @@
               <img :src="imgUrl+regInfo.photoId" class="user_img" @error="errorImg($event,'avatar')">
             </td>
             <td width="84px" align="right">学生姓名：</td>
-            <td width="130px">{{regInfo.stuName}}</td>
-            <td width="162px" align="right">证件号：</td>
+            <td width="150px">{{regInfo.stuName}}</td>
+            <td width="200px" align="right">证件号：</td>
             <td>{{regInfo.idCard}}</td>
           </tr>
           <tr>
@@ -257,7 +259,9 @@
           </tr>
           <tr>
             <td align="right">户籍所在地：</td>
-            <td>{{regInfo.localStr}}</td>
+            <td>
+              <span style="width:150px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: inline-block" :title="regInfo.localStr">{{regInfo.localStr}}</span>
+            </td>
             <td align="right">现就读学校：</td>
             <td>{{regInfo.nowSchool}}</td>
           </tr>
@@ -308,7 +312,7 @@
         </table>
         <table>
           <tbody>
-          <tr v-if="planInfo.phaseName  != '初中'">
+          <tr v-if="planInfo.phaseName  == '高中'">
             <td width="102px" valign="top" align="right">
               <div style="line-height:30px">获奖信息：</div>
             </td>
@@ -325,7 +329,7 @@
               </table>
             </td>
           </tr>
-          <tr v-if="planInfo.phaseName  != '初中'">
+          <tr v-if="planInfo.phaseName  == '高中'">
             <td width="102px" valign="top" align="right">获奖附件：</td>
             <td>
               <div v-if="regInfo.rewardFile && regInfo.rewardFile.length > 0">
@@ -339,7 +343,7 @@
               </div>
             </td>
           </tr>
-          <tr v-if="planInfo.phaseName == '初中'">
+          <tr v-if="planInfo.phaseName != '高中'">
             <td width="102px" valign="top" align="right">家庭教育理念：</td>
             <td>{{regInfo.eduConcept}}</td>
           </tr>
@@ -450,7 +454,7 @@
         } else if (this.phaseName == '高中' && !this.regInfo.otherData['s_b']) {
           return callback(new Error('必填项'));
         } else if (this.phaseName == '高中' && parseInt(this.regInfo.otherData["s_a"]) > parseInt(this.regInfo.otherData["s_b"])) {
-          return callback(new Error('排名不能高于年级人数'));
+          return callback(new Error('排名在人数范围内'));
         } else {
           callback();
         }
@@ -549,6 +553,7 @@
         //户籍所在地是否验证
         isrequired: true,
         rules: {
+          eduConcept:[{required: true, message: '必填项', trigger: 'blur'}],
           stuAdds: [{validator: checkStuAdds, message: '必填项', trigger: 'blur'}],
           nowSchool: [
             {required: true, message: "必填", trigger: "blur"}
@@ -614,14 +619,17 @@
         let vm = this;
         if (vm.rewardRows < 8) {
           let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
-          vm.regInfo.rewards[vm.rewardRows++] = obj
+          let data = _.cloneDeep(vm.regInfo);
+          data.rewards[vm.rewardRows++] = obj;
+          vm.regInfo = data;
         }
       },
+
       delRewardRows() {
         let vm = this;
         if (vm.rewardRows != 1) {
           let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
-          vm.regInfo.rewards[--vm.rewardRows] = obj
+          vm.regInfo.rewards[vm.rewardRows--] = obj
         }
       },
       saveInfo() {
@@ -812,7 +820,6 @@
             }
           }
         });
-        console.log("vm.itemMap", vm.itemMap)
       },
       getEnum() {
         let vm = this;

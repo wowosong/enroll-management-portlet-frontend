@@ -12,13 +12,13 @@
           <p>您于<span class="color1">{{stempInfo.createTime | dateFormatYmd}}</span>完成网上报名，请在<span
             class="color1">“报名信息”</span>页面完善信息~
           </p>
-          <p>并按学校通知时间到<span class="color1">校现场确认</span>，打印证件号~</p>
+          <p>并按学校通知时间到<span class="color1">校现场确认</span>，打印{{str}}卡~</p>
         </template>
 
         <!-- 完成测试卡 -->
         <template v-if="stempInfo.regStatus == 1 && stempInfo.ifEnter == null">
-          <p>您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了测试卡~</p>
-          <p>并按测试卡的面谈时间到校<span class="color1">参加面谈</span>~</p>
+          <p>您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了{{str}}卡~</p>
+          <p>并按{{str}}卡的{{str}}时间到校<span class="color1">参加{{str}}</span>~</p>
         </template>
         <!-- 录取结果-->
         <div v-if="!stempInfo.ifPayment">
@@ -51,7 +51,7 @@
                   <table class="my-table" v-if="!isPhone">
                     <thead>
                     <tr>
-                      <th>测试卡编号</th>
+                      <th>{{str}}卡编号</th>
                       <th>姓名</th>
                       <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
                     </tr>
@@ -64,28 +64,13 @@
                     </tr>
                   </table>
                   <div v-if="isPhone" class="phone_scores">
-                    <div><span>测试卡编号：</span>{{nowStuInfo.signCardCode}}</div>
+                    <div><span>{{str}}卡编号：</span>{{nowStuInfo.signCardCode}}</div>
                     <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
                     <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}
                     </div>
                   </div>
                 </div>
                 <div>
-                  <!--<el-form-item label="预约缴费时间段:" prop="dataTime" required>-->
-                  <!--<el-date-picker-->
-                  <!--v-model="formData.dataTime"-->
-                  <!--type="date"-->
-                  <!--placeholder="选择日期" style="width:180px">-->
-                  <!--</el-date-picker>-->
-                  <!--<el-time-picker-->
-                  <!--is-range-->
-                  <!--v-model="formData.timeRang"-->
-                  <!--range-separator="至"-->
-                  <!--start-placeholder="开始时间"-->
-                  <!--end-placeholder="结束时间"-->
-                  <!--placeholder="选择时间范围" style="width:360px">-->
-                  <!--</el-time-picker>-->
-                  <!--</el-form-item>-->
                   <span style="color: #00ff00">预约线下缴费的时间段</span>（友情提示：为了节省您宝贵的时间，可进行缴费时间预约）
                   <reserve :planId="planId" @serReserve="serReserve"/>
                   <el-button style="width: 200px; position: relative; left: 33%;" size="mini" @click="submit()"
@@ -120,7 +105,7 @@
               <table class="my-table" v-if="!isPhone">
                 <thead>
                 <tr>
-                  <th>测试卡编号</th>
+                  <th>{{str}}卡编号</th>
                   <th>姓名</th>
                   <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
                 </tr>
@@ -133,7 +118,7 @@
                 </tr>
               </table>
               <div v-if="isPhone" class="phone_scores">
-                <div><span>测试卡编号：</span>{{nowStuInfo.signCardCode}}</div>
+                <div><span>{{str}}卡编号：</span>{{nowStuInfo.signCardCode}}</div>
                 <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
                 <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}
                 </div>
@@ -149,7 +134,7 @@
           <table class="table_list" v-if="!isPhone">
             <thead>
             <tr>
-              <th>测试卡号</th>
+              <th>{{str}}卡编号</th>
               <th>姓名</th>
               <th>身份证号</th>
               <th>奖学金（元）</th>
@@ -165,7 +150,7 @@
             </tr>
           </table>
           <div v-if="isPhone" class="pay_info">
-            <div><span>测试卡号：</span>{{stempInfo.signCardCode}}</div>
+            <div><span>{{str}}卡编号：</span>{{stempInfo.signCardCode}}</div>
             <div><span>姓名：</span>{{stempInfo.stuName}}</div>
             <div><span>身份证号：</span>{{stempInfo.idCard}}</div>
             <div><span>奖学金(元)：</span>{{stempInfo.scholarship}}</div>
@@ -178,7 +163,7 @@
           <table class="table_list" v-if="!isPhone">
             <thead>
             <tr>
-              <th>测试卡编号</th>
+              <th>{{str}}卡编号</th>
               <th>姓名</th>
               <th>身份证号</th>
               <th>校区</th>
@@ -198,7 +183,7 @@
             </tr>
           </table>
           <div v-if="isPhone" class="pay_info">
-            <div><span>测试卡号：</span>{{stempInfo.signCardCode}}</div>
+            <div><span>{{str}}卡编号：</span>{{stempInfo.signCardCode}}</div>
             <div><span>姓名：</span>{{stempInfo.stuName}}</div>
             <div><span>身份证号：</span>{{stempInfo.idCard}}</div>
             <div><span>校区：</span>{{stempInfo.campusName}}</div>
@@ -224,7 +209,7 @@
 
     <el-dialog title="查看成绩" :visible.sync="scoreDialogVisible" :width="isPhone ? '100%' : '800px'">
       <div v-if="isPhone" class="phone_scores">
-        <div><span>测试卡编号：</span>{{nowStuInfo.signCardCode}}</div>
+        <div><span>{{str}}卡编号：</span>{{nowStuInfo.signCardCode}}</div>
         <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
         <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}
         </div>
@@ -266,6 +251,8 @@
         planId: "",
         reserveObj: null,
         expireFlag: false,
+        planInfo:{},
+        str:''
       }
     },
     computed: {
@@ -312,7 +299,8 @@
           if (xhr.code) {
             return;
           }
-          vm.stempInfo = xhr.data
+          vm.stempInfo = xhr.data;
+          vm.getPlanInfo();
           vm.expireFlag = false
           if (vm.stempInfo.paymentDeadline) {
             vm.expireFlag = new Date(vm.stempInfo.paymentDeadline).getTime() + (24 * 60 * 60 * 1000) < new Date().getTime();
@@ -320,6 +308,21 @@
           vm.planId = xhr.data.planId;
           if (vm.stempInfo.paymentReserve) {
             vm.getReserve(vm.stempInfo.paymentReserve);
+          }
+        });
+      },
+      getPlanInfo() {
+        const vm = this;
+        vm.planFlag = true;
+        http.get("/gateway/enroll/erEnrollPlan/" + vm.stempInfo.planId).then((xhr) => {
+          if (xhr.data.code) {
+            return;
+          }
+          vm.planInfo = xhr.data.data;
+          if(xhr.data.data.phaseName == '高中'){
+            vm.str = '测试'
+          }else{
+            vm.str = '面谈'
           }
         });
       },

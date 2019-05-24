@@ -89,7 +89,8 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item v-if="phaseName != '高中'" prop="stuAdds" label="户籍所在地:" :rules="[{ required: true, message: '必填项', trigger: 'blur' }]" id="regInfo_stuAdds">
+                <el-form-item v-if="phaseName != '高中'" prop="stuAdds" label="户籍所在地:"
+                              :rules="[{ required: true, message: '必填项', trigger: 'blur' }]" id="regInfo_stuAdds">
                   <el-col :span="12" class="width_750">
                     <el-cascader
                       placeholder="请填写"
@@ -163,10 +164,13 @@
                 </template>
                 <!--pc 显示-->
                 <template v-if="!isPhone && phaseName == '高中'">
-                  <el-form-item label="初三年级综合排名/年级人数:" prop="rank" id="regInfo_rank">
+                  <el-form-item label="初三年级综合排名:" prop="rank" id="regInfo_rank">
                     <el-col :span="6" class="m-r-12">
                       <el-input type="number" min="1" step="1" placeholder="请填写"
                                 v-model="regInfo.otherData['s_a']"></el-input>
+                    </el-col>
+                    <el-col :span="4">
+                      /年级人数
                     </el-col>
                     <el-col :span="6">
                       <el-input type="number" min="1" step="1" placeholder="请填写"
@@ -249,7 +253,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="i in 3" :key="i" class="input-no-border">
+                        <tr v-for="i in rewardRows" :key="i" class="input-no-border">
                           <td>
                             <el-date-picker
                               placeholder="年/月/日"
@@ -289,7 +293,13 @@
                         </tr>
                         </tbody>
                       </table>
-                      <div class="table-item-tag">填写示例：2018年3月1日   四川省级科创比赛   一等奖  省级  艺术奖  （说明：最少1行，最多8行）</div>
+                      <div class="reward-bottom">
+                        <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖 省级 艺术奖</div>
+                        <div class="sign-btn reward-btn">
+                          <span class="save" @click="addRewardRows">添加一行</span>
+                          <span class="cancel" @click="delRewardRows">删除一行</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div class="table-item" v-if="phaseName  == '高中'">
@@ -306,7 +316,7 @@
                        <span @click="uploadEnclosure">
                       <img src="@/imgs/upload.png">上传证件
                       </span>
-                        <div class="hint">请上传证书扫描件（照片和扫描件，图片的形式）</div>
+                        <div class="hint">请上传证书扫描件：格式为jpg、png等图片形式</div>
                       </div>
                     </div>
                   </div>
@@ -368,7 +378,7 @@
                     class="el-icon-arrow-down"></i> </span>
                   <span v-else @click="prizeOpen = !prizeOpen">收起 <i class="el-icon-arrow-up"></i> </span>
                 </p>
-                <template v-for="i in 3" v-if="prizeOpen">
+                <template v-for="i in rewardRows" v-if="prizeOpen">
                   <el-form-item label="获奖时间:">
                     <el-date-picker placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
                   </el-form-item>
@@ -396,32 +406,40 @@
                         :value="item.seiValue"/>
                     </el-select>
                   </el-form-item>
-                  <div class="line-1" v-if="i == 3"></div>
-                  <el-form-item label="获奖附件:" v-if="i == 3" class="file-wrap" style="line-height: 1">
-                    <div class="file-list">
+                  <div class="line-1" v-if="i != rewardRows"></div>
+                  <template v-if="i == rewardRows">
+                      <div class="is_phone_reward">
+                        <span  @click="addRewardRows">添加获奖</span>
+                        <span  @click="delRewardRows">删除获奖</span>
+                      </div>
+                    <div class="line-1"></div>
+                    <el-form-item label="获奖附件:"class="file-wrap" style="line-height: 1">
+                      <div class="file-list">
                       <span v-for="(item,index) in fileList" :key="index">
                             <div class="cover"></div>
                              <img :src="imgUrl+item.fileId" class="new-img">
                               <i class="el-icon-close delete-icon"
                                  @click="fileList.splice(index, 1)"></i>
                          </span>
-                    </div>
-                    <el-upload
-                      :action="uploadUrl"
-                      :multiple="true"
-                      :show-file-list="false"
-                      :file-list="fileList"
-                      :accept="'image/*'"
-                      :on-success="phoneEnclosure">
-                      <div class="file-list">
+                      </div>
+                      <el-upload
+                        :action="uploadUrl"
+                        :multiple="true"
+                        :show-file-list="false"
+                        :file-list="fileList"
+                        :accept="'image/*'"
+                        :on-success="phoneEnclosure">
+                        <div class="file-list">
                         <span>
                            <img src="@/imgs/warp/default.png" class="org-img">
                         </span>
-                      </div>
-                    </el-upload>
-                  </el-form-item>
-                  <div v-if="i == 3" style="text-align: center;font-size: 12px;color: #F56C6C;margin-bottom: 8px">请上传证书扫描件（照片和扫描件，图片的形式）</div>
-                  <div class="line-1" v-if="i == 1 || i == 2"></div>
+                        </div>
+                      </el-upload>
+                    </el-form-item>
+                    <div style="text-align: center;font-size: 12px;color: #F56C6C;margin-bottom: 8px">
+                      请上传证书扫描件（照片和扫描件，图片的形式）
+                    </div>
+                  </template>
                 </template>
               </div>
             </template>
@@ -467,7 +485,8 @@
                   </el-form-item>
                   <el-form-item label="确认密码:" prop="repwd">
                     <el-col :span="18">
-                      <el-input v-show="showInput" :maxlenght="18" v-if="!isRePwd" type="password" v-model="regInfo.repwd"
+                      <el-input v-show="showInput" :maxlenght="18" v-if="!isRePwd" type="password"
+                                v-model="regInfo.repwd"
                                 placeholder="默认密码 (证件号后六位)">
                         <template slot="suffix">
                           <i class="iconfont pointer" v-if="isRePwd" @click="isRePwd = !isRePwd">&#xe60d;</i>
@@ -544,14 +563,13 @@
         } else if (this.phaseName == '高中' && !this.regInfo.otherData['s_b']) {
           return callback(new Error('必填项'));
         } else if (this.phaseName == '高中' && parseInt(this.regInfo.otherData["s_a"]) > parseInt(this.regInfo.otherData["s_b"])) {
-          return callback(new Error('排名不能高于年级人数'));
+          return callback(new Error('排名在人数范围内'));
         } else {
           callback();
         }
       };
       // 验证户籍所在地
       let checkStuAdds = (rule, value, callback) => {
-        console.log(value)
         if (this.phaseName == '初中' && !this.regInfo.stuAdds) {
           return callback(new Error('必填项'));
         } else {
@@ -656,6 +674,7 @@
         phaseName: '',
         //户籍所在地是否验证
         isrequired: true,
+        rewardRows: 3,
       }
     },
     computed: {
@@ -664,463 +683,479 @@
       },
     },
 
-      mounted() {
-        const vm = this;
-        vm.phaseName = vm.$route.query.phaseName;
-        console.log(vm.phaseName)
-        vm.planId = vm.$route.query.id;
-        if (vm.phaseName == "高中") {
-          vm.isrequired = false
-        }
-        // 查询性别
-        vm.getEnum();
-        vm.getAddList();
-        vm.getGradeList();
-        vm.getPlanInfo();
-        vm.getReg();
-        // 解决google记住密码后自动填充
-        setTimeout(() => {
-          vm.showInput = true;
-        }, 300)
+    mounted() {
+      const vm = this;
+      vm.phaseName = vm.$route.query.phaseName;
+      vm.planId = vm.$route.query.id;
+      if (vm.phaseName == "高中") {
+        vm.isrequired = false
+      }
+      // 查询性别
+      vm.getEnum();
+      vm.getAddList();
+      vm.getGradeList();
+      vm.getPlanInfo();
+      vm.getReg();
+      // 解决google记住密码后自动填充
+      setTimeout(() => {
+        vm.showInput = true;
+      }, 300)
+    },
+    methods: {
+      querySearch(queryString, cb) {
+        let restaurants = this.schoolList;
+        let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
       },
-      methods: {
-        querySearch(queryString, cb) {
-          let restaurants = this.schoolList;
-          let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-          // 调用 callback 返回建议列表的数据
-          cb(results);
-        },
-        createFilter(queryString) {
-          return (restaurant) => {
-            return (restaurant.seiName.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
-          };
-        },
-        saveInfo() {
-          const vm = this;
-          vm.saving = true;
-          vm.regInfo.stuBirthday = moment(vm.regInfo.stuBirthday).format('YYYY-MM-DD');
-          vm.regInfo.planId = vm.planId;
-          vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade];
-          vm.regInfo.rewardFile = [];
-          if (vm.fileList && vm.fileList.length) {
-            for (let file of vm.fileList) {
-              vm.regInfo.rewardFile.push({fieldText: file.fileName, fieldValue: file.fileId});
-            }
+      createFilter(queryString) {
+        return (restaurant) => {
+          return (restaurant.seiName.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
+        };
+      },
+      saveInfo() {
+        const vm = this;
+        vm.saving = true;
+        vm.regInfo.stuBirthday = moment(vm.regInfo.stuBirthday).format('YYYY-MM-DD');
+        vm.regInfo.planId = vm.planId;
+        vm.regInfo.nowGradeName = vm.gradeMap[vm.regInfo.nowGrade];
+        vm.regInfo.rewardFile = [];
+        if (vm.fileList && vm.fileList.length) {
+          for (let file of vm.fileList) {
+            vm.regInfo.rewardFile.push({fieldText: file.fileName, fieldValue: file.fileId});
           }
-          // vm.regInfo.localStr = "";
-          let al = vm.addList;
-          if (vm.regInfo.stuAdds && vm.regInfo.stuAdds.length) {
-            vm.regInfo.stuAdd = vm.regInfo.stuAdds.join(",");
-            // for (let key of vm.regInfo.stuAdds) {
-            //   let obj = {};
-            //   for (let addObj of al) {
-            //     if (addObj.value == key) {
-            //       obj = addObj;
-            //       break;
-            //     }
-            //   }
-            //   vm.regInfo.localStr += obj.label;
-            //   if (obj.children && obj.children.length) {
-            //     al = obj.children;
-            //   }
-            // }
-          }
-          for (let i = 0; i < vm.regInfo.rewards.length; i++) {
-            let reward = vm.regInfo.rewards[i];
-            for (let key in reward) {
-              let value = reward[key];
-              let text = '';
-              if (value) {
-                if (key == "s_c") {
-                  value = moment(value).format('YYYY-MM-DD');
-                }
-                if (key == "s_t" || key == "s_u") {
-                  for (let s of vm.enumMap[key]) {
-                    if (s.seiValue == value) {
-                      text = s.seiName;
-                      break;
-                    }
+        }
+        // vm.regInfo.localStr = "";
+        let al = vm.addList;
+        if (vm.regInfo.stuAdds && vm.regInfo.stuAdds.length) {
+          vm.regInfo.stuAdd = vm.regInfo.stuAdds.join(",");
+          // for (let key of vm.regInfo.stuAdds) {
+          //   let obj = {};
+          //   for (let addObj of al) {
+          //     if (addObj.value == key) {
+          //       obj = addObj;
+          //       break;
+          //     }
+          //   }
+          //   vm.regInfo.localStr += obj.label;
+          //   if (obj.children && obj.children.length) {
+          //     al = obj.children;
+          //   }
+          // }
+        }
+        for (let i = 0; i < vm.regInfo.rewards.length; i++) {
+          let reward = vm.regInfo.rewards[i];
+          for (let key in reward) {
+            let value = reward[key];
+            let text = '';
+            if (value) {
+              if (key == "s_c") {
+                value = moment(value).format('YYYY-MM-DD');
+              }
+              if (key == "s_t" || key == "s_u") {
+                for (let s of vm.enumMap[key]) {
+                  if (s.seiValue == value) {
+                    text = s.seiName;
+                    break;
                   }
                 }
-                vm.$set(reward, key, value + "#," + (text ? text : value));
               }
+              vm.$set(reward, key, value + "#," + (text ? text : value));
             }
           }
-          for (let i = 0; i < 2; i++) {
-              let parent = vm.regInfo.parents[i];
-              for (let key in parent) {
-                let value = parent[key];
-                if (value) {
-                  vm.$set(parent, key, value + "#," + value);
-                }
-              }
+        }
+        for (let i = 0; i < 2; i++) {
+          let parent = vm.regInfo.parents[i];
+          for (let key in parent) {
+            let value = parent[key];
+            if (value) {
+              vm.$set(parent, key, value + "#," + value);
+            }
           }
-          if (vm.regInfo.otherData) {
-            for (let key in vm.regInfo.otherData) {
-              let value = vm.regInfo.otherData[key];
-              if (value) {
-                if (vm.enumMap[key]) {
-                  let items = vm.enumMap[key];
-                  let text = "";
-                  for (let item of items) {
-                    if (item.seiValue == value) {
-                      text = item.seiName;
-                      break;
-                    }
+        }
+        if (vm.regInfo.otherData) {
+          for (let key in vm.regInfo.otherData) {
+            let value = vm.regInfo.otherData[key];
+            if (value) {
+              if (vm.enumMap[key]) {
+                let items = vm.enumMap[key];
+                let text = "";
+                for (let item of items) {
+                  if (item.seiValue == value) {
+                    text = item.seiName;
+                    break;
                   }
-                  vm.$set(vm.regInfo.otherData, key, value + "#," + text);
-                } else {
-                  vm.$set(vm.regInfo.otherData, key, value + "#," + value);
                 }
+                vm.$set(vm.regInfo.otherData, key, value + "#," + text);
+              } else {
+                vm.$set(vm.regInfo.otherData, key, value + "#," + value);
               }
             }
           }
-          vm.regInfo.creatorId = "00001111000011110000111100001111";
-          vm.regInfo.campusName = vm.planInfo.campusId;
+        }
+        vm.regInfo.creatorId = "00001111000011110000111100001111";
+        vm.regInfo.campusName = vm.planInfo.campusId;
 
-          http.post("/gateway/enroll/api/erRegister", vm.regInfo).then((xhr) => {
-            vm.saving = false;
-            if (xhr.data.code) {
-              //处理数据
-              vm.clData();
-              return;
-            }
-            vm.regId = xhr.data.data;
-            vm.saveFlag = false;
-            // todo 自动登录跳转到个人中心
-            vm.login();
-          })
-        },
-        clData() {
-          let vm = this;
-          for (let i = 0; i < 2; i++) {
-            let parent = vm.regInfo.parents[i];
-            for (let key in parent) {
-              let value = parent[key];
-              if (value) {
-                vm.$set(parent, key, value.split("#,")[0]);
-              }
-            }
-          }
-          for (let i = 0; i < 3; i++) {
-            let reward = vm.regInfo.rewards[i];
-            for (let key in reward) {
-              let value = reward[key];
-              if (value) {
-                vm.$set(reward, key, value.split("#,")[0]);
-              }
-            }
-          }
-        },
-        // 自动登陆
-        login() {
-          let vm = this;
-          let loginForm = {
-            grant_type: 'password',
-            username: vm.regInfo.phoneNum,
-            password: vm.regInfo.pwd ? vm.regInfo.pwd : vm.regInfo.idCard.substring(vm.regInfo.idCard.length - 6)
-          };
-          http.post('/gateway/auth/oauth/token', loginForm, {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'Authorization': 'Basic YnJvd3Nlcjo='
-            },
-            emulateJSON: true,
-            transformRequest: [function (data) {
-              let ret = '';
-              Object.keys(data).map(key => {
-                ret += encodeURIComponent(key) + '=' + encodeURIComponent(data[key]) + '&'
-              });
-              return ret
-            }]
-          }).then(function (xhr) {
-            if (xhr.data.code == '20001')
-              return vm.$message.warning(xhr.data.message);
-            if (xhr.data && xhr.data.access_token) {
-              let dataToken = xhr.data;
-              localStorage.setItem('accesstoken', JSON.stringify(dataToken));
-              localStorage.setItem('active', 'center');
-              vm.$store.commit('changeLogin', true);
-              vm.$store.commit('setMenu', 'center');
-              vm.$router.push({path: '/center'});
-            }
+        http.post("/gateway/enroll/api/erRegister", vm.regInfo).then((xhr) => {
+          vm.saving = false;
+          if (xhr.data.code) {
+            //处理数据
             vm.clData();
-          })
-        },
-        getReg() {
-          const vm = this;
-          vm.planFlag = true;
-          http.get("/gateway/enroll/erRegister/empty").then((xhr) => {
-            if (xhr.code) {
-              return;
-            }
-            let data = xhr.data;
-            for (let i = 0; i < 3; i++) {
-              if (!data.rewards[i]) {
-                let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
-                data.rewards[i] = obj;
-              } else {
-                // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
-              }
-              if (i != 2 && !data.parents[i]) {
-                data.parents[i] = {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""};
-              }
-            }
-            vm.regInfo = data;
-            if (!vm.regInfo.otherData) {
-              vm.regInfo.otherData = {}
-            }
-            vm.fileList = [];
-            if (vm.regInfo.erFields && vm.regInfo.erFields.length) {
-              let map = {};
-              for (let field of vm.regInfo.erFields) {
-                if (field.dicUri) {
-                  map[field.fieldCode] = field.dicUri;
-                }
-              }
-              if (map && map != {}) {
-                vm.getOtherEnum(map);
-              }
-            }
-          });
-        },
-        getOtherEnum(fieldMap) {
-          const vm = this;
-          let pam = {};
-          let dicUris = [];
-          vm.enumMap = {};
-          for (let key in fieldMap) {
-            if (!pam[fieldMap[key]]) {
-              pam[fieldMap[key]] = key;
-            } else {
-              pam[fieldMap[key]] = pam[fieldMap[key]] + "," + key;
-            }
-            dicUris.push(fieldMap[key]);
-          }
-          Promise.all([
-            http.get("/gateway/platform/api/enum/queryByCodes/" + dicUris.join(","))
-          ]).then(function (list) {
-            for (let key in pam) {
-              let codes = [];
-              let enums = [];
-              let fieldCode = pam[key];
-              if (fieldCode.indexOf(",")) {
-                for (let code of fieldCode.split(",")) {
-                  codes.push(code);
-                }
-              } else {
-                codes.push(fieldCode);
-              }
-              let items = {};
-              for (let enumItem of list[0].data) {
-                if (enumItem.code == key) {
-                  enums.push(enumItem);
-                  items[enumItem.seiValue] = enumItem.seiName;
-                }
-              }
-              for (let c of codes) {
-                vm.enumMap[c] = enums;
-                vm.itemMap[c] = items;
-              }
-            }
-          });
-        },
-        getEnum() {
-          let vm = this;
-          var enumCodes = "studentsType,xsbq,XXLB";
-          Promise.all([
-            http.get("/gateway/platform/api/enum/queryByCodes/" + enumCodes)
-          ]).then(function (list) {
-            vm.stuTypes = _.filter(list[0].data, function (i) {
-              return i.code == "studentsType";
-            });
-            vm.tagList = _.filter(list[0].data, function (i) {
-              return i.code == "xsbq";
-            });
-            vm.schoolList = _.filter(list[0].data, function (i) {
-              if (i.code == "XXLB") {
-                vm.$set(i, "value", i.seiName);
-              }
-              return i.code == "XXLB";
-            });
-          });
-        },
-        getAddList() {
-          const vm = this;
-          vm.addList = [];
-          http.get("/gateway/enroll/erRegister/locals").then((xhr) => {
-            if (xhr.data.code) {
-              return;
-            }
-            if (!xhr.data.data || !xhr.data.data.length) {
-              return;
-            }
-            vm.addList = xhr.data.data;
-          });
-        },
-        getGradeList() {
-          const vm = this;
-          http.get('/gateway/platform/grade/param').then((xhr) => {
-            if (xhr.data.code) {
-              return;
-            }
-            vm.gradeList = xhr.data.data;
-            if (vm.gradeList.length) {
-              for (let grade of vm.gradeList) {
-                vm.gradeMap[grade.id] = grade.gradeName;
-              }
-            }
-          });
-        },
-        getPlanInfo() {
-          const vm = this;
-          vm.planFlag = true;
-          http.get("/gateway/enroll/erEnrollPlan/" + vm.planId).then((xhr) => {
-            if (xhr.data.code) {
-              return;
-            }
-            vm.planInfo = xhr.data.data;
-          });
-        },
-
-        pointFn(type) {
-          document.getElementById(type).scrollIntoView();
-          this.current = type
-        },
-
-        // 根据身份证号码识别出生日期
-        idCardNumFn() {
-          let vm = this;
-          vm.regInfo.idCard = $.trim(vm.regInfo.idCard);
-          let idCardNum = vm.regInfo.idCard;
-          let pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-          if (pattern.test(idCardNum)) {
-            vm.regInfo.stuBirthday = idCardNum.substring(6, 10) + "-" + idCardNum.substring(10, 12) + "-" + idCardNum.substring(12, 14);
-          } else {
-            vm.regInfo.stuBirthday = ''
-          }
-        },
-        // 上传证件
-        uploadPicture() {
-          let vm = this;
-          fileUpload({
-            title: '上传证件照片',
-            uploadFileMaxNum: 1,
-            mimeTypes: '.png,.jpg,.jpeg',
-            confirm: function (files) {
-              vm.regInfo.photoId = files[0].id;
-              if (vm.regInfo.photoId) {
-                vm.userImgErr = false
-              }
-            }
-          });
-        },
-        // 手机端上传证件照
-        handleAvatarSuccess(res, file) {
-          this.regInfo.photoId = res.data.id;
-        },
-        // 上获奖附件
-        uploadEnclosure() {
-          let vm = this;
-          fileUpload({
-            title: '上传获奖附件',
-            uploadFileMaxNum: 10,
-            mimeTypes: '.png,.jpg,.jpeg,.pdf',
-            confirm: function (files) {
-              // 成功回调
-              let tempList = [];
-              if (files && files.length > 0) {
-                _.map(files, (i) => {
-                  tempList.push({
-                    fileName: i.filename,
-                    fileId: _.trim(i.id),
-                  })
-                });
-              }
-              vm.fileList = [...vm.fileList, ...tempList];
-            }
-          });
-        },
-        //手机上传获奖附件
-        phoneEnclosure(file) {
-          this.fileList.push({
-            fileName: file.data.filename,
-            fileId: _.trim(file.data.id),
-          });
-        },
-        //根据第一监护人手机号填充登录名
-        setLoginName() {
-          this.regInfo.phoneNum = this.regInfo.parents[0]['s_h'];
-        },
-        // 保存
-        save(formName) {
-          let vm = this;
-          vm.userImgErr = false;
-          vm.parentsMsg = '';
-          vm.eduMsg = '';
-          // 身份证验证
-          if (vm.phaseName == '高中' && !vm.regInfo.photoId) {
-            if (!vm.isLogin) {
-              vm.userImgErr = true;
-            }
-            document.getElementById('regInfo_photoId').scrollIntoView();
-            return false
-          }
-          // 监护人信息1验证
-          if (!vm.regInfo.parents[0]["s_g"] || !vm.regInfo.parents[0]["s_h"] || !vm.regInfo.parents[0]["s_i"] || !vm.regInfo.parents[0]["s_j"] || !vm.regInfo.parents[0]["s_k"]) {
-            vm.parentsMsg = '必填项';
-            document.getElementById('regInfo_parents').scrollIntoView();
-            return false
-          }
-          // 监护人手机号1验证
-          for (let i = 0; i <= vm.regInfo.parents.length; i++) {
-            let mobileRes = /^1[34578]\d{9}$/;
-            if (vm.regInfo.parents[i] && vm.regInfo.parents[i]["s_h"] && !mobileRes.test(vm.regInfo.parents[i]["s_h"])) {
-              vm.parentsMsg = '手机错误';
-              document.getElementById('regInfo_parents').scrollIntoView();
-              return false;
-            }
-          }
-          // 家庭教育理念验证
-          if (!vm.regInfo.eduConcept && vm.phaseName != '高中') {
-            vm.eduMsg = '必填项';
-            document.getElementById('regInfo_eduConcept').scrollIntoView();
-            return false
-          }
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              vm.saveFlag = true;
-            } else {
-              if (!vm.regInfo.stuName) return document.getElementById('regInfo_stuName').scrollIntoView();
-              if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
-              if (!vm.regInfo.stuBirthday) return document.getElementById('regInfo_stuBirthday').scrollIntoView();
-              if (!vm.regInfo.stuGender) return document.getElementById('regInfo_stuGender').scrollIntoView();
-              if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
-              if (!vm.regInfo.nowSchool) return document.getElementById('regInfo_nowSchool').scrollIntoView();
-              if (!vm.regInfo.nowGrade) return document.getElementById('regInfo_nowGrade').scrollIntoView();
-              if (vm.phaseName == '高中' && !vm.regInfo.otherData['s_a'] || vm.phaseName == '高中' && vm.regInfo.otherData['s_b']) return document.getElementById('regInfo_rank').scrollIntoView();
-              return false;
-            }
-          });
-        },
-        // 提交报名
-        submitForm() {
-          const vm = this;
-          if (!vm.regId) {
-            vm.$message.warning("注册账号失败，无法提交，请重试！");
             return;
           }
-          vm.saving = true;
-          http.put("/gateway/enroll/api/erRegister/confirm", {id: vm.regId}).then((xhr) => {
-            vm.saving = false;
-            if (xhr.data.code) {
-              return;
+          vm.regId = xhr.data.data;
+          vm.saveFlag = false;
+          // todo 自动登录跳转到个人中心
+          vm.login();
+        })
+      },
+      clData() {
+        let vm = this;
+        for (let i = 0; i < 2; i++) {
+          let parent = vm.regInfo.parents[i];
+          for (let key in parent) {
+            let value = parent[key];
+            if (value) {
+              vm.$set(parent, key, value.split("#,")[0]);
             }
-          })
+          }
         }
+        for (let i = 0; i < 3; i++) {
+          let reward = vm.regInfo.rewards[i];
+          for (let key in reward) {
+            let value = reward[key];
+            if (value) {
+              vm.$set(reward, key, value.split("#,")[0]);
+            }
+          }
+        }
+      },
+      // 自动登陆
+      login() {
+        let vm = this;
+        let loginForm = {
+          grant_type: 'password',
+          username: vm.regInfo.phoneNum,
+          password: vm.regInfo.pwd ? vm.regInfo.pwd : vm.regInfo.idCard.substring(vm.regInfo.idCard.length - 6)
+        };
+        http.post('/gateway/auth/oauth/token', loginForm, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic YnJvd3Nlcjo='
+          },
+          emulateJSON: true,
+          transformRequest: [function (data) {
+            let ret = '';
+            Object.keys(data).map(key => {
+              ret += encodeURIComponent(key) + '=' + encodeURIComponent(data[key]) + '&'
+            });
+            return ret
+          }]
+        }).then(function (xhr) {
+          if (xhr.data.code == '20001')
+            return vm.$message.warning(xhr.data.message);
+          if (xhr.data && xhr.data.access_token) {
+            let dataToken = xhr.data;
+            localStorage.setItem('accesstoken', JSON.stringify(dataToken));
+            localStorage.setItem('active', 'center');
+            vm.$store.commit('changeLogin', true);
+            vm.$store.commit('setMenu', 'center');
+            vm.$router.push({path: '/center'});
+          }
+          vm.clData();
+        })
+      },
+      getReg() {
+        const vm = this;
+        vm.planFlag = true;
+        http.get("/gateway/enroll/erRegister/empty").then((xhr) => {
+          if (xhr.code) {
+            return;
+          }
+          let data = xhr.data;
+          for (let i = 0; i < 3; i++) {
+            if (!data.rewards[i]) {
+              let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
+              data.rewards[i] = obj;
+            } else {
+              // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
+            }
+            if (i != 2 && !data.parents[i]) {
+              data.parents[i] = {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""};
+            }
+          }
+          vm.regInfo = data;
+          if (!vm.regInfo.otherData) {
+            vm.regInfo.otherData = {}
+          }
+          vm.fileList = [];
+          if (vm.regInfo.erFields && vm.regInfo.erFields.length) {
+            let map = {};
+            for (let field of vm.regInfo.erFields) {
+              if (field.dicUri) {
+                map[field.fieldCode] = field.dicUri;
+              }
+            }
+            if (map && map != {}) {
+              vm.getOtherEnum(map);
+            }
+          }
+        });
+      },
+      getOtherEnum(fieldMap) {
+        const vm = this;
+        let pam = {};
+        let dicUris = [];
+        vm.enumMap = {};
+        for (let key in fieldMap) {
+          if (!pam[fieldMap[key]]) {
+            pam[fieldMap[key]] = key;
+          } else {
+            pam[fieldMap[key]] = pam[fieldMap[key]] + "," + key;
+          }
+          dicUris.push(fieldMap[key]);
+        }
+        Promise.all([
+          http.get("/gateway/platform/api/enum/queryByCodes/" + dicUris.join(","))
+        ]).then(function (list) {
+          for (let key in pam) {
+            let codes = [];
+            let enums = [];
+            let fieldCode = pam[key];
+            if (fieldCode.indexOf(",")) {
+              for (let code of fieldCode.split(",")) {
+                codes.push(code);
+              }
+            } else {
+              codes.push(fieldCode);
+            }
+            let items = {};
+            for (let enumItem of list[0].data) {
+              if (enumItem.code == key) {
+                enums.push(enumItem);
+                items[enumItem.seiValue] = enumItem.seiName;
+              }
+            }
+            for (let c of codes) {
+              vm.enumMap[c] = enums;
+              vm.itemMap[c] = items;
+            }
+          }
+        });
+      },
+      getEnum() {
+        let vm = this;
+        var enumCodes = "studentsType,xsbq,XXLB";
+        Promise.all([
+          http.get("/gateway/platform/api/enum/queryByCodes/" + enumCodes)
+        ]).then(function (list) {
+          vm.stuTypes = _.filter(list[0].data, function (i) {
+            return i.code == "studentsType";
+          });
+          vm.tagList = _.filter(list[0].data, function (i) {
+            return i.code == "xsbq";
+          });
+          vm.schoolList = _.filter(list[0].data, function (i) {
+            if (i.code == "XXLB") {
+              vm.$set(i, "value", i.seiName);
+            }
+            return i.code == "XXLB";
+          });
+        });
+      },
+      getAddList() {
+        const vm = this;
+        vm.addList = [];
+        http.get("/gateway/enroll/erRegister/locals").then((xhr) => {
+          if (xhr.data.code) {
+            return;
+          }
+          if (!xhr.data.data || !xhr.data.data.length) {
+            return;
+          }
+          vm.addList = xhr.data.data;
+        });
+      },
+      getGradeList() {
+        const vm = this;
+        http.get('/gateway/platform/grade/param').then((xhr) => {
+          if (xhr.data.code) {
+            return;
+          }
+          vm.gradeList = xhr.data.data;
+          if (vm.gradeList.length) {
+            for (let grade of vm.gradeList) {
+              vm.gradeMap[grade.id] = grade.gradeName;
+            }
+          }
+        });
+      },
+      getPlanInfo() {
+        const vm = this;
+        vm.planFlag = true;
+        http.get("/gateway/enroll/erEnrollPlan/" + vm.planId).then((xhr) => {
+          if (xhr.data.code) {
+            return;
+          }
+          vm.planInfo = xhr.data.data;
+        });
+      },
 
+      pointFn(type) {
+        document.getElementById(type).scrollIntoView();
+        this.current = type
+      },
+
+      // 根据身份证号码识别出生日期
+      idCardNumFn() {
+        let vm = this;
+        vm.regInfo.idCard = $.trim(vm.regInfo.idCard);
+        let idCardNum = vm.regInfo.idCard;
+        let pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if (pattern.test(idCardNum)) {
+          vm.regInfo.stuBirthday = idCardNum.substring(6, 10) + "-" + idCardNum.substring(10, 12) + "-" + idCardNum.substring(12, 14);
+        } else {
+          vm.regInfo.stuBirthday = ''
+        }
+      },
+      // 上传证件
+      uploadPicture() {
+        let vm = this;
+        fileUpload({
+          title: '上传证件照片',
+          uploadFileMaxNum: 1,
+          mimeTypes: '.png,.jpg,.jpeg',
+          confirm: function (files) {
+            vm.regInfo.photoId = files[0].id;
+            if (vm.regInfo.photoId) {
+              vm.userImgErr = false
+            }
+          }
+        });
+      },
+      // 手机端上传证件照
+      handleAvatarSuccess(res, file) {
+        this.regInfo.photoId = res.data.id;
+      },
+      // 上获奖附件
+      uploadEnclosure() {
+        let vm = this;
+        fileUpload({
+          title: '上传获奖附件',
+          uploadFileMaxNum: 10,
+          mimeTypes: '.png,.jpg,.jpeg,.pdf',
+          confirm: function (files) {
+            // 成功回调
+            let tempList = [];
+            if (files && files.length > 0) {
+              _.map(files, (i) => {
+                tempList.push({
+                  fileName: i.filename,
+                  fileId: _.trim(i.id),
+                })
+              });
+            }
+            vm.fileList = [...vm.fileList, ...tempList];
+          }
+        });
+      },
+      //手机上传获奖附件
+      phoneEnclosure(file) {
+        this.fileList.push({
+          fileName: file.data.filename,
+          fileId: _.trim(file.data.id),
+        });
+      },
+      //根据第一监护人手机号填充登录名
+      setLoginName() {
+        this.regInfo.phoneNum = this.regInfo.parents[0]['s_h'];
+      },
+      addRewardRows() {
+        let vm = this;
+        if (vm.rewardRows < 8) {
+          let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
+          let data = _.cloneDeep(vm.regInfo);
+          data.rewards[vm.rewardRows++] = obj;
+          vm.regInfo = data;
+        }
+      },
+
+      delRewardRows() {
+        let vm = this;
+        if (vm.rewardRows != 1) {
+          let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
+          vm.regInfo.rewards[vm.rewardRows--] = obj
+        }
+      },
+      // 保存
+      save(formName) {
+        let vm = this;
+        vm.userImgErr = false;
+        vm.parentsMsg = '';
+        vm.eduMsg = '';
+        // 身份证验证
+        if (vm.phaseName == '高中' && !vm.regInfo.photoId) {
+          if (!vm.isLogin) {
+            vm.userImgErr = true;
+          }
+          document.getElementById('regInfo_photoId').scrollIntoView();
+          return false
+        }
+        // 监护人信息1验证
+        if (!vm.regInfo.parents[0]["s_g"] || !vm.regInfo.parents[0]["s_h"] || !vm.regInfo.parents[0]["s_i"] || !vm.regInfo.parents[0]["s_j"] || !vm.regInfo.parents[0]["s_k"]) {
+          vm.parentsMsg = '必填项';
+          document.getElementById('regInfo_parents').scrollIntoView();
+          return false
+        }
+        // 监护人手机号1验证
+        for (let i = 0; i <= vm.regInfo.parents.length; i++) {
+          let mobileRes = /^1[34578]\d{9}$/;
+          if (vm.regInfo.parents[i] && vm.regInfo.parents[i]["s_h"] && !mobileRes.test(vm.regInfo.parents[i]["s_h"])) {
+            vm.parentsMsg = '手机错误';
+            document.getElementById('regInfo_parents').scrollIntoView();
+            return false;
+          }
+        }
+        // 家庭教育理念验证
+        if (!vm.regInfo.eduConcept && vm.phaseName != '高中') {
+          vm.eduMsg = '必填项';
+          document.getElementById('regInfo_eduConcept').scrollIntoView();
+          return false
+        }
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            vm.saveFlag = true;
+          } else {
+            if (!vm.regInfo.stuName) return document.getElementById('regInfo_stuName').scrollIntoView();
+            if (!vm.regInfo.idCard) return document.getElementById('regInfo_idCard').scrollIntoView();
+            if (!vm.regInfo.stuBirthday) return document.getElementById('regInfo_stuBirthday').scrollIntoView();
+            if (!vm.regInfo.stuGender) return document.getElementById('regInfo_stuGender').scrollIntoView();
+            if (!vm.regInfo.stuAdds) return document.getElementById('regInfo_stuAdds').scrollIntoView();
+            if (!vm.regInfo.nowSchool) return document.getElementById('regInfo_nowSchool').scrollIntoView();
+            if (!vm.regInfo.nowGrade) return document.getElementById('regInfo_nowGrade').scrollIntoView();
+            if (vm.phaseName == '高中' && !vm.regInfo.otherData['s_a'] || vm.phaseName == '高中' && vm.regInfo.otherData['s_b']) return document.getElementById('regInfo_rank').scrollIntoView();
+            return false;
+          }
+        });
+      },
+      // 提交报名
+      submitForm() {
+        const vm = this;
+        if (!vm.regId) {
+          vm.$message.warning("注册账号失败，无法提交，请重试！");
+          return;
+        }
+        vm.saving = true;
+        http.put("/gateway/enroll/api/erRegister/confirm", {id: vm.regId}).then((xhr) => {
+          vm.saving = false;
+          if (xhr.data.code) {
+            return;
+          }
+        })
       }
+
     }
+  }
 </script>
 
 <style lang="less" scoped>
@@ -1227,10 +1262,28 @@
               color: #F56C6C;
               margin-right: 4px;
             }
-            .table-item-tag {
-              color: #999;
-              font-size: 12px;
-              margin-top: 5px;
+            .reward-bottom {
+              margin-top: 12px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              .table-item-tag {
+                color: #999;
+                font-size: 12px;
+                margin-top: 5px;
+                line-height: normal;
+              }
+              .reward-btn {
+                float: right;
+                span {
+                  padding: 3px 6px;
+                  border-radius: 4px;
+                  cursor: pointer;
+                }
+                span:first-child{
+                  color: #fff;
+                }
+              }
             }
             .up_idcard {
               text-align: center;
@@ -1286,7 +1339,7 @@
               background: url(~css_img/hint.png) no-repeat;
               background-size: 100% 100%;
               display: inline-block;
-              margin-top: 50px;
+              margin-top: 32px;
             }
             .table {
               width: 600px;
@@ -1353,6 +1406,16 @@
           width: 300px;
           color: #333;
         }
+      }
+    }
+    .is_phone_reward{
+      text-align: right;
+      margin-bottom: 12px;
+      span{
+        color: #aa2f33;
+      }
+      span:last-child{
+        margin-left: 12px;
       }
     }
   }
