@@ -720,7 +720,7 @@
                     }
                   }
                 }
-                vm.$set(reward, key, value + "#," + value);
+                vm.$set(reward, key, value + "#," + (text ? text : value));
               }
             }
             if (i < 2) {
