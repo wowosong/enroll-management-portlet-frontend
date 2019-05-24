@@ -69,7 +69,7 @@
                   <el-col :span="12">
                     <el-date-picker
                       type="date"
-                      placeholder="0000-00-00"
+                      placeholder="请填写"
                       v-model="regInfo.stuBirthday"
                       format="yyyy-MM-dd"></el-date-picker>
                   </el-col>
@@ -249,7 +249,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="i in rewardRows" :key="i" class="input-no-border">
+                        <tr v-for="i in 3" :key="i" class="input-no-border">
                           <td>
                             <el-date-picker
                               placeholder="年/月/日"
@@ -285,12 +285,6 @@
                                 :label="item.seiName"
                                 :value="item.seiValue"/>
                             </el-select>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="text-align: right;">
-                            <el-button type="primary" @click="addRewardRows()">添加一行</el-button>
-                            <el-button type="primary" @click="delRewardRows()">删除一行</el-button>
                           </td>
                         </tr>
                         </tbody>
@@ -579,7 +573,6 @@
         regInfo: {
           photoId: "",
           regStatus: 0,
-          rewardRows:3,
           otherData: {},
           eduConcept: '',
           parents: [
@@ -701,20 +694,6 @@
           return (restaurant) => {
             return (restaurant.seiName.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
           };
-        },
-        addRewardRows() {
-          let vm = this;
-          if(vm.rewardRows < 8) {
-            let obj = { s_c: "", s_d: "", s_e: "", s_t: "" , s_u: ""};
-            vm.regInfo.rewards[++vm.rewardRows] = obj
-          }
-        },
-        delRewardRows() {
-          let vm = this;
-          if(vm.rewardRows != 1) {
-            let obj = { s_c: "", s_d: "", s_e: "", s_t: "" , s_u: ""};
-            vm.regInfo.rewards[vm.rewardRows--] = obj
-          }
         },
         saveInfo() {
           const vm = this;
@@ -875,20 +854,14 @@
             if (xhr.code) {
               return;
             }
-            vm.rewardRows = 3;
             let data = xhr.data;
-            if (data.rewards && data.rewards.length) {
-              vm.rewardRows = data.rewards.length;
-            }
-            for (let i = 0; i < vm.rewardRows; i++) {
+            for (let i = 0; i < 3; i++) {
               if (!data.rewards[i]) {
                 let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
                 data.rewards[i] = obj;
               } else {
                 // vm.regInfo.rewards[i].s_c = new Date(vm.regInfo.rewards[i].s_c);
               }
-            }
-            for (let i = 0; i < 2; i++) {
               if (i != 2 && !data.parents[i]) {
                 data.parents[i] = {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""};
               }
