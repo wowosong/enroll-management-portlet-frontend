@@ -715,10 +715,14 @@
           if (valid) {
             if (vm.planInfo.phaseName == '高中') {
               for (let i = 0; i < vm.regInfo.gradeRank.length; i++) {
+                let regObj = vm.regInfo.gradeRank[i];
+                if (Number(regObj.s_a) > Number(regObj.s_b)) {
+                  vm.$message.warning("排名不能大于年级人数");
+                  return;
+                }
                 if (i > 1) {
                   break;
                 }
-                let regObj = vm.regInfo.gradeRank[i];
                 if (!regObj.s_a || !regObj.s_b) {
                   vm.$message.warning("*标记的考试成绩为必填项");
                   return;
@@ -758,12 +762,7 @@
                 if (value) {
                   let text = value;
                   if (key == "s_v") {
-                    for (let s of vm.ksmcArr) {
-                      if (s.seiValue == value) {
-                        text = s.seiName;
-                        break;
-                      }
-                    }
+                    text = obj["vName"];
                   }
                   vm.$set(obj, key, value + "#," + text);
                 }
@@ -933,15 +932,17 @@
         vm.ksmcArr = vm.enumMap["s_v"];
         let i = 0;
         let data = _.cloneDeep(vm.regInfo);
-        for (let obj of vm.ksmcArr) {
-          if (!data.gradeRank || !data.gradeRank.length) {
+        if (!data.gradeRank || !data.gradeRank.length) {
+          for (let obj of vm.ksmcArr) {
             data.gradeRank[i++] = {
               s_v: obj.seiValue,
               s_a: "",
               s_b: "",
               vName: obj.seiName,
             }
-          } else {
+          }
+        } else {
+          for (let obj of vm.ksmcArr) {
             for (let rObj of data.gradeRank) {
               if (rObj.s_v == obj.seiValue) {
                 rObj.vName = obj.seiName;
@@ -1107,6 +1108,10 @@
         this.$emit("changeTitle", '编辑考试成绩')
       },
       saveRank() {
+        if (Number(this.formRank.s_a) > Number(this.formRank.s_b)) {
+          vm.$message.warning("排名不能大于年级人数");
+          return;
+        }
         this.regInfo.gradeRank[this.rankIndex] = _.cloneDeep(this.formRank)
         this.$emit("changeTitle", '报名信息')
         this.rankFlag = false
