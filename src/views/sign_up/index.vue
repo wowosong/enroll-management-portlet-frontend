@@ -827,12 +827,7 @@
             if (value) {
               let text = value;
               if (key == "s_v") {
-                for (let s of vm.ksmcArr) {
-                  if (s.seiValue == value) {
-                    text = s.seiName;
-                    break;
-                  }
-                }
+                text = obj["vName"];
               }
               vm.$set(obj, key, value + "#," + text);
             }
@@ -1183,17 +1178,22 @@
           return false
         }
         if (vm.phaseName == '高中') {
-          for (let i = 0; i < vm.ksmcArr.length; i++) {
+          for (let i = 0; i < vm.regInfo.gradeRank.length; i++) {
+            let regObj = vm.regInfo.gradeRank[i];
+            if (Number(regObj.s_a) > Number(regObj.s_b)) {
+              vm.rankMsg = "排名不能大于年级人数";
+              document.getElementById('regInfo_ranks').scrollIntoView();
+              return;
+            }
             if (i > 1) {
               break;
             }
-            let obj = vm.ksmcArr[i];
-            let regObj = vm.regInfo.gradeRank[i];
             if (!regObj.s_a || !regObj.s_b) {
               vm.rankMsg = "必填项";
               document.getElementById('regInfo_ranks').scrollIntoView();
               return;
             }
+
           }
         }
         // 监护人信息1验证
