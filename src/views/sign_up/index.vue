@@ -139,50 +139,92 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <!--手机浏览器显示-->
-                <template v-if="isPhone && phaseName == '高中'">
-                  <el-form-item label="初三年级综合排名" prop="rank" id="regInfo_rank">
-                    <el-col :span="12">
-                      <el-input type="number" min="1" step="1" placeholder="请填写"
-                                v-model="regInfo.otherData['s_a']"></el-input>
-                    </el-col>
-                    <!--错误信息-->
-                    <template slot="error" slot-scope="scope">
-                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
-                    </template>
-                  </el-form-item>
-                  <el-form-item label="年级人数:" prop="rank">
-                    <el-col :span="12">
-                      <el-input type="number" min="1" step="1" placeholder="请填写"
-                                v-model="regInfo.otherData['s_b']"></el-input>
-                    </el-col>
-                    <!--错误信息-->
-                    <template slot="error" slot-scope="scope">
-                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
-                    </template>
-                  </el-form-item>
-                </template>
-                <!--pc 显示-->
-                <template v-if="!isPhone && phaseName == '高中'">
-                  <el-form-item label="初三年级综合排名:" prop="rank" id="regInfo_rank">
-                    <el-col :span="6" class="m-r-12">
-                      <el-input type="number" min="1" step="1" placeholder="请填写"
-                                v-model="regInfo.otherData['s_a']"></el-input>
-                    </el-col>
-                    <el-col :span="4">
-                      /年级人数
-                    </el-col>
-                    <el-col :span="6">
-                      <el-input type="number" min="1" step="1" placeholder="请填写"
-                                v-model="regInfo.otherData['s_b']"></el-input>
-                    </el-col>
-                    <!--错误信息-->
-                    <template slot="error" slot-scope="scope">
-                      <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
-                    </template>
-                  </el-form-item>
-                </template>
               </div>
+              <!--手机浏览器显示-->
+              <template v-if="isPhone && phaseName == '高中'">
+                <!--间隔线-->
+                <div class="line"></div>
+                <!--监护人信息-->
+                <div class="guardian_info" id="regInfo_ranks">
+                  <p class="item-tit open-info">
+                    考试成绩
+                    <label class="error-info" style="font-size: 12px" v-if="rankMsg"><i
+                      class="el-icon-circle-close"></i>{{rankMsg}}</label>
+                    <span v-if="!rankOpen" @click="rankOpen = !rankOpen">展开<i
+                      class="el-icon-arrow-down"></i> </span>
+                    <span v-else @click="rankOpen = !rankOpen">收起 <i class="el-icon-arrow-up"></i> </span>
+                  </p>
+                  <template v-for="(i, idx) in regInfo.gradeRank" v-if="rankOpen && ksmcArr.length">
+                    <el-form-item label="考试名称:">
+                      <span>{{i.vName}}</span>
+                    </el-form-item>
+                    <el-form-item label="年级排名(名):" :required="idx < 2">
+                      <el-input
+                        type="number"
+                        min="1"
+                        step="1"
+                        placeholder="请填写"
+                        v-model="i['s_a']"/>
+                    </el-form-item>
+                    <el-form-item label="年级人数(人):" :required="idx < 2">
+                      <el-input
+                        type="number"
+                        min="1"
+                        step="1"
+                        placeholder="请填写"
+                        v-model="i['s_b']"/>
+                    </el-form-item>
+                    <div class="line-1" v-if="idx+1 < ksmcArr.length"></div>
+                  </template>
+                </div>
+              </template>
+              <!--pc 显示-->
+              <template v-if="!isPhone && phaseName == '高中'">
+                <div class="user-info-table" id="regInfo_ranks">
+                  <div class="table-item">
+                    <label>考试成绩:
+                      <div style="width:50px;font-size: 12px;color: #F56C6C;float: right;margin-top: 5px">
+                        (标记为<span style="color: #f00;">*</span>的成绩为必填)
+                      </div>
+                    </label>
+                    <div>
+                      <table class="table">
+                        <thead>
+                        <tr>
+                          <th>考试名称</th>
+                          <th>年级排名(名)</th>
+                          <th>年级人数(人)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-if="ksmcArr.length" v-for="(i, idx) in regInfo.gradeRank" :key="i.s_v" class="input-no-border">
+                          <td>
+                            <span v-if="idx < 2" style="color: #f00;">*</span>
+                            <span>{{i.vName}}</span>
+                          </td>
+                          <td>
+                            <el-input
+                              type="number"
+                              min="1"
+                              step="1"
+                              placeholder="请填写"
+                              v-model="i['s_a']"/>
+                          </td>
+                          <td>
+                            <el-input
+                              type="number"
+                              min="1"
+                              step="1"
+                              placeholder="请填写"
+                              v-model="i['s_b']"/>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </template>
               <!--pc 显示-->
               <template v-if="!isPhone">
                 <div class="user-info-table" v-if="!isPhone" id="regInfo_parents">
@@ -331,8 +373,8 @@
               <div class="guardian_info" id="regInfo_parents">
                 <p class="item-tit open-info">
                   监护人信息
-                  <label class="error-info" style="font-size: 12px" v-if="parentsMsg"><i
-                    class="el-icon-circle-close"></i>{{parentsMsg}}</label>
+                  <label class="error-info" style="font-size: 12px" v-if="rankMsg"><i
+                    class="el-icon-circle-close"></i>{{rankMsg}}</label>
                   <span v-if="!guardianOpen" @click="guardianOpen = !guardianOpen">展开<i
                     class="el-icon-arrow-down"></i> </span>
                   <span v-else @click="guardianOpen = !guardianOpen">收起 <i class="el-icon-arrow-up"></i> </span>
@@ -408,12 +450,12 @@
                   </el-form-item>
                   <div class="line-1" v-if="i != rewardRows"></div>
                   <template v-if="i == rewardRows">
-                      <div class="is_phone_reward">
-                        <span  @click="addRewardRows">添加获奖</span>
-                        <span  @click="delRewardRows">删除获奖</span>
-                      </div>
+                    <div class="is_phone_reward">
+                      <span @click="addRewardRows">添加获奖</span>
+                      <span @click="delRewardRows">删除获奖</span>
+                    </div>
                     <div class="line-1"></div>
-                    <el-form-item label="获奖附件:"class="file-wrap" style="line-height: 1">
+                    <el-form-item label="获奖附件:" class="file-wrap" style="line-height: 1">
                       <div class="file-list">
                       <span v-for="(item,index) in fileList" :key="index">
                             <div class="cover"></div>
@@ -557,17 +599,17 @@
     name: "index",
     data() {
       // 验证排名/年级人数
-      let checkRank = (rule, value, callback) => {
-        if (this.phaseName == '高中' && !this.regInfo.otherData['s_a']) {
-          return callback(new Error('必填项'));
-        } else if (this.phaseName == '高中' && !this.regInfo.otherData['s_b']) {
-          return callback(new Error('必填项'));
-        } else if (this.phaseName == '高中' && parseInt(this.regInfo.otherData["s_a"]) > parseInt(this.regInfo.otherData["s_b"])) {
-          return callback(new Error('排名在人数范围内'));
-        } else {
-          callback();
-        }
-      };
+      // let checkRank = (rule, value, callback) => {
+      //   if (this.phaseName != '初中' && !this.regInfo.otherData['s_a']) {
+      //     return callback(new Error('必填项'));
+      //   } else if (this.phaseName != '初中' && !this.regInfo.otherData['s_b']) {
+      //     return callback(new Error('必填项'));
+      //   } else if (this.phaseName != '初中' && parseInt(this.regInfo.otherData["s_a"]) > parseInt(this.regInfo.otherData["s_b"] && this.phaseName != '初中')) {
+      //     return callback(new Error('排名不能高于年级人数'));
+      //   } else {
+      //     callback();
+      //   }
+      // };
       // 验证户籍所在地
       let checkStuAdds = (rule, value, callback) => {
         if (this.phaseName == '初中' && !this.regInfo.stuAdds) {
@@ -586,6 +628,8 @@
       };
 
       return {
+        rankMsg: "",
+        ksmcArr: [],
         // 绑数据
         planInfo: {},
         regInfo: {
@@ -602,6 +646,7 @@
             {s_t: "", s_u: "", s_c: "", s_d: "", s_e: ""},
             {s_t: "", s_u: "", s_c: "", s_d: "", s_e: ""}
           ],
+          gradeRank: [],
         },
         addList: [],
         gradeList: [],
@@ -648,12 +693,14 @@
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
           nowSchool: [{required: true, message: '必填项', trigger: 'blur'}],
           nowGrade: [{required: true, message: '必填项', trigger: 'blur'}],
-          rank: [{validator: checkRank, required: true, trigger: 'blur'}]
+          // rank: [{validator: checkRank, required: true, trigger: 'blur'}]
         },
         //  监护人信息是否展开
         guardianOpen: true,
         // 获奖信息是否展开
         prizeOpen: true,
+        // 排名信息是否展开
+        rankOpen: true,
         // 上传图片 请求地址
         uploadUrl: `/gateway/zuul/filesystem/api/upload/simpleupload?userId=00000000000000000000000000000000`,
         // 监护人错误提示
@@ -679,7 +726,8 @@
     },
     computed: {
       isPhone: function () {
-        return this.$store.state.isPhone
+        // return this.$store.state.isPhone
+        return true
       },
     },
 
@@ -770,6 +818,23 @@
             let value = parent[key];
             if (value) {
               vm.$set(parent, key, value + "#," + value);
+            }
+          }
+        }
+        for (let obj of vm.regInfo.gradeRank) {
+          for (let key in obj) {
+            let value = obj[key];
+            if (value) {
+              let text = value;
+              if (key == "s_v") {
+                for (let s of vm.ksmcArr) {
+                  if (s.seiValue == value) {
+                    text = s.seiName;
+                    break;
+                  }
+                }
+              }
+              vm.$set(obj, key, value + "#," + text);
             }
           }
         }
@@ -941,7 +1006,23 @@
               vm.itemMap[c] = items;
             }
           }
+          vm.initRankArr();
         });
+      },
+      initRankArr() {
+        const vm = this;
+        vm.ksmcArr = vm.enumMap["s_v"];
+        let i = 0;
+        let data = _.cloneDeep(vm.regInfo);
+        for (let obj of vm.ksmcArr) {
+          data.gradeRank[i++] = {
+            s_v: obj.seiValue,
+            s_a: "",
+            s_b: "",
+            vName: obj.seiName,
+          }
+        }
+        vm.regInfo = data;
       },
       getEnum() {
         let vm = this;
@@ -1100,6 +1181,20 @@
           }
           document.getElementById('regInfo_photoId').scrollIntoView();
           return false
+        }
+        if (vm.phaseName == '高中') {
+          for (let i = 0; i < vm.ksmcArr.length; i++) {
+            if (i > 1) {
+              break;
+            }
+            let obj = vm.ksmcArr[i];
+            let regObj = vm.regInfo.gradeRank[i];
+            if (!regObj.s_a || !regObj.s_b) {
+              vm.rankMsg = "必填项";
+              document.getElementById('regInfo_ranks').scrollIntoView();
+              return;
+            }
+          }
         }
         // 监护人信息1验证
         if (!vm.regInfo.parents[0]["s_g"] || !vm.regInfo.parents[0]["s_h"] || !vm.regInfo.parents[0]["s_i"] || !vm.regInfo.parents[0]["s_j"] || !vm.regInfo.parents[0]["s_k"]) {
@@ -1280,7 +1375,7 @@
                   border-radius: 4px;
                   cursor: pointer;
                 }
-                span:first-child{
+                span:first-child {
                   color: #fff;
                 }
               }
@@ -1408,13 +1503,13 @@
         }
       }
     }
-    .is_phone_reward{
+    .is_phone_reward {
       text-align: right;
       margin-bottom: 12px;
-      span{
+      span {
         color: #aa2f33;
       }
-      span:last-child{
+      span:last-child {
         margin-left: 12px;
       }
     }
