@@ -9,7 +9,7 @@
         <!--基本信息-->
         <p class="tip">提示：加<span>*</span>为<span>“必须填”</span></p>
         <div class="sign-main" id="info">
-          <p class="item-tit tit750">基本信息</p>
+          <b class="item-tit tit750">基本信息</b>
           <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="180px">
             <div class="basic-info">
               <!--pc 显示-->
@@ -57,7 +57,7 @@
                 </el-form-item>
                 <el-form-item label="身份证/护照号:" prop="idCard" id="regInfo_idCard">
                   <el-col :span="12">
-                    <el-input v-model="regInfo.idCard" placeholder="请填写" @change="idCardNumFn"
+                    <el-input v-model="regInfo.idCard" :maxlength="18" :minlength="18" placeholder="请填写" @change="idCardNumFn"
                               style="line-height: normal"></el-input>
                   </el-col>
                   <!--错误信息-->
@@ -89,8 +89,7 @@
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
                 </el-form-item>
-                <el-form-item v-if="phaseName != '高中'" prop="stuAdds" label="户籍所在地:"
-                              :rules="[{ required: true, message: '必填项', trigger: 'blur' }]" id="regInfo_stuAdds">
+                <el-form-item prop="stuAdds" label="户籍所在地:" id="regInfo_stuAdds">
                   <el-col :span="12" class="width_750">
                     <el-cascader
                       placeholder="请填写"
@@ -103,16 +102,6 @@
                   <template slot="error" slot-scope="scope">
                     <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
                   </template>
-                </el-form-item>
-                <el-form-item v-if="phaseName == '高中'" label="户籍所在地:">
-                  <el-col :span="12" class="width_750">
-                    <el-cascader
-                      placeholder="请填写"
-                      style="width: 100%"
-                      filterable
-                      :options="addList"
-                      v-model="regInfo.stuAdds"/>
-                  </el-col>
                 </el-form-item>
                 <el-form-item label="现就读学校:" prop="nowSchool" id="regInfo_nowSchool">
                   <el-col :span="12" class="width_750">
@@ -237,7 +226,7 @@
                     <table class="table">
                       <thead>
                       <tr>
-                        <th>姓名</th>
+                        <th>姓名(关系)</th>
                         <th>手机</th>
                         <th>学历</th>
                         <th>工作单位</th>
@@ -247,7 +236,7 @@
                       <tbody>
                       <tr v-for="i in 2" :key="i" class="input-no-border">
                         <td>
-                          <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
+                          <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']" placeholder="示例：张三（父子）"/>
                         </td>
                         <td>
                           <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']" @blur="setLoginName"/>
@@ -373,15 +362,15 @@
               <div class="guardian_info" id="regInfo_parents">
                 <p class="item-tit open-info">
                   监护人信息
-                  <label class="error-info" style="font-size: 12px" v-if="rankMsg"><i
-                    class="el-icon-circle-close"></i>{{rankMsg}}</label>
+                  <label class="error-info" style="font-size: 12px" v-if="parentsMsg"><i
+                    class="el-icon-circle-close"></i>{{parentsMsg}}</label>
                   <span v-if="!guardianOpen" @click="guardianOpen = !guardianOpen">展开<i
                     class="el-icon-arrow-down"></i> </span>
                   <span v-else @click="guardianOpen = !guardianOpen">收起 <i class="el-icon-arrow-up"></i> </span>
                 </p>
                 <template v-for="i in 2" v-if="guardianOpen">
-                  <el-form-item label="姓名:" :required="i==1 ? true:false">
-                    <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_g']"/>
+                  <el-form-item label="姓名(关系):" :required="i==1 ? true:false">
+                    <el-input :maxlength="20" placeholder="示例：张三（父子）" v-model="regInfo.parents[i-1]['s_g']"/>
                   </el-form-item>
                   <el-form-item label="手机:" :required="i==1 ? true:false">
                     <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"
@@ -393,7 +382,7 @@
                   <el-form-item label="工作单位:" :required="i==1 ? true:false">
                     <el-input :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
                   </el-form-item>
-                  <el-form-item label="职务:" :required="i==1 ? true:false">
+                  <el-form-item label="职务:">
                     <el-input :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
                   </el-form-item>
                   <div class="line-1" v-if="i==1"></div>
@@ -489,7 +478,7 @@
             <div class="line" v-if="phaseName  == '高中'"></div>
             <!--登录密码-->
             <div class="sign-pwd" id="pwd">
-              <p class="item-tit">登录密码</p>
+              <b class="item-tit">登录密码</b>
               <div class="sign-pwd-tit">
                 请设置密码，建议使用字符的组合密码且长度超过6位
                 <p>注：若未设置密码，下次登录的密码为“证件号后六位”</p>
@@ -567,7 +556,7 @@
         </div>
       </div>
       <!--提交报名信息提示-->
-      <el-dialog title="警告" :visible.sync="saveFlag" width="600px">
+      <el-dialog v-if="!isPhone" title="警告" :visible.sync="saveFlag" width="600px">
         <div class="mb-20">
           确定提交报名？提交后以下信息将<span class="text-red">不支持修改</span>：
         </div>
@@ -582,6 +571,27 @@
             <span class="modal-item">监护人1：{{regInfo.parents[0]['s_g']}}</span>
           </el-col>
           <el-col :span="10">
+            <span class="modal-item">手机号：{{regInfo.parents[0]['s_h']}}</span>
+          </el-col>
+        </el-row>
+        <div slot="footer">
+          <el-button @click="saveFlag=false">取消</el-button>
+          <el-button @click="saveInfo" type="primary">提交</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog v-else title="警告" :visible.sync="saveFlag" width="334px">
+        <div class="mb-20">
+          确定提交报名？提交后以下信息将<span class="text-red">不支持修改</span>：
+        </div>
+        <!--todo 分割线 -->
+        <el-row class="mb-5">
+          <el-col :span="24" :offset="2">
+            <span class="modal-item">身份证/护照号：{{regInfo.idCard}}</span>
+          </el-col>
+          <el-col :span="24" :offset="2">
+            <span class="modal-item">监护人1：{{regInfo.parents[0]['s_g']}}</span>
+          </el-col>
+          <el-col :span="24" :offset="2">
             <span class="modal-item">手机号：{{regInfo.parents[0]['s_h']}}</span>
           </el-col>
         </el-row>
@@ -610,14 +620,6 @@
       //     callback();
       //   }
       // };
-      // 验证户籍所在地
-      let checkStuAdds = (rule, value, callback) => {
-        if (this.phaseName == '初中' && !this.regInfo.stuAdds) {
-          return callback(new Error('必填项'));
-        } else {
-          callback();
-        }
-      };
       // 验证登录密码
       let checkpwd = (rule, value, callback) => {
         if (this.regInfo.pwd && this.regInfo.pwd != this.regInfo.repwd && this.regInfo.repwd) {
@@ -683,12 +685,13 @@
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
           idCard: [
             {required: true, message: '必填项', trigger: 'blur'},
-            {min: 9, message: '格式错误', trigger: 'blur'}
+            {min: 18, message: '格式错误', trigger: 'blur'},
+            {max: 18, message: '格式错误', trigger: 'blur'},
           ],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
           repwd: [{validator: checkpwd, trigger: 'blur'}],
-          stuAdds: [{validator: checkStuAdds, message: '必填项', trigger: 'blur'}],
+          stuAdds: [{required: true, message: '必填项', trigger: 'blur'}],
           stuGender: [{required: true, message: '必填项', trigger: 'blur'}],
           photoId: [{required: true, message: '必填项', trigger: 'blur'}],
           nowSchool: [{required: true, message: '必填项', trigger: 'blur'}],
@@ -726,8 +729,8 @@
     },
     computed: {
       isPhone: function () {
-        // return this.$store.state.isPhone
-        return true
+        return this.$store.state.isPhone
+        // return true
       },
     },
 
@@ -1087,7 +1090,7 @@
         let vm = this;
         vm.regInfo.idCard = $.trim(vm.regInfo.idCard);
         let idCardNum = vm.regInfo.idCard;
-        let pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        let pattern = /(^\d{18}$)|(^\d{17}[0-9xX]$)/;
         if (pattern.test(idCardNum)) {
           vm.regInfo.stuBirthday = idCardNum.substring(6, 10) + "-" + idCardNum.substring(10, 12) + "-" + idCardNum.substring(12, 14);
         } else {
@@ -1197,7 +1200,7 @@
           }
         }
         // 监护人信息1验证
-        if (!vm.regInfo.parents[0]["s_g"] || !vm.regInfo.parents[0]["s_h"] || !vm.regInfo.parents[0]["s_i"] || !vm.regInfo.parents[0]["s_j"] || !vm.regInfo.parents[0]["s_k"]) {
+        if (!vm.regInfo.parents[0]["s_g"] || !vm.regInfo.parents[0]["s_h"] || !vm.regInfo.parents[0]["s_i"] || !vm.regInfo.parents[0]["s_j"]) {
           vm.parentsMsg = '必填项';
           document.getElementById('regInfo_parents').scrollIntoView();
           return false

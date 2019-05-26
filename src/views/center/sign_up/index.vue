@@ -95,7 +95,7 @@
               <table class="table_list">
                 <thead>
                 <tr>
-                  <th>姓名</th>
+                  <th>姓名(关系)</th>
                   <th>手机</th>
                   <th>学历</th>
                   <th>工作单位</th>
@@ -106,7 +106,7 @@
                 <tr v-for="i in 2" :key="i">
                   <td>
                     <template v-if="i == 1">{{regInfo.parents[i-1]['s_g']}}</template>
-                    <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_g']" v-else/>
+                    <el-input placeholder="示例：张三（父子）" :maxlength="20" v-model="regInfo.parents[i-1]['s_g']" v-else/>
                   </td>
                   <td>
                     <template v-if="i == 1">{{regInfo.parents[i-1]['s_h']}}</template>
@@ -341,7 +341,7 @@
               <table class="table_list">
                 <thead>
                 <tr>
-                  <th>姓名</th>
+                  <th>姓名(关系)</th>
                   <th>手机</th>
                   <th>学历</th>
                   <th>工作单位</th>
@@ -418,9 +418,9 @@
       </div>
     </template>
     <div class="addparentFlag" v-if="addparentFlag">
-      <el-form ref="form_parent" :model="formParent" label-width="72px">
-        <el-form-item label="姓名">
-          <el-input v-model="formParent.s_g" placeholder="请输入"></el-input>
+      <el-form ref="form_parent" :model="formParent" label-width="100px">
+        <el-form-item label="姓名(关系)">
+          <el-input v-model="formParent.s_g" placeholder="示例：张三（父子）"></el-input>
         </el-form-item>
         <el-form-item label="手机号">
           <el-input v-model="formParent.s_h" placeholder="请输入"></el-input>
@@ -650,8 +650,8 @@
     },
     computed: {
       isPhone: function () {
-        // return this.$store.state.isPhone
-        return true
+        return this.$store.state.isPhone
+        // return true
       },
       userInfo: function () {
         return this.$store.state.userInfo
