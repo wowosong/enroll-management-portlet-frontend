@@ -57,7 +57,7 @@
                 </el-form-item>
                 <el-form-item label="身份证/护照号:" prop="idCard" id="regInfo_idCard">
                   <el-col :span="12">
-                    <el-input v-model="regInfo.idCard" placeholder="请填写" @change="idCardNumFn"
+                    <el-input v-model="regInfo.idCard" :maxlength="18" placeholder="请填写" @change="idCardNumFn"
                               style="line-height: normal"></el-input>
                   </el-col>
                   <!--错误信息-->
@@ -686,6 +686,7 @@
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
           idCard: [
             {required: true, message: '必填项', trigger: 'blur'},
+            { min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
           ],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
