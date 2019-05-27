@@ -57,7 +57,7 @@
                 </el-form-item>
                 <el-form-item label="身份证/护照号:" prop="idCard" id="regInfo_idCard">
                   <el-col :span="12">
-                    <el-input v-model="regInfo.idCard" :maxlength="18" :minlength="18" placeholder="请填写" @change="idCardNumFn"
+                    <el-input v-model="regInfo.idCard" placeholder="请填写" @change="idCardNumFn"
                               style="line-height: normal"></el-input>
                   </el-col>
                   <!--错误信息-->
@@ -685,8 +685,6 @@
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
           idCard: [
             {required: true, message: '必填项', trigger: 'blur'},
-            {min: 18, message: '格式错误', trigger: 'blur'},
-            {max: 18, message: '格式错误', trigger: 'blur'},
           ],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
@@ -1222,6 +1220,7 @@
         }
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            if (!vm.regInfo.stuBirthday) return document.getElementById('regInfo_stuBirthday').scrollIntoView();
             vm.saveFlag = true;
           } else {
             if (!vm.regInfo.stuName) return document.getElementById('regInfo_stuName').scrollIntoView();
