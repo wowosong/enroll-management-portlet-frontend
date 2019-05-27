@@ -556,7 +556,7 @@
         </div>
       </div>
       <!--提交报名信息提示-->
-      <el-dialog v-if="!isPhone" title="警告" :visible.sync="saveFlag" width="600px">
+      <el-dialog v-if="!isPhone" v-loading="saving" title="警告" :visible.sync="saveFlag" width="600px">
         <div class="mb-20">
           确定提交报名？提交后以下信息将<span class="text-red">不支持修改</span>：
         </div>
@@ -579,7 +579,7 @@
           <el-button @click="saveInfo" type="primary">提交</el-button>
         </div>
       </el-dialog>
-      <el-dialog v-else title="警告" :visible.sync="saveFlag" width="334px">
+      <el-dialog v-else title="警告" v-loading="saving" :visible.sync="saveFlag" width="334px">
         <div class="mb-20">
           确定提交报名？提交后以下信息将<span class="text-red">不支持修改</span>：
         </div>
@@ -881,12 +881,21 @@
             }
           }
         }
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < vm.regInfo.rewards.length; i++) {
           let reward = vm.regInfo.rewards[i];
           for (let key in reward) {
             let value = reward[key];
             if (value) {
               vm.$set(reward, key, value.split("#,")[0]);
+            }
+          }
+        }
+        for (let i = 0; i < vm.regInfo.gradeRank.length; i++) {
+          let rank = vm.regInfo.gradeRank[i];
+          for (let key in rank) {
+            let value = rank[key];
+            if (value) {
+              vm.$set(rank, key, value.split("#,")[0]);
             }
           }
         }
