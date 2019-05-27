@@ -211,6 +211,11 @@
                         </tr>
                         </tbody>
                       </table>
+                      <div>
+                        <span class="error-info" v-if="rankMsg">
+                          <i class="el-icon-circle-close"></i>{{rankMsg}}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1192,6 +1197,7 @@
           document.getElementById('regInfo_photoId').scrollIntoView();
           return false
         }
+        vm.rankMsg = "";
         if (vm.phaseName == '高中') {
           for (let i = 0; i < vm.regInfo.gradeRank.length; i++) {
             let regObj = vm.regInfo.gradeRank[i];
