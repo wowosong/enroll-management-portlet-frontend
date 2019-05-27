@@ -56,7 +56,7 @@
             </el-form-item>
           </div>
           <template v-if="!isPhone">
-            <el-form-item label="考试成绩:" label-width="102px">
+            <el-form-item label="考试成绩:" label-width="102px" v-if="planInfo.phaseName  == '高中'">
               <table class="table_list">
                 <thead>
                 <tr>
@@ -186,7 +186,7 @@
             </el-form-item>
           </template>
           <template v-if="isPhone">
-            <div class="parents_info">
+            <div class="parents_info" v-if="planInfo.phaseName  == '高中'">
               <p class="basic_tit">考试成绩</p>
               <div v-for="(i,index) in regInfo.gradeRank" :key="index" class="phone_parents_item">
                 <div class="parent_name">
