@@ -227,7 +227,7 @@
                     <table class="table">
                       <thead>
                       <tr>
-                        <th>姓名(关系)</th>
+                        <th style="width: 180px;">姓名(关系)</th>
                         <th>手机</th>
                         <th>学历</th>
                         <th>工作单位</th>
@@ -686,7 +686,7 @@
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
           idCard: [
             {required: true, message: '必填项', trigger: 'blur'},
-            { min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
+            {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur'}
           ],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
@@ -1219,7 +1219,7 @@
         }
         // 监护人手机号1验证
         for (let i = 0; i <= vm.regInfo.parents.length; i++) {
-          let mobileRes = /^1[34578]\d{9}$/;
+          let mobileRes = /^1[3456789]\d{9}$/;
           if (vm.regInfo.parents[i] && vm.regInfo.parents[i]["s_h"] && !mobileRes.test(vm.regInfo.parents[i]["s_h"])) {
             vm.parentsMsg = '手机错误';
             document.getElementById('regInfo_parents').scrollIntoView();

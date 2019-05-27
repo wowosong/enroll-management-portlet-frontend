@@ -2,11 +2,14 @@ node('nodejs-slave-123||nodejs-slave-148||nodejs-slave-149||nodejs-slave') {
     def docker_push_repo_url = '192.168.99.123:10001'
     def docker_pull_repo_url = '192.168.99.123:10000'
     def docker_compose_path = '/root/docker/docker-compose/hbd'
-    def docker_compose_service = 'portlet-frontend'
+    def docker_compose_service = 'jxportlet-frontend'
 
     def docker_image_name
     def tag = BUILD_ID
     def project_runtime
+
+    // 开发、测试服务器地址
+    def remote_servers = ['test': '192.168.99.148']
 
     stage('Settings branch params') {
         println "设置分支参数"
@@ -91,6 +94,27 @@ node('nodejs-slave-123||nodejs-slave-148||nodejs-slave-149||nodejs-slave') {
                 .split("\r?\n")
         def images_id_set = images_id as Set
         sh "docker rmi -f ${images_id_set.join(' ')}"
+    }
+
+    if (BRANCH_NAME == 'test') {
+        stage('Remote server redeploy') {
+            println "重新部署远程服务器：${BRANCH_NAME}，IP：${remote_servers[BRANCH_NAME]}"
+            withCredentials([usernamePassword(credentialsId: 'docker',
+                    passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                sshagent(credentials: ['ssh-server']) {
+                    def command = """
+                            uname -a;
+                            cd ${docker_compose_path};
+                            docker login -u ${USERNAME} -p ${PASSWORD} ${docker_pull_repo_url};
+                            docker-compose stop ${docker_compose_service};
+                            docker-compose rm -f ${docker_compose_service};
+                            docker pull ${docker_pull_repo_url}/${docker_image_name}:latest;
+                            docker-compose up -d ${docker_compose_service}
+                        """
+                    sh """ssh root@${remote_servers[BRANCH_NAME]} "$command" """
+                }
+            }
+        }
     }
 
 }

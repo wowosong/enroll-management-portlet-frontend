@@ -341,7 +341,7 @@
               <table class="table_list">
                 <thead>
                 <tr>
-                  <th>姓名(关系)</th>
+                  <th style="width: 180px;">姓名(关系)</th>
                   <th>手机</th>
                   <th>学历</th>
                   <th>工作单位</th>
