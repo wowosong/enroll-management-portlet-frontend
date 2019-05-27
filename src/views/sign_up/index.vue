@@ -186,7 +186,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-if="ksmcArr.length" v-for="(i, idx) in regInfo.gradeRank" :key="i.s_v" class="input-no-border">
+                        <tr v-if="ksmcArr.length" v-for="(i, idx) in regInfo.gradeRank" :key="i.s_v"
+                            class="input-no-border">
                           <td>
                             <span v-if="idx < 2" style="color: #f00;">*</span>
                             <span>{{i.vName}}</span>
@@ -1098,10 +1099,13 @@
         vm.regInfo.idCard = $.trim(vm.regInfo.idCard);
         let idCardNum = vm.regInfo.idCard;
         let pattern = /(^\d{18}$)|(^\d{17}[0-9xX]$)/;
+        vm.regInfo.stuBirthday = ''
         if (pattern.test(idCardNum)) {
-          vm.regInfo.stuBirthday = idCardNum.substring(6, 10) + "-" + idCardNum.substring(10, 12) + "-" + idCardNum.substring(12, 14);
-        } else {
-          vm.regInfo.stuBirthday = ''
+          debugger
+          let date = new Date(idCardNum.substring(6, 10) + "-" + idCardNum.substring(10, 12) + "-" + idCardNum.substring(12, 14));
+          if (date.getTime()) {
+            vm.regInfo.stuBirthday = date;
+          }
         }
       },
       // 上传证件
