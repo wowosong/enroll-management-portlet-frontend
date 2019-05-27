@@ -302,7 +302,7 @@
           </tr>
           </tbody>
         </table>
-        <table>
+        <table v-if="planInfo.phaseName  == '高中'">
           <tbody>
           <tr>
             <td width="102px" valign="top" align="right">考试成绩：</td>
