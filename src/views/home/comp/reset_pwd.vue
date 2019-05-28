@@ -18,7 +18,7 @@
               <el-input v-model="formData.logonName" style="width:260px;" placeholder="请输入登录名"></el-input>
             </el-form-item>
             <el-form-item label="证件号:" prop="idCard">
-              <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入证件号"></el-input>
+              <el-input v-model="formData.idCard" :maxLength="18" style="width:260px;" placeholder="请输入证件号"></el-input>
             </el-form-item>
             <el-form-item label="姓名:" prop="userName">
               <el-input v-model="formData.userName" style="width:260px;" placeholder="请输入姓名"></el-input>
@@ -30,10 +30,11 @@
           <template v-if="stempNum == 2">
             <el-form-item label="登录名:">{{formData.logonName}}</el-form-item>
             <el-form-item type="password" label="新密码:" prop="newPass">
-              <el-input v-model="formData.newPass" style="width:260px;" placeholder="请输入"></el-input>
+              <el-input :maxlength="18" v-model="formData.newPass" style="width:260px;" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item type="password" label="确认新密码:" prop="newCheckPass">
-              <el-input v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入"></el-input>
+              <el-input :maxlength="18" v-model="formData.newCheckPass" style="width:260px;"
+                        placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item>
               <div class="btn cancel" @click="handleClose">取 消</div>
@@ -50,39 +51,52 @@
   export default {
     name: "reset_pwd",
     data() {
+      // 验证身份证/护照号
+      let checkIdCard = (rule, value, callback) => {
+        let pattern = /^[a-zA-Z0-9]{6,18}$/;
+        if (!pattern.test(this.formData.idCard)) {
+          return callback(new Error('身份证/护照号为数字和字母组合'));
+        } else {
+          callback();
+        }
+      };
       return {
         formData: {
-          logonName:'',
-          loginName:'',
+          logonName: '',
+          loginName: '',
           idCard: '',
-          userId:'',
+          userId: '',
           userName: '',
-          newPass:'',
-          newCheckPass:''
+          newPass: '',
+          newCheckPass: ''
         },
         rules: {
           logonName: [
-            { required: true, message: '请输入登录名', trigger: 'blur' }
+            {required: true, message: '请输入登录名', trigger: 'blur'}
           ],
           idCard: [
-            { required: true, message: '请输入证件号', trigger: 'blur' },
-            {min:9, message: '证件号格式错误', trigger: 'blur'},
+            {required: true, message: '请输入证件号', trigger: 'blur'},
+            {validator: checkIdCard, trigger: 'blur'},
+            {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur'}
+
           ],
           userName: [
-            { required: true, message: '请输入姓名', trigger: 'blur' }
+            {required: true, message: '请输入姓名', trigger: 'blur'}
           ],
           newPass: [
-            { required: true, message: '请输入新密码', trigger: 'blur' }
+            {required: true, message: '请输入新密码', trigger: 'blur'},
+            {min: 6, max: 18, message: '密码长度在6-18位之间', trigger: 'blur'},
           ],
           newCheckPass: [
-            { required: true, message: '请输入确认密码', trigger: 'blur' }
+            {required: true, message: '请输入确认密码', trigger: 'blur'},
+            {min: 6, max: 18, message: '密码长度在6-18位之间', trigger: 'blur'}
           ],
         },
         stempNum: 1,
-        isdialog:true
+        isdialog: true
       }
     },
-    computed:{
+    computed: {
       isShow: vm => vm.showResetPwd
     },
     methods: {
@@ -92,8 +106,9 @@
         vm.$refs[formName].validate((valid) => {
           if (valid) {
             http.post(`/gateway/platform/jiaXiangUser`, vm.formData).then(xhr => {
-              if (xhr.data.code){}
-              if(xhr.data.data) {
+              if (xhr.data.code) {
+              }
+              if (xhr.data.data) {
                 vm.stempNum = 2;
                 vm.formData.userId = xhr.data.data.id;
                 vm.formData.loginName = xhr.data.data.logonName;
@@ -108,23 +123,23 @@
           }
         });
       },
-      submit(){
+      submit() {
         let vm = this;
         vm.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            if(vm.formData.newPass != vm.formData.newCheckPass) {
+            if (vm.formData.newPass != vm.formData.newCheckPass) {
               vm.$message('密码不一致!');
               return;
             } else {
               http.post(`/gateway/platform/jiaXiangUser/resetPassWord`, vm.formData).then(xhr => {
-                if (xhr.data.code){
+                if (xhr.data.code) {
                   window.hint(
                     {
-                      msg:xhr.data.message,
-                      type:'fail'
+                      msg: xhr.data.message,
+                      type: 'fail'
                     }
                   )
-                }else{
+                } else {
                   logout();
                 }
               })
@@ -196,7 +211,8 @@
     display: inline-block;
     cursor: pointer;
   }
-  .cancel{
+
+  .cancel {
     background: #fff;
     color: #333;
     border: 1px solid #ccc;

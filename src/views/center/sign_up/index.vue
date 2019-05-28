@@ -74,16 +74,16 @@
                   <td>
                     <el-input
                       type="number"
-                      min="1"
-                      step="1"
+                      :min="1"
+                      :step="1"
                       placeholder="请填写"
                       v-model="i['s_a']"/>
                   </td>
                   <td>
                     <el-input
                       type="number"
-                      min="1"
-                      step="1"
+                      :min="1"
+                      :step="1"
                       placeholder="请填写"
                       v-model="i['s_b']"/>
                   </td>
@@ -377,14 +377,24 @@
               <div style="line-height:30px">获奖信息：</div>
             </td>
             <td>
-              <table>
+              <table class="table_list">
+                <thead>
+                <tr>
+                  <th>获奖时间</th>
+                  <th>奖项名称</th>
+                  <th>奖项等级</th>
+                  <th>奖项范围</th>
+                  <th>奖项类别</th>
+                </tr>
+                </thead>
                 <tr v-for="(item, idx) in regInfo.rewards" :key="idx">
-                  <td>
-                    <div style="line-height:30px" v-if="item['s_c'] && item['s_d'] && item['s_e']">
-                      {{item['s_c'] | dateFormatYmdW}} {{item['s_d']}} {{item['s_e']}}
-                      {{itemMap['s_t'][item['s_t']]}} {{itemMap['s_u'][item['s_u']]}}
-                    </div>
-                  </td>
+                  <template v-if="item['s_c'] && item['s_d'] && item['s_e']">
+                    <td>{{item['s_c'] | dateFormatYmdW}}</td>
+                    <td>{{item['s_d']}}</td>
+                    <td>{{item['s_e']}}</td>
+                    <td>{{itemMap['s_t'][item['s_t']]}}</td>
+                    <td>{{itemMap['s_u'][item['s_u']]}}</td>
+                  </template>
                 </tr>
               </table>
             </td>

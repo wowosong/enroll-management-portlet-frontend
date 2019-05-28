@@ -19,7 +19,7 @@
               <el-input v-model="formData.logonName" style="width:260px;" placeholder="请输入登录名"></el-input>
             </el-form-item>
             <el-form-item label="证件号:" prop="idCard">
-              <el-input v-model="formData.idCard" style="width:260px;" placeholder="请输入证件号"></el-input>
+              <el-input v-model="formData.idCard" :maxLength="18" style="width:260px;" placeholder="请输入证件号"></el-input>
             </el-form-item>
             <el-form-item label="姓名:" prop="userName">
               <el-input v-model="formData.userName" style="width:260px;" placeholder="请输入姓名"></el-input>
@@ -29,12 +29,14 @@
           <template v-if="stempNum == 2">
             <el-form-item label="登录名:">{{formData.logonName}}</el-form-item>
             <el-form-item label="新密码:" prop="newPass">
-              <el-input type="password" maxlength="19" @blur="changePwd" v-model="formData.newPass" style="width:260px;" placeholder="请输入新密码"></el-input>
+              <el-input type="password" :maxlength="18" v-model="formData.newPass" style="width:260px;"
+                        placeholder="请输入新密码"></el-input>
             </el-form-item>
             <el-form-item label="确认新密码:" prop="newCheckPass">
-              <el-input type="password" maxlength="19" @blur="changePwd" v-model="formData.newCheckPass" style="width:260px;" placeholder="请输入再次新密码"></el-input>
+              <el-input type="password" :maxlength="18" v-model="formData.newCheckPass" style="width:260px;"
+                        placeholder="请输入再次新密码"></el-input>
             </el-form-item>
-            <el-form-item  v-if="msgError">
+            <el-form-item v-if="msgError">
               <span class="error">{{msgError}}</span>
             </el-form-item>
             <div class="btn-area">
@@ -53,6 +55,15 @@
   export default {
     name: "reset_pwd",
     data() {
+      // 验证身份证/护照号
+      let checkIdCard = (rule, value, callback) => {
+        let pattern = /^[a-zA-Z0-9]{6,18}$/;
+        if (!pattern.test(this.formData.idCard)) {
+          return callback(new Error('身份证/护照号为数字和字母组合'));
+        } else {
+          callback();
+        }
+      };
       return {
         formData: {
           logonName: '',
@@ -68,29 +79,27 @@
           ],
           idCard: [
             {required: true, message: '请输入证件号', trigger: 'blur'},
-            {min:9, message: '证件号格式错误', trigger: 'blur'},
+            {validator: checkIdCard, trigger: 'blur'},
+            {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur'}
           ],
           userName: [
             {required: true, message: '请输入姓名', trigger: 'blur'}
           ],
           newPass: [
-            {required: true, message: '请输入新密码', trigger: 'blur'}
+            {required: true, message: '请输入新密码', trigger: 'blur'},
+            {min: 6, max: 18, message: '密码长度在6-18位之间', trigger: 'blur'}
           ],
           newCheckPass: [
-            {required: true, message: '请确认新密码', trigger: 'blur'}
+            {required: true, message: '请确认新密码', trigger: 'blur'},
+            {min: 6, max: 18, message: '密码长度在6-18位之间', trigger: 'blur'}
           ],
         },
         stempNum: 1,
         isdialog: true,
-        msgError:''
+        msgError: ''
       }
     },
     methods: {
-      changePwd(){
-        if(this.formData.newPass && this.formData.newPass.length > 18){
-          this.msgError = '密码长度不能超过18位';
-        }
-      },
       //下一步
       next(formName) {
         let vm = this;
@@ -120,7 +129,7 @@
           if (valid) {
             if (vm.formData.newPass != vm.formData.newCheckPass) {
               vm.msgError = '两次密码不一致';
-              return
+              return false
             } else {
               http.post(`/gateway/platform/jiaXiangUser/resetPassWord`, vm.formData).then(xhr => {
                 if (xhr.data.code) {
@@ -227,10 +236,12 @@
     display: inline-block;
     cursor: pointer;
   }
-  .error{
+
+  .error {
     color: #F56C6C;
     font-size: 12px;
   }
+
   .title {
     background: #2f3861;
     text-align: center;

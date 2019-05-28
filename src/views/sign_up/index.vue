@@ -9,7 +9,7 @@
         <!--基本信息-->
         <p class="tip">提示：加<span>*</span>为<span>“必须填”</span></p>
         <div class="sign-main" id="info">
-          <b class="item-tit tit750">基本信息</b>
+          <h1 class="item-tit tit750">基本信息</h1>
           <el-form :model="regInfo" :rules="rules" ref="ruleForm" label-width="180px">
             <div class="basic-info">
               <!--pc 显示-->
@@ -484,7 +484,7 @@
             <div class="line" v-if="phaseName  == '高中'"></div>
             <!--登录密码-->
             <div class="sign-pwd" id="pwd">
-              <b class="item-tit">登录密码</b>
+              <h1 class="item-tit">登录密码</h1>
               <div class="sign-pwd-tit">
                 请设置密码，建议使用字符的组合密码且长度超过6位
                 <p>注：若未设置密码，下次登录的密码为“证件号后六位”</p>
@@ -628,8 +628,22 @@
       // };
       // 验证登录密码
       let checkpwd = (rule, value, callback) => {
-        if (this.regInfo.pwd && this.regInfo.pwd != this.regInfo.repwd && this.regInfo.repwd) {
-          return callback(new Error('密码不一致'));
+        let pattern = /^\d{6,18}$/;
+        if (this.regInfo.pwd && !this.regInfo.repwd) {
+          return callback(new Error('填写确认密码'));
+        } else if (this.regInfo.pwd && this.regInfo.pwd != this.regInfo.repwd) {
+          return callback(new Error('两次密码不一致'));
+        } else if (this.regInfo.pwd && !pattern.test(this.regInfo.pwd) || this.regInfo.repwd && !pattern.test(this.regInfo.repwd)) {
+          return callback(new Error('密码长度在6-18位之间'));
+        } else {
+          callback();
+        }
+      };
+      // 验证身份证/护照号
+      let checkIdCard = (rule, value, callback) => {
+        let pattern = /^[a-zA-Z0-9]{6,18}$/;
+        if (!pattern.test(this.regInfo.idCard)) {
+          return callback(new Error('身份证/护照号为数字和字母组合'));
         } else {
           callback();
         }
@@ -691,7 +705,9 @@
           stuName: [{required: true, message: '必填项', trigger: 'blur'}],
           idCard: [
             {required: true, message: '必填项', trigger: 'blur'},
+            {validator: checkIdCard, trigger: 'blur'},
             {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur'}
+
           ],
           stuBirthday: [{required: true, message: '必填项', trigger: 'blur'}],
           phoneNum: [{required: true, message: '必填项', trigger: 'blur'}],
@@ -1105,9 +1121,8 @@
         vm.regInfo.idCard = $.trim(vm.regInfo.idCard);
         let idCardNum = vm.regInfo.idCard;
         let pattern = /(^\d{18}$)|(^\d{17}[0-9xX]$)/;
-        vm.regInfo.stuBirthday = ''
+        vm.regInfo.stuBirthday = '';
         if (pattern.test(idCardNum)) {
-          debugger
           let date = new Date(idCardNum.substring(6, 10) + "-" + idCardNum.substring(10, 12) + "-" + idCardNum.substring(12, 14));
           if (date.getTime()) {
             vm.regInfo.stuBirthday = date;
@@ -1318,6 +1333,7 @@
       .item-tit {
         color: #666;
         margin-bottom: 30px;
+        font-weight: bold;
       }
       .basic-info {
         .user-img {
