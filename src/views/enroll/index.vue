@@ -10,7 +10,7 @@
       </div>
       <div class="login-item">
         <i class="iconfont">&#xe609;</i>
-        <input v-model="loginForm.password"  placeholder="请输入验证码(用于核实填写人身份)"/>
+        <input v-model="loginForm.password" placeholder="请输入验证码(用于核实填写人身份)"/>
       </div>
       <div class="login-btn" @click="login">
         <a>验证</a>
@@ -25,7 +25,7 @@
       return {
         // 登录错误提示
         userError: '',
-        pwdError:'',
+        pwdError: '',
         // 登录信息
         loginForm: {
           username: '',
@@ -34,8 +34,9 @@
         },
       }
     },
-    mounted(){
-
+    mounted() {
+      localStorage.clear();
+      this.$store.commit('changeLogin', false);
     },
     methods: {
       // 验证登陆信息是否可以提交
@@ -83,7 +84,8 @@
               let dataToken = xhr.data;
               localStorage.setItem('accesstoken', JSON.stringify(dataToken));
               if (xhr.data && xhr.data.access_token) {
-                vm.$router.push({path:'/center',query:{enroll:true}});
+                vm.$store.commit('changeLogin', true);
+                vm.$router.push({path: '/center', query: {enroll: true}});
               }
             }
           })
@@ -94,9 +96,10 @@
 </script>
 
 <style lang="less" scoped>
-  .bg-white{
+  .bg-white {
     background: #fff;
   }
+
   .login {
     width: 85%;
     margin: 22px auto 0;
@@ -106,7 +109,7 @@
       position: absolute;
       color: #f40002;
     }
-    .msg{
+    .msg {
       color: #f40002;
       font-size: 12px;
       margin-bottom: 12px;
@@ -163,6 +166,7 @@
       }
     }
   }
+
   .m-b-16 {
     margin-bottom: 16px;
   }
