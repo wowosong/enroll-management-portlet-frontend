@@ -55,30 +55,10 @@ Vue.config.productionTip = false;
 Vue.http.options.credentials = false;
 // Vue.http.options.emulateJSON = true;
 Vue.http.interceptors.push(function (request, next) {
-  if (window.showRouteKey) {
-    window.loadingSum++
-  }
-  // 统一处理返回消息
-  // if (!request.headers.map.Authorization) {
-  //   let cookieToken = getCookie('accesstoken') ? JSON.parse(getCookie('accesstoken')) : null;
-  //   if (cookieToken && cookieToken.access_token) {
-  //     request.headers.set('Authorization', 'Bearer ' + cookieToken.access_token);
-  //   }
-  // }
-
   next(function (response) {
     let data = response.data;
-    // data.showHits 统一做提示处理
-    if (window.showRouteKey) {
-      window.loadingSum--
-      if (window.loadingSum === 0) {
-        window.showRouteKey = false
-        //window.loadingInstance.close()
-      }
-    }
-
     if (data) {
-      if (data.showHits) {
+      if (data.level == 'info' && data.showHits) {
         let type = 'success'
         let msg = data.message
         let time = 3000
@@ -116,7 +96,7 @@ Vue.http.interceptors.push(function (request, next) {
 
     // 出现异常 401
     if (!response.ok) {
-      if (data.error == 'invalid_token') {
+      if (!data.data || data.error == 'invalid_token' || data.error == 'unauthorized') {
         // 跳到登录页
         logout();
       }

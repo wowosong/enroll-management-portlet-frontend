@@ -150,16 +150,16 @@
                     <el-form-item label="年级排名(名):" :required="idx < 2">
                       <el-input
                         type="number"
-                        min="1"
-                        step="1"
+                        :min="1"
+                        :step="1"
                         placeholder="请填写"
                         v-model="i['s_a']"/>
                     </el-form-item>
                     <el-form-item label="年级人数(人):" :required="idx < 2">
                       <el-input
                         type="number"
-                        min="1"
-                        step="1"
+                        :min="1"
+                        :step="1"
                         placeholder="请填写"
                         v-model="i['s_b']"/>
                     </el-form-item>
@@ -195,16 +195,16 @@
                           <td>
                             <el-input
                               type="number"
-                              min="1"
-                              step="1"
+                              :min="1"
+                              :step="1"
                               placeholder="请填写"
                               v-model="i['s_a']"/>
                           </td>
                           <td>
                             <el-input
                               type="number"
-                              min="1"
-                              step="1"
+                              :min="1"
+                              :step="1"
                               placeholder="请填写"
                               v-model="i['s_b']"/>
                           </td>
