@@ -1,6 +1,6 @@
 <template>
   <div class="comm_main clearfix" :class="{is_has_child:tabIndex != null}">
-    <div class="title">
+    <div class="title" v-if="$route.query && !$route.query.enroll">
       <span @click="goback"></span>
       {{title}}
     </div>
@@ -65,6 +65,9 @@
       let progress = this.$route.query ? this.$route.query.progress : false//是否直接显示招生进度
       if (progress) {
         this.tabIndex = 1
+      }
+      if(this.$route.query && this.$route.query.enroll){
+        this.tabIndex = 0
       }
       this.tabIndexFn(this.tabIndex)
     },

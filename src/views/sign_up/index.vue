@@ -129,11 +129,11 @@
                   </template>
                 </el-form-item>
               </div>
+            </div>
               <!--手机浏览器显示-->
               <template v-if="isPhone && phaseName == '高中'">
                 <!--间隔线-->
                 <div class="line"></div>
-                <!--监护人信息-->
                 <div class="guardian_info" id="regInfo_ranks">
                   <p class="item-tit open-info">
                     考试成绩
@@ -359,7 +359,6 @@
                   </div>
                 </div>
               </template>
-            </div>
             <!--手机浏览器 显示-->
             <template v-if="isPhone">
               <!--间隔线-->

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-white">
     <div class="login">
       <div class="msg">提示：验证码为证件号后六位。</div>
       <div class="user-error" v-if="userError">{{userError}}</div>
@@ -83,7 +83,7 @@
               let dataToken = xhr.data;
               localStorage.setItem('accesstoken', JSON.stringify(dataToken));
               if (xhr.data && xhr.data.access_token) {
-                vm.$router.push({path:'/register_sheet',query:{enroll:true}});
+                vm.$router.push({path:'/center',query:{enroll:true}});
               }
             }
           })
@@ -94,6 +94,9 @@
 </script>
 
 <style lang="less" scoped>
+  .bg-white{
+    background: #fff;
+  }
   .login {
     width: 85%;
     margin: 22px auto 0;
