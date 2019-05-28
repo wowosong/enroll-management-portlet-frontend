@@ -129,7 +129,6 @@
                   </template>
                 </el-form-item>
               </div>
-            </div>
               <!--手机浏览器显示-->
               <template v-if="isPhone && phaseName == '高中'">
                 <!--间隔线-->
@@ -359,6 +358,7 @@
                   </div>
                 </div>
               </template>
+            </div>
             <!--手机浏览器 显示-->
             <template v-if="isPhone">
               <!--间隔线-->
