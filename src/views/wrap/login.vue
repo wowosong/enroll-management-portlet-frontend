@@ -71,10 +71,10 @@
         let mobileRes = /^\d{8,15}?$/;
         vm.userError = '';
         vm.pwdError = '';
-        // if (!mobileRes.test(vm.loginForm.username)) {
-        //   vm.userError = '请输入正确格式的手机号码';
-        //   return false
-        // }
+        if (!mobileRes.test(vm.loginForm.username)) {
+          vm.userError = '请输入正确格式的手机号码';
+          return false
+        }
         if (!vm.loginForm.username) {
           vm.userError = '请输入手机号码';
           return false
