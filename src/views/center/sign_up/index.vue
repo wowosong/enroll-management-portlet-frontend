@@ -1109,8 +1109,12 @@
             return;
           }
           vm.planInfo = xhr.data.data;
-          if (vm.planInfo.phaseName == "高中") {
-            vm.isrequired = false
+          if (xhr.data.data.phaseName == "高中") {
+            vm.isrequired = false;
+          }
+          if (vm.$route.query.enroll && xhr.data.data.phaseName == "高中") {
+            vm.$message.warning("此账号不能进行信息补录!");
+            vm.$router.go(-1);
           }
         });
       },
@@ -1646,21 +1650,21 @@
 <style lang="less" scoped>
   //warp版本
   .is_phone {
-    .sheet-wrap{
+    .sheet-wrap {
       width: 100%;
       text-align: center;
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%,-50%);
-      i{
+      transform: translate(-50%, -50%);
+      i {
         font-size: 64px;
         color: #67c23a;
       }
-      .sumbit-tip{
+      .sumbit-tip {
         margin: 24px 0;
       }
-      .tips-date{
+      .tips-date {
         color: #999;
         font-size: 12px;
       }

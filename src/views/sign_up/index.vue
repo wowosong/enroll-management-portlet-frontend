@@ -48,7 +48,7 @@
                 </el-form-item>
                 <el-form-item label="学生姓名:" prop="stuName" id="regInfo_stuName">
                   <el-col :span="12">
-                    <el-input v-model="regInfo.stuName" placeholder="请填写"></el-input>
+                    <el-input :maxlength="18" v-model="regInfo.stuName" placeholder="请填写"></el-input>
                   </el-col>
                   <!--错误信息-->
                   <template slot="error" slot-scope="scope">

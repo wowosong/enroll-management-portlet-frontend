@@ -39,9 +39,6 @@
         avatar_url: window.systemParameter.FILE_SYSTEM_URL + "/file/thumbnail/",
       }
     },
-    mounted() {
-      console.log(this.$route.query.enroll)
-    },
     computed: {
       userInfo: function () {
         return this.$store.state.userInfo
