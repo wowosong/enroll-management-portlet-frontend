@@ -66,7 +66,7 @@
       // 验证身份证/护照号
       let checkIdCard = (rule, value, callback) => {
         let pattern = /^[a-zA-Z0-9]{6,18}$/;
-        if (!pattern.test(this.regInfo.idCard)) {
+        if (!pattern.test(this.formData.idCard)) {
           return callback(new Error('身份证/护照号为数字和字母组合'));
         } else {
           callback();
@@ -149,12 +149,7 @@
             } else {
               http.post(`/gateway/platform/jiaXiangUser/resetPassWord`, vm.formData).then(xhr => {
                 if (xhr.data.code) {
-                  window.hint(
-                    {
-                      msg: xhr.data.message,
-                      type: 'fail'
-                    }
-                  )
+                  vm.$message.warning(xhr.data.message);
                 } else {
                   //todo 需要登出并清除cookies
                   logout();

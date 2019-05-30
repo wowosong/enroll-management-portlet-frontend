@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white">
+  <div class="bg-white" v-loading="checking">
     <div class="login">
-      <div class="msg">提示：验证码为证件号后六位。</div>
+      <!--<div class="msg">提示：验证码为证件号后六位。</div>-->
       <div class="user-error" v-if="userError">{{userError}}</div>
       <div class="pwd-error" v-if="pwdError">{{pwdError}}</div>
       <div class="login-item m-b-16">
@@ -10,7 +10,7 @@
       </div>
       <div class="login-item">
         <i class="iconfont">&#xe609;</i>
-        <input v-model="loginForm.password" placeholder="请输入验证码(用于核实填写人身份)"/>
+        <input v-model="loginForm.password" placeholder="请输入密码(用于核实填写人身份)"/>
       </div>
       <div class="login-btn" @click="login">
         <a>验证</a>
@@ -32,6 +32,9 @@
           password: '',
           grant_type: 'password'
         },
+        // 用户信息
+        userInfo: {},
+        checking: false
       }
     },
     mounted() {
@@ -42,7 +45,7 @@
       // 验证登陆信息是否可以提交
       vaildFn() {
         let vm = this;
-        let mobileRes = /^1[34578]\d{9}$/;
+        let mobileRes = /^\d{8,15}?$/;
         vm.userError = '';
         vm.pwdError = '';
         if (!vm.loginForm.username) {
@@ -85,11 +88,56 @@
               localStorage.setItem('accesstoken', JSON.stringify(dataToken));
               if (xhr.data && xhr.data.access_token) {
                 vm.$store.commit('changeLogin', true);
-                vm.$router.push({path: '/center', query: {enroll: true}});
+                vm.getRoleType();
               }
             }
           })
         }
+      },
+      getRoleType() {
+        let vm = this;
+        vm.checking = true;
+        let localtoken = localStorage.getItem('accesstoken') ? JSON.parse(localStorage.getItem('accesstoken')) : '';
+        if (localtoken && localtoken.access_token) {
+          http.get('/gateway/platform/users/roleTypes/2', {
+            headers: {Authorization: 'Bearer ' + localtoken.access_token},
+          }).then(function (xhr) {
+            if (xhr.data.data.roleTypes.length > 0) {
+              vm.roles = xhr.data.data.roleTypes[0].id;
+              vm.getUserInfo()
+            }
+
+          });
+        }
+      },
+      getUserInfo() {
+        let vm = this;
+        http.get('/gateway/platform/user', {
+          params: {
+            roleTypeId: vm.roles
+          }
+        }).then(xhr => {
+          vm.userInfo = xhr.data.data;
+          vm.checkAccount();
+        })
+      },
+
+
+      // 检查账号是否可补录
+      checkAccount() {
+        let vm = this;
+        http.get("/gateway/enroll/api/erRegister/byPhone", {params: {phoneNum: vm.userInfo.idCard}}).then((xhr) => {
+          if (xhr.data.code) return;
+          http.get("/gateway/enroll/erEnrollPlan/" + xhr.data.data.planId).then((xhr) => {
+            vm.checking = false;
+            if (xhr.data.code) return;
+            if (xhr.data.data.phaseName == "高中") {
+              vm.$message.warning("不在补录名单!");
+            } else {
+              vm.$router.push({path: '/center', query: {enroll: true}});
+            }
+          });
+        })
       }
     }
   }

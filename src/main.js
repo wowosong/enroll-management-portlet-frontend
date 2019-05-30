@@ -93,7 +93,6 @@ Vue.http.interceptors.push(function (request, next) {
         })
       }
     }
-
     // 出现异常 401
     if (!response.ok) {
       if (!data.data || data.error == 'invalid_token' || data.error == 'unauthorized') {
@@ -113,7 +112,7 @@ Vue.http.interceptors.push(function (request, next) {
 });
 /* vue-resource 统一请求处理
  *-------------------------------------------------------------------------------end*/
-
+console.log('111111111',router)
 
 /* 初始化路由 并挂载到vue
  *-------------------------------------------------------------------------------*/
@@ -237,42 +236,6 @@ app.$mount('#app');
 
 /* 全局方法
  *-------------------------------------------------------------------------------*/
-//插入 override-element-ui.css 换肤时将换肤样式插入到该样式之前
-let themeLink = document.createElement('link');
-themeLink.rel = 'stylesheet';
-themeLink.id = 'resetElement';
-themeLink.href = 'static/css/override-element-ui.css';
-document.getElementsByTagName('HEAD').item(0).appendChild(themeLink);
-
-//全局样式 线性图标用的css, 彩色图标用svg 需引入js
-//阿里图标库 http://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.11&manage_type=myprojects&projectId=764310&keyword=
-//http://at.alicdn.com/t/font_764310_k5r2cmq2ri.css,http://at.alicdn.com/t/font_814323_3e9xb7ug1vn.js
-http.get('/gateway/platform/api/systemTool/config/PORTLET_ICONS_URL').then(response => {
-  if (response && response.bodyText) {
-    let str = response.bodyText;
-    let str2 = str.split(',');
-
-    let reg = /\b(.js|.css)$\b/g;
-
-    _.each(str2, i => {
-      if (i.match(reg)) {
-        if (i.match(reg) == '.css') {
-          let cssLink = document.createElement('link')
-          cssLink.rel = 'stylesheet';
-          cssLink.href = i;
-          document.getElementsByTagName('HEAD').item(0).insertBefore(cssLink, document.querySelector('#fontawesome'));
-        }
-        // 彩色图标 暂不引入
-        if (i.match(reg) == '.js') {
-          let jsLink = document.createElement('script')
-          jsLink.src = i;
-          document.getElementsByTagName('HEAD').item(0).insertBefore(jsLink, document.querySelector('#fontawesome'));
-        }
-      }
-    })
-  }
-});
-
 
 window.eduFilterParam = function (obj) {
   let rs = [];

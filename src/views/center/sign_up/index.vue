@@ -5,7 +5,7 @@
         <div class="user_school">
           <span class="school_item">报名校区：{{planInfo.campusName}}</span>
           <span class="school_item">报名年级：{{planInfo.gradeName}}</span>
-          <span v-if="isEditInfo && !Boolean($route.query.enroll)" class="float_r edit_btn"
+          <span v-if="editBtn && !Boolean($route.query.enroll)" class="float_r edit_btn"
                 @click="idEdit = true">修改</span>
           <!-- <span v-if="idEdit" class="import_hint float_r">提示：报名提交后不支持修改"必填项"，只支持修改"非必填项</span> -->
         </div>
@@ -309,10 +309,15 @@
               </el-form-item>
             </template>
             <el-form-item prop="eduConcept" v-if="planInfo.phaseName  != '高中'" label="家庭教育理念:" label-width="110px">
-              <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="regInfo.eduConcept"></el-input>
+              <template v-if="!isEditInfo">
+                {{regInfo.eduConcept}}
+              </template>
+              <template v-else>
+                <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="regInfo.eduConcept"></el-input>
+              </template>
             </el-form-item>
           </el-form>
-          <div class="sign-btn" v-if="isEditInfo">
+          <div class="sign-btn" v-if="saveBtn">
             <span class="save" @click="saveInfo">保存</span>
             <span class="cancel" @click="cancel">取消</span>
           </div>
@@ -441,8 +446,8 @@
                       <td>{{item['s_c'] | dateFormatYmdW}}</td>
                       <td>{{item['s_d']}}</td>
                       <td>{{item['s_e']}}</td>
-                      <td>{{itemMap['s_t'][item['s_t']]}}</td>
-                      <td>{{itemMap['s_u'][item['s_u']]}}</td>
+                      <td>{{item['s_t']}}</td>
+                      <td>{{item['s_u']}}</td>
                     </template>
                   </tr>
                 </table>
@@ -718,7 +723,11 @@
         // 手机端判断是否可编辑
         isEditInfo: false,
         // 招生系统扫码信息登记表 已提交状态
-        enrollShow: false
+        enrollShow: false,
+        // 修改按钮是否显示
+        editBtn:false,
+        // 保存按钮是否显示
+        saveBtn:false
       }
     },
     computed: {
@@ -740,12 +749,6 @@
     methods: {
       init() {
         const vm = this;
-        if (vm.$store.state.isPhone) {
-          vm.idEdit = true;
-          if (Boolean(vm.$route.query.enroll) || !vm.idEdit && vm.regInfo.regStatus == 0 && vm.planInfo.publishStatus == 1) {
-            vm.isEditInfo = true;
-          }
-        }
         vm.getEnum();
         vm.getAddList();
         vm.getGradeList();
@@ -960,6 +963,23 @@
             }
           }
           vm.regInfo = data;
+          // 判断报名信息是否可修改
+          if (vm.$store.state.isPhone) {
+            vm.idEdit = true;
+            if (vm.idEdit && vm.regInfo.regStatus == 0 && vm.planInfo.publishStatus == 1) {
+              vm.isEditInfo = true;
+            }
+          }
+          if (!vm.idEdit && vm.regInfo.regStatus == 0 && vm.planInfo.publishStatus == 1) {
+            vm.editBtn = true;
+          }
+          if (!vm.idEdit && vm.regInfo.regStatus == 0 && vm.planInfo.publishStatus == 1) {
+            vm.isEditInfo = true;
+          }
+          if(vm.regInfo.regStatus == 0 && vm.planInfo.publishStatus == 1){
+            vm.saveBtn = true;
+          }
+
           if (!vm.regInfo.otherData) {
             vm.regInfo.otherData = {}
           }
@@ -1111,10 +1131,6 @@
           vm.planInfo = xhr.data.data;
           if (xhr.data.data.phaseName == "高中") {
             vm.isrequired = false;
-          }
-          if (vm.$route.query.enroll && xhr.data.data.phaseName == "高中") {
-            vm.$message.warning("此账号不能进行信息补录!");
-            vm.$router.go(-1);
           }
         });
       },
