@@ -89,7 +89,7 @@
               </el-form-item>
             </div>
             <template v-if="!isPhone">
-              <el-form-item label="考试成绩:" label-width="102px" v-if="planInfo.phaseName  == '高中'">
+              <el-form-item label="考试成绩:" v-if="planInfo.phaseName  == '高中'">
                 <table class="table_list">
                   <thead>
                   <tr>
@@ -124,7 +124,7 @@
                   </tbody>
                 </table>
               </el-form-item>
-              <el-form-item label="监护人:" label-width="102px" prop="parentsV">
+              <el-form-item label="监护人:" prop="parentsV">
                 <table class="table_list">
                   <thead>
                   <tr>
@@ -158,11 +158,11 @@
                   </tbody>
                 </table>
               </el-form-item>
-              <el-form-item label="获奖信息:" label-width="102px" v-if="planInfo.phaseName  == '高中'">
+              <el-form-item label="获奖信息:" v-if="planInfo.phaseName  == '高中'">
                 <table class="table_list">
                   <thead>
                   <tr>
-                    <th width="145px">获奖时间</th>
+                    <th width="140px">获奖时间</th>
                     <th>获奖名称</th>
                     <th>奖项等级</th>
                     <th>奖项范围</th>
@@ -275,7 +275,7 @@
               </div>
             </template>
             <template v-if="planInfo.phaseName  == '高中'">
-              <el-form-item label="获奖附件:" label-width="102px">
+              <el-form-item label="获奖附件:">
                 <div class="img_box">
                   <div class="img_thumbnail" v-for="(file,fid) in fileList" :key="fid"
                        v-if="fileList && fileList.length>0">
@@ -308,14 +308,16 @@
                 </div>
               </el-form-item>
             </template>
-            <el-form-item prop="eduConcept" v-if="planInfo.phaseName  != '高中'" label="家庭教育理念:" label-width="110px">
-              <template v-if="!isEditInfo">
-                {{regInfo.eduConcept}}
-              </template>
-              <template v-else>
-                <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="regInfo.eduConcept"></el-input>
-              </template>
-            </el-form-item>
+            <div :style="isPhone?'padding: 0 16px':''">
+              <el-form-item prop="eduConcept" v-if="planInfo.phaseName  != '高中'" label="家庭教育理念:">
+                <template v-if="!isEditInfo">
+                  {{regInfo.eduConcept}}
+                </template>
+                <template v-else>
+                  <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="regInfo.eduConcept"></el-input>
+                </template>
+              </el-form-item>
+            </div>
           </el-form>
           <div class="sign-btn" v-if="saveBtn">
             <span class="save" @click="saveInfo">保存</span>
@@ -359,9 +361,9 @@
           <table v-if="planInfo.phaseName  == '高中'">
             <tbody>
             <tr>
-              <td width="102px" valign="top" align="right">考试成绩：</td>
+              <td width="110px" valign="top" align="right">考试成绩：</td>
               <td>
-                <table class="table_list">
+                <table class="table_list table-overflow">
                   <thead>
                   <tr>
                     <th>考试名称</th>
@@ -371,13 +373,13 @@
                   </thead>
                   <tbody>
                   <tr v-if="ksmcArr.length" v-for="i in regInfo.gradeRank" :key="i.s_v">
-                    <td>
+                    <td :title="i.vName">
                       <span>{{i.vName}}</span>
                     </td>
-                    <td>
+                    <td :title="i['s_a']">
                       {{i['s_a']}}
                     </td>
-                    <td>
+                    <td :title="i['s_b']">
                       {{i['s_b']}}
                     </td>
                   </tr>
@@ -390,32 +392,32 @@
           <table>
             <tbody>
             <tr>
-              <td width="102px" valign="top" align="right">监护人：</td>
+              <td width="110px" valign="top" align="right">监护人：</td>
               <td>
-                <table class="table_list">
+                <table class="table_list table-overflow">
                   <thead>
                   <tr>
-                    <th style="width: 180px;">姓名(关系)</th>
-                    <th>手机</th>
-                    <th>学历</th>
-                    <th>工作单位</th>
-                    <th>职务</th>
+                    <th width="100px">姓名(关系)</th>
+                    <th width="100px">手机</th>
+                    <th width="100px">学历</th>
+                    <th width="100px">工作单位</th>
+                    <th width="100px">职务</th>
                   </tr>
                   </thead>
                   <tr v-for="i in 2" :key="i">
-                    <td>
+                    <td :title="regInfo.parents[i-1]['s_g']">
                       {{regInfo.parents[i-1]['s_g']}}
                     </td>
-                    <td>
+                    <td :title="regInfo.parents[i-1]['s_h']">
                       {{regInfo.parents[i-1]['s_h']}}
                     </td>
-                    <td>
+                    <td :title="regInfo.parents[i-1]['s_i']">
                       {{regInfo.parents[i-1]['s_i']}}
                     </td>
-                    <td>
+                    <td :title="regInfo.parents[i-1]['s_j']">
                       {{regInfo.parents[i-1]['s_j']}}
                     </td>
-                    <td>
+                    <td :title="regInfo.parents[i-1]['s_k']">
                       {{regInfo.parents[i-1]['s_k']}}
                     </td>
                   </tr>
@@ -427,34 +429,34 @@
           <table>
             <tbody>
             <tr v-if="planInfo.phaseName  == '高中'">
-              <td width="102px" valign="top" align="right">
+              <td width="110px" valign="top" align="right">
                 <div style="line-height:30px">获奖信息：</div>
               </td>
               <td>
-                <table class="table_list">
+                <table class="table_list table-overflow">
                   <thead>
                   <tr>
-                    <th>获奖时间</th>
-                    <th>奖项名称</th>
-                    <th>奖项等级</th>
-                    <th>奖项范围</th>
-                    <th>奖项类别</th>
+                    <th width="100px">获奖时间</th>
+                    <th width="100px">奖项名称</th>
+                    <th width="100px">奖项等级</th>
+                    <th width="100px">奖项范围</th>
+                    <th width="100px">奖项类别</th>
                   </tr>
                   </thead>
                   <tr v-for="(item, idx) in regInfo.rewards" :key="idx">
                     <template v-if="item['s_c'] && item['s_d'] && item['s_e']">
-                      <td>{{item['s_c'] | dateFormatYmdW}}</td>
-                      <td>{{item['s_d']}}</td>
-                      <td>{{item['s_e']}}</td>
-                      <td>{{item['s_t']}}</td>
-                      <td>{{item['s_u']}}</td>
+                      <td :title="item['s_c'] | dateFormatYmdW">{{item['s_c'] | dateFormatYmdW}}</td>
+                      <td :title="item['s_d']">{{item['s_d']}}</td>
+                      <td :title="item['s_e']">{{item['s_e']}}</td>
+                      <td :title="item['s_t']">{{item['s_t']}}</td>
+                      <td :title="item['s_u']">{{item['s_u']}}</td>
                     </template>
                   </tr>
                 </table>
               </td>
             </tr>
             <tr v-if="planInfo.phaseName  == '高中'">
-              <td width="102px" valign="top" align="right">获奖附件：</td>
+              <td width="110px" valign="top" align="right">获奖附件：</td>
               <td>
                 <div v-if="regInfo.rewardFile && regInfo.rewardFile.length > 0">
                   <div class="img_thumbnail" v-for="(file,fid) in regInfo.rewardFile" :key="fid">
@@ -468,7 +470,7 @@
               </td>
             </tr>
             <tr v-if="planInfo.phaseName != '高中'">
-              <td width="102px" valign="top" align="right">家庭教育理念：</td>
+              <td width="110px" valign="top" align="right">家庭教育理念：</td>
               <td>{{regInfo.eduConcept}}</td>
             </tr>
             </tbody>
@@ -725,9 +727,9 @@
         // 招生系统扫码信息登记表 已提交状态
         enrollShow: false,
         // 修改按钮是否显示
-        editBtn:false,
+        editBtn: false,
         // 保存按钮是否显示
-        saveBtn:false
+        saveBtn: false
       }
     },
     computed: {
@@ -797,6 +799,8 @@
           let data = _.cloneDeep(vm.regInfo);
           data.rewards[vm.rewardRows++] = obj;
           vm.regInfo = data;
+        } else {
+          vm.$message.warning('不能超过8条获奖信息');
         }
       },
 
@@ -805,6 +809,8 @@
         if (vm.rewardRows != 1) {
           let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
           vm.regInfo.rewards[vm.rewardRows--] = obj
+        } else {
+          vm.$message.warning('不能低于1条获奖信息');
         }
       },
       saveInfo() {
@@ -976,7 +982,7 @@
           if (!vm.idEdit && vm.regInfo.regStatus == 0 && vm.planInfo.publishStatus == 1) {
             vm.isEditInfo = true;
           }
-          if(vm.regInfo.regStatus == 0 && vm.planInfo.publishStatus == 1){
+          if (vm.regInfo.regStatus == 0 && vm.planInfo.publishStatus == 1) {
             vm.saveBtn = true;
           }
 
@@ -1349,6 +1355,7 @@
 
   .table_list {
     width: 100%;
+    table-layout: fixed;
     thead {
       background: #f7f7f7;
       color: #999;
@@ -1357,6 +1364,14 @@
       height: 48px;
       border: 1px solid #ddd;
       text-align: center;
+    }
+  }
+
+  .table-overflow {
+    td, th {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
     }
   }
 
@@ -1584,8 +1599,8 @@
         color: #2f3861;
         padding: 2px 5px;
         line-height: 16px;
-        display: inline-block;
-        margin-bottom: 5px;
+        display: block;
+        margin-bottom: 12px;
       }
     }
     .parent_address {
@@ -1814,6 +1829,17 @@
     }
 
   }
+</style>
+<style lang="less">
+  .table_list {
+    .el-select > .el-input {
+      width: 90%;
+    }
+    .el-date-editor.el-input{
+      width: 100%;
+    }
+  }
+
 </style>
 
 

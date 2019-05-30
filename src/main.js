@@ -112,7 +112,6 @@ Vue.http.interceptors.push(function (request, next) {
 });
 /* vue-resource 统一请求处理
  *-------------------------------------------------------------------------------end*/
-console.log('111111111',router)
 
 /* 初始化路由 并挂载到vue
  *-------------------------------------------------------------------------------*/
@@ -163,7 +162,12 @@ window.logout = function () {
       // 设置导航栏状态
       store.commit('setMenu', 'home');
       localStorage.setItem('active', 'home');
-      router.push('/')
+      console.log(router.history.current)
+      if(router.history.current.query.enroll){
+        router.push({path:'/checking',query: {enroll: true}})
+      }else{
+        router.push('/')
+      }
     })
   } else {
     // 清空用户信息
@@ -173,7 +177,12 @@ window.logout = function () {
     // 设置导航栏状态
     store.commit('setMenu', 'home');
     localStorage.setItem('active', 'home');
-    router.push('/')
+    console.log(router.history.current)
+   if(router.history.current.query.enroll){
+     router.push({path:'/checking',query: {enroll: true}})
+   }else{
+     router.push('/')
+   }
   }
 }
 // 判断是否为手机浏览器

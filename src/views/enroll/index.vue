@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white" v-loading="checking">
     <div class="login">
-      <!--<div class="msg">提示：验证码为证件号后六位。</div>-->
+      <div class="msg">提示：验证码为学生身份证号后六位。</div>
       <div class="user-error" v-if="userError">{{userError}}</div>
       <div class="pwd-error" v-if="pwdError">{{pwdError}}</div>
       <div class="login-item m-b-16">
@@ -10,7 +10,7 @@
       </div>
       <div class="login-item">
         <i class="iconfont">&#xe609;</i>
-        <input v-model="loginForm.password" placeholder="请输入密码(用于核实填写人身份)"/>
+        <input v-model="loginForm.password" placeholder="请输入验证码(用于核实填写人身份)"/>
       </div>
       <div class="login-btn" @click="login">
         <a>验证</a>
