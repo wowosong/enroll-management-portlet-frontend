@@ -754,7 +754,7 @@
         vm.getEnum();
         vm.getAddList();
         vm.getGradeList();
-        http.get("/gateway/enroll/api/erRegister/byPhone", {params: {phoneNum: vm.$store.state.userInfo.idCard}}).then((xhr) => {
+        http.get("/gateway/enroll/api/erRegister/byPhone", {params: {phoneNum: window.userInfo.idCard}}).then((xhr) => {
           if (xhr.data.code) {
             return;
           }
