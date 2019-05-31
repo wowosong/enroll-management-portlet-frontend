@@ -264,8 +264,8 @@
                                                @click="addrewardsFlagFn">添加</span>
                 </p>
                 <div v-for="(i,index) in rewardsLength" :key="index" class="phone_parents_item">
-                  <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}<span class="edit_btn"
-                                                                                @click="editRewardFn(index,regInfo.rewards[i-1])"></span>
+                  <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}
+                    <span class="edit_btn" v-if="isEditInfo" @click="editRewardFn(index,regInfo.rewards[i-1])"></span>
                   </div>
                   <div class="parent_about">
                     <span v-if="regInfo.rewards[i-1]['s_e']">{{regInfo.rewards[i-1]['s_e']}}</span>
@@ -280,8 +280,8 @@
                   <div class="img_thumbnail" v-for="(file,fid) in fileList" :key="fid"
                        v-if="fileList && fileList.length>0">
                     <img @error="errorImg($event,'image')" :src="imgUrl+file.fileId">
-                    <i class="big_btn_l el-icon-close delete-icon" @click="fileList.splice(fid, 1)"></i>
-                    <!--<div class="big_btn_l" @click="showBigImg(file.fileId)"></div>-->
+                    <i v-if="isEditInfo" class="big_btn_l el-icon-close delete-icon" @click="fileList.splice(fid, 1)"></i>
+                    <div v-if="!isEditInfo" class="big_btn_l big_btn_bg" @click="showBigImg(file.fileId)"></div>
                   </div>
                   <div class="upload_item" v-if="!isPhone">
                     <div class="up_idcard" @click="uploadEnclosure">
@@ -1737,6 +1737,9 @@
         height: 70px;
         margin-bottom: 20px;
         margin-right: 3%;
+        .big_btn_bg{
+          background-position: 50px 40px;
+        }
       }
       .el-autocomplete, .el-cascader, .el-select {
         width: 100%;
