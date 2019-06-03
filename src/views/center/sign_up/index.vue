@@ -36,7 +36,9 @@
           <div class="basic_info clearfix">
             <el-form-item label="学生姓名:" required style="margin-bottom:5px">
               <template v-if="isEditInfo">
-                <el-input v-model="regInfo.stuName"></el-input>
+                <el-col :span="12">
+                  <el-input v-model="regInfo.stuName"></el-input>
+                </el-col>
               </template>
               <span class="phone-fill" v-else>{{regInfo.stuName}}</span>
             </el-form-item>
@@ -45,11 +47,13 @@
             </el-form-item>
             <el-form-item label="出生日期:" required class="date-input" style="margin-bottom:5px">
               <template v-if="isEditInfo">
-                <el-date-picker
-                  type="date"
-                  placeholder="请填写"
-                  v-model="regInfo.stuBirthday"
-                  format="yyyy-MM-dd"></el-date-picker>
+                <el-col :span="12">
+                  <el-date-picker
+                    type="date"
+                    placeholder="请填写"
+                    v-model="regInfo.stuBirthday"
+                    format="yyyy-MM-dd"></el-date-picker>
+                </el-col>
               </template>
               <span class="phone-fill" v-else> {{regInfo.stuBirthday | dateFormatYmd}}</span>
             </el-form-item>
@@ -756,7 +760,7 @@
     mounted() {
       this.init();
       // 扫码信息补录 处理提交后刷新
-      if(this.$route.query.refresh){
+      if (this.$route.query.refresh) {
         this.enrollShow = true;
       }
     },
@@ -977,7 +981,7 @@
               // 招生系统扫码登记报名表判断
               if (vm.$route.query && vm.$route.query.enroll) {
                 vm.enrollShow = true;
-                vm.$router.push({path:'center',query:{enroll:true,refresh:true}})
+                vm.$router.push({path: 'center', query: {enroll: true, refresh: true}})
               }
             })
           }
@@ -1528,7 +1532,9 @@
       font-size: 14px;
     }
   }
-
+  .el-cascader,.el-date-editor.el-input,.el-select{
+    width: 100%;
+  }
   .reward-bottom {
     margin-top: 5px;
     display: flex;
