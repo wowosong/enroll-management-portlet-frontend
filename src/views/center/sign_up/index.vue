@@ -755,6 +755,10 @@
     },
     mounted() {
       this.init();
+      // 扫码信息补录 处理提交后刷新
+      if(this.$route.query.refresh){
+        this.enrollShow = true;
+      }
     },
     methods: {
       init() {
@@ -973,6 +977,7 @@
               // 招生系统扫码登记报名表判断
               if (vm.$route.query && vm.$route.query.enroll) {
                 vm.enrollShow = true;
+                vm.$router.push({path:'center',query:{enroll:true,refresh:true}})
               }
             })
           }
