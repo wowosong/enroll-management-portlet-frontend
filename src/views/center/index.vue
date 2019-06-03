@@ -88,7 +88,10 @@
         }
       },
       changeTitle(data) {
-        this.title = data
+        this.title = data;
+        if (this.isPhone) {
+          this.tabIndex = null;
+        }
       }
     },
     destroyed() {

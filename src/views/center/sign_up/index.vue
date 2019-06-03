@@ -1,564 +1,546 @@
 <template>
   <div class="basic_info" v-loading="saving">
     <template v-if="!enrollShow">
-      <template v-if="!addrewardsFlag && !addparentFlag && !rankFlag">
-        <div class="user_school">
-          <span class="school_item">报名校区：{{planInfo.campusName}}</span>
-          <span class="school_item">报名年级：{{planInfo.gradeName}}</span>
-          <span v-if="editBtn && !Boolean($route.query.enroll)" class="float_r edit_btn"
-                @click="idEdit = true">修改</span>
-          <!-- <span v-if="idEdit" class="import_hint float_r">提示：报名提交后不支持修改"必填项"，只支持修改"非必填项</span> -->
-        </div>
-        <div class="show_edit" v-if="idEdit">
-          <el-form :model="regInfo" :rules="rules" ref="ruleForm" :label-width="isPhone ? '112px' : '172px'">
-            <p class="basic_tit">基本信息</p>
-            <div class="user_img clearfix">
-              <template v-if="isPhone">
-                <div class="upload_btn">上传照片<span>:</span></div>
-                <div class="head-wrap">
-                  <el-upload
-                    class="avatar-uploader"
-                    :action="uploadUrl"
-                    :show-file-list="false"
-                    :multiple="true"
-                    :accept="'image/*'"
-                    :on-success="handleAvatarSuccess">
-                    <img v-if="!regInfo.photoId" src="@/imgs/warp/head.png"/>
-                    <img v-if="regInfo.photoId" :src="imgUrl+regInfo.photoId">
-                  </el-upload>
-                </div>
-              </template>
-              <template v-else>
-                <img :src="imgUrl+regInfo.photoId" @error="errorImg($event,'avatar')" @click="uploadPicture">
-                <div class="upload_btn" @click="uploadPicture">上传照片<span>:</span></div>
-              </template>
-              <p class="upload_hint">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
-            </div>
-            <div class="basic_info clearfix">
-              <el-form-item label="学生姓名:" required style="margin-bottom:5px">
-                {{regInfo.stuName}}
-              </el-form-item>
-              <el-form-item label="证件号:" required style="margin-bottom:5px">
-                {{regInfo.idCard}}
-              </el-form-item>
-              <el-form-item label="出生日期:" required style="margin-bottom:5px">
-                {{regInfo.stuBirthday | dateFormatYmd}}
-              </el-form-item>
-              <el-form-item label="性别:" required style="margin-bottom:5px">
-                {{genderMap[regInfo.stuGender]}}
-              </el-form-item>
-              <el-form-item label="户籍所在地:" prop="stuAdds" :required="isrequired">
-                <el-col :span="12">
-                  <template v-if="!isEditInfo">
-                    {{regInfo.localStr}}
-                  </template>
-                  <template v-else>
-                    <el-cascader
-                      filterable
-                      :options="addList"
-                      v-model="regInfo.stuAdds"/>
-                  </template>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="现就读学校:" prop="nowSchool">
-                <el-col :span="12">
-                  <template v-if="!isEditInfo">
-                    {{regInfo.nowSchool}}
-                  </template>
-                  <template v-else>
-                    <el-autocomplete style="width: 100%" v-model="regInfo.nowSchool" :fetch-suggestions="querySearch"
-                                     placeholder="请填写"/>
-                  </template>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="现就读年级:" prop="nowGrade">
-                <el-col :span="12">
-                  <template v-if="!isEditInfo">
-                    {{regInfo.nowGradeName}}
-                  </template>
-                  <template v-else>
-                    <el-select clearable v-model="regInfo.nowGrade">
-                      <el-option
-                        v-for="item in gradeList"
-                        :key="item.id"
-                        :label="item.gradeName"
-                        :value="item.id"/>
-                    </el-select>
-                  </template>
-                </el-col>
-              </el-form-item>
-            </div>
-            <template v-if="!isPhone">
-              <el-form-item label="考试成绩:" v-if="planInfo.phaseName  == '高中'">
-                <table class="table_list">
-                  <thead>
-                  <tr>
-                    <th>考试名称</th>
-                    <th>年级排名(名)</th>
-                    <th>年级人数(人)</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-if="ksmcArr.length" v-for="(i, idx) in regInfo.gradeRank" :key="i.s_v" class="input-no-border">
-                    <td>
-                      <span v-if="idx < 2" style="color: #f00;">*</span>
-                      <span>{{i.vName}}</span>
-                    </td>
-                    <td>
-                      <el-input
-                        type="number"
-                        :min="1"
-                        :step="1"
-                        placeholder="请填写"
-                        v-model="i['s_a']"/>
-                    </td>
-                    <td>
-                      <el-input
-                        type="number"
-                        :min="1"
-                        :step="1"
-                        placeholder="请填写"
-                        v-model="i['s_b']"/>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </el-form-item>
-              <el-form-item label="监护人:" prop="parentsV">
-                <table class="table_list">
-                  <thead>
-                  <tr>
-                    <th>姓名(关系)</th>
-                    <th>手机</th>
-                    <th>学历</th>
-                    <th>工作单位</th>
-                    <th>职务</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="i in 2" :key="i">
-                    <td>
-                      <template v-if="i == 1">{{regInfo.parents[i-1]['s_g']}}</template>
-                      <el-input placeholder="示例：张三（父子）" :maxlength="20" v-model="regInfo.parents[i-1]['s_g']" v-else/>
-                    </td>
-                    <td>
-                      <template v-if="i == 1">{{regInfo.parents[i-1]['s_h']}}</template>
-                      <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']" v-else/>
-                    </td>
-                    <td>
-                      <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
-                    </td>
-                    <td>
-                      <el-input :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
-                    </td>
-                    <td>
-                      <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </el-form-item>
-              <el-form-item label="获奖信息:" v-if="planInfo.phaseName  == '高中'">
-                <table class="table_list">
-                  <thead>
-                  <tr>
-                    <th width="140px">获奖时间</th>
-                    <th>获奖名称</th>
-                    <th>奖项等级</th>
-                    <th>奖项范围</th>
-                    <th>奖项类别</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="i in rewardRows" :key="i">
-                    <td>
-                      <el-date-picker
-                        placeholder="年/月/日"
-                        v-model="regInfo.rewards[i-1]['s_c']"
-                        type="date"/>
-                    </td>
-                    <td>
-                      <el-input
-                        placeholder="奖项名称（限20字）"
-                        :maxlength="20"
-                        v-model="regInfo.rewards[i-1]['s_d']"/>
-                    </td>
-                    <td>
-                      <el-input
-                        placeholder="奖项等级（限10字）"
-                        :maxlength="10"
-                        v-model="regInfo.rewards[i-1]['s_e']"/>
-                    </td>
-                    <td>
-                      <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
-                        <el-option
-                          v-for="item in enumMap['s_t']"
-                          :key="item.seiValue"
-                          :label="item.seiName"
-                          :value="item.seiValue"/>
-                      </el-select>
-                    <td>
-                      <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
-                        <el-option
-                          v-for="item in enumMap['s_u']"
-                          :key="item.seiValue"
-                          :label="item.seiName"
-                          :value="item.seiValue"/>
-                      </el-select>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-                <div class="reward-bottom">
-                  <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖 省级 艺术奖</div>
-                  <div class="sign-btn reward-btn">
-                    <span class="save" @click="addRewardRows">添加一行</span>
-                    <span class="cancel" @click="delRewardRows">删除一行</span>
-                  </div>
-                </div>
-              </el-form-item>
-            </template>
+      <div class="user_school">
+        <span class="school_item">报名校区：{{planInfo.campusName}}</span>
+        <span class="school_item">报名年级：{{planInfo.gradeName}}</span>
+        <span v-if="editBtn && !Boolean($route.query.enroll)" class="float_r edit_btn"
+              @click="idEdit = true">修改</span>
+        <!-- <span v-if="idEdit" class="import_hint float_r">提示：报名提交后不支持修改"必填项"，只支持修改"非必填项</span> -->
+      </div>
+      <div class="show_edit" v-if="idEdit">
+        <el-form :model="regInfo" :rules="rules" ref="ruleForm" :label-width="isPhone ? '112px' : '172px'">
+          <p class="basic_tit">基本信息</p>
+          <div class="user_img clearfix">
             <template v-if="isPhone">
-              <div class="parents_info" v-if="planInfo.phaseName  == '高中'">
-                <p class="basic_tit">考试成绩</p>
-                <div v-for="(i,idx) in regInfo.gradeRank" :key="idx" class="phone_parents_item">
-                  <div class="parent_name">
-                    考试名称：{{i.vName}}
-                  </div>
-                  <div class="parent_about">
-                    <el-form-item label="年级排名(名)" :required="idx < 2">
-                      <template v-if="!isEditInfo">{{i['s_a']}}</template>
-                      <template v-else>
-                        <el-input :min="0" :maxlength="6" v-model="i['s_a']" placeholder="请输入"></el-input>
-                      </template>
-                    </el-form-item>
-                    <el-form-item label="年级人数(人)" :required="idx < 2">
-                      <template v-if="!isEditInfo">{{i['s_b']}}</template>
-                      <template v-else>
-                        <el-input :min="0" :maxlength="6" v-model="i['s_b']" placeholder="请输入"></el-input>
-                      </template>
-                    </el-form-item>
-                  </div>
-                </div>
-              </div>
-              <div class="parents_info">
-                <p class="basic_tit">监护人信息<span v-if="parentsLength < 2 && isEditInfo"
-                                                @click="addparentFlagFn">添加</span>
-                </p>
-                <div v-for="(i,index) in parentsLength" :key="index" class="phone_parents_item">
-                  <div class="parent_name">
-                    姓名(关系):{{regInfo.parents[i-1]['s_g']}}
-                    <span v-if="index > 0 && isEditInfo" class="edit_btn"
-                          @click="editParentFn(index,regInfo.parents[i-1])"></span>
-                  </div>
-                  <div class="parent_about">
-                    <span v-if="regInfo.parents[i-1]['s_h']">手机:{{regInfo.parents[i-1]['s_h']}}</span>
-                    <span v-if="regInfo.parents[i-1]['s_i']">学历:{{regInfo.parents[i-1]['s_i']}}</span>
-                    <span v-if="regInfo.parents[i-1]['s_j']">工作单位:{{regInfo.parents[i-1]['s_j']}}</span>
-                  </div>
-                  <div class="parent_address">职务:{{regInfo.parents[i-1]['s_k']}}</div>
-                </div>
-              </div>
-              <div class="reward_info" v-if="planInfo.phaseName  == '高中'">
-                <p class="basic_tit">获奖信息<span v-if="rewardsLength < 3 && isEditInfo"
-                                               @click="addrewardsFlagFn">添加</span>
-                </p>
-                <div v-for="(i,index) in rewardsLength" :key="index" class="phone_parents_item">
-                  <div class="parent_name">{{regInfo.rewards[i-1]['s_d']}}
-                    <span class="edit_btn" v-if="isEditInfo" @click="editRewardFn(index,regInfo.rewards[i-1])"></span>
-                  </div>
-                  <div class="parent_about">
-                    <span v-if="regInfo.rewards[i-1]['s_e']">{{regInfo.rewards[i-1]['s_e']}}</span>
-                    <span v-if="regInfo.rewards[i-1]['s_c']">{{regInfo.rewards[i-1]['s_c']}}</span>
-                  </div>
-                </div>
+              <div class="upload_btn">上传照片<span>:</span></div>
+              <div class="head-wrap">
+                <el-upload
+                  class="avatar-uploader"
+                  :action="uploadUrl"
+                  :show-file-list="false"
+                  :multiple="true"
+                  :accept="'image/*'"
+                  :on-success="handleAvatarSuccess">
+                  <img v-if="!regInfo.photoId" src="@/imgs/warp/head.png"/>
+                  <img v-if="regInfo.photoId" :src="imgUrl+regInfo.photoId">
+                </el-upload>
               </div>
             </template>
-            <template v-if="planInfo.phaseName  == '高中'">
-              <el-form-item label="获奖附件:">
-                <div class="img_box">
-                  <div class="img_thumbnail" v-for="(file,fid) in fileList" :key="fid"
-                       v-if="fileList && fileList.length>0">
-                    <img @error="errorImg($event,'image')" :src="imgUrl+file.fileId">
-                    <i v-if="isEditInfo" class="big_btn_l el-icon-close delete-icon" @click="fileList.splice(fid, 1)"></i>
-                    <div v-if="!isEditInfo" class="big_btn_l big_btn_bg" @click="showBigImg(file.fileId)"></div>
-                  </div>
-                  <div class="upload_item" v-if="!isPhone">
-                    <div class="up_idcard" @click="uploadEnclosure">
-                      <template><img src="@/imgs/upload.png">上传证件</template>
-                    </div>
-                    <div class="hint prove">请上传证书扫描件：格式为jpg、png等图片形式</div>
-                  </div>
-
-                  <el-upload
-                    class="phone_upload_img"
-                    v-if="isPhone"
-                    :action="uploadUrl"
-                    :multiple="true"
-                    :show-file-list="false"
-                    :file-list="fileList"
-                    :accept="'image/*'"
-                    :on-success="phoneEnclosure">
-                    <div class="file-list">
-                  <span>
-                      <img src="@/imgs/warp/default.png" class="org-img">
-                  </span>
-                    </div>
-                  </el-upload>
-                </div>
-              </el-form-item>
+            <template v-else>
+              <img :src="imgUrl+regInfo.photoId" @error="errorImg($event,'avatar')" @click="uploadPicture">
+              <div class="upload_btn" @click="uploadPicture">上传照片<span>:</span></div>
             </template>
-            <div :style="isPhone?'padding: 0 16px':''">
-              <el-form-item prop="eduConcept" v-if="planInfo.phaseName  != '高中'" label="家庭教育理念:">
+            <p class="upload_hint">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</p>
+          </div>
+          <div class="basic_info clearfix">
+            <el-form-item label="学生姓名:" required style="margin-bottom:5px">
+              {{regInfo.stuName}}
+            </el-form-item>
+            <el-form-item label="证件号:" required style="margin-bottom:5px">
+              {{regInfo.idCard}}
+            </el-form-item>
+            <el-form-item label="出生日期:" required style="margin-bottom:5px">
+              {{regInfo.stuBirthday | dateFormatYmd}}
+            </el-form-item>
+            <el-form-item label="性别:" required style="margin-bottom:5px">
+              {{genderMap[regInfo.stuGender]}}
+            </el-form-item>
+            <el-form-item label="户籍所在地:" prop="stuAdds" :required="isrequired">
+              <el-col :span="12">
                 <template v-if="!isEditInfo">
-                  {{regInfo.eduConcept}}
+                  {{regInfo.localStr}}
                 </template>
                 <template v-else>
-                  <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="regInfo.eduConcept"></el-input>
+                  <el-cascader
+                    filterable
+                    :options="addList"
+                    v-model="regInfo.stuAdds"/>
                 </template>
-              </el-form-item>
-            </div>
-          </el-form>
-          <div class="sign-btn" v-if="saveBtn">
-            <span class="save" @click="saveInfo">保存</span>
-            <span class="cancel" @click="cancel">取消</span>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="现就读学校:" prop="nowSchool">
+              <el-col :span="12">
+                <template v-if="!isEditInfo">
+                  {{regInfo.nowSchool}}
+                </template>
+                <template v-else>
+                  <el-autocomplete style="width: 100%" v-model="regInfo.nowSchool" :fetch-suggestions="querySearch"
+                                   placeholder="请填写"/>
+                </template>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="现就读年级:" prop="nowGrade">
+              <el-col :span="12">
+                <template v-if="!isEditInfo">
+                  {{regInfo.nowGradeName}}
+                </template>
+                <template v-else>
+                  <el-select clearable v-model="regInfo.nowGrade">
+                    <el-option
+                      v-for="item in gradeList"
+                      :key="item.id"
+                      :label="item.gradeName"
+                      :value="item.id"/>
+                  </el-select>
+                </template>
+              </el-col>
+            </el-form-item>
           </div>
+          <template v-if="!isPhone">
+            <el-form-item label="考试成绩:" v-if="planInfo.phaseName  == '高中'">
+              <table class="table_list">
+                <thead>
+                <tr>
+                  <th>考试名称</th>
+                  <th>年级排名(名)</th>
+                  <th>年级人数(人)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-if="ksmcArr.length" v-for="(i, idx) in regInfo.gradeRank" :key="i.s_v" class="input-no-border">
+                  <td>
+                    <span v-if="idx < 2" style="color: #f00;">*</span>
+                    <span>{{i.vName}}</span>
+                  </td>
+                  <td>
+                    <el-input
+                      type="number"
+                      :min="1"
+                      :step="1"
+                      placeholder="请填写"
+                      v-model="i['s_a']"/>
+                  </td>
+                  <td>
+                    <el-input
+                      type="number"
+                      :min="1"
+                      :step="1"
+                      placeholder="请填写"
+                      v-model="i['s_b']"/>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </el-form-item>
+            <el-form-item label="监护人:" prop="parentsV">
+              <table class="table_list">
+                <thead>
+                <tr>
+                  <th>姓名(关系)</th>
+                  <th>手机</th>
+                  <th>学历</th>
+                  <th>工作单位</th>
+                  <th>职务</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in 2" :key="i">
+                  <td>
+                    <template v-if="i == 1">{{regInfo.parents[i-1]['s_g']}}</template>
+                    <el-input placeholder="示例：张三（父子）" :maxlength="20" v-model="regInfo.parents[i-1]['s_g']" v-else/>
+                  </td>
+                  <td>
+                    <template v-if="i == 1">{{regInfo.parents[i-1]['s_h']}}</template>
+                    <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']" v-else/>
+                  </td>
+                  <td>
+                    <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
+                  </td>
+                  <td>
+                    <el-input :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
+                  </td>
+                  <td>
+                    <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </el-form-item>
+            <el-form-item label="获奖信息:" v-if="planInfo.phaseName  == '高中'">
+              <table class="table_list">
+                <thead>
+                <tr>
+                  <th width="140px">获奖时间</th>
+                  <th>获奖名称</th>
+                  <th>奖项等级</th>
+                  <th>奖项范围</th>
+                  <th>奖项类别</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in rewardRows" :key="i">
+                  <td>
+                    <el-date-picker
+                      placeholder="年/月/日"
+                      v-model="regInfo.rewards[i-1]['s_c']"
+                      type="date"/>
+                  </td>
+                  <td>
+                    <el-input
+                      placeholder="奖项名称（限20字）"
+                      :maxlength="20"
+                      v-model="regInfo.rewards[i-1]['s_d']"/>
+                  </td>
+                  <td>
+                    <el-input
+                      placeholder="奖项等级（限10字）"
+                      :maxlength="10"
+                      v-model="regInfo.rewards[i-1]['s_e']"/>
+                  </td>
+                  <td>
+                    <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
+                      <el-option
+                        v-for="item in enumMap['s_t']"
+                        :key="item.seiValue"
+                        :label="item.seiName"
+                        :value="item.seiValue"/>
+                    </el-select>
+                  <td>
+                    <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
+                      <el-option
+                        v-for="item in enumMap['s_u']"
+                        :key="item.seiValue"
+                        :label="item.seiName"
+                        :value="item.seiValue"/>
+                    </el-select>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <div class="reward-bottom">
+                <div class="table-item-tag">填写示例：2018年3月1日 四川省级科创比赛 一等奖 省级 艺术奖</div>
+                <div class="sign-btn reward-btn">
+                  <span class="save" @click="addRewardRows">添加一行</span>
+                  <span class="cancel" @click="delRewardRows">删除一行</span>
+                </div>
+              </div>
+            </el-form-item>
+          </template>
+          <template v-if="isPhone">
+            <div class="parents_info" v-if="planInfo.phaseName  == '高中'">
+              <p class="basic_tit">考试成绩</p>
+              <div v-for="(i,idx) in regInfo.gradeRank" :key="idx" class="phone_parents_item">
+                <div class="parent_name">
+                  考试名称：{{i.vName}}
+                </div>
+                <div class="parent_about">
+                  <el-form-item label="年级排名(名)" :required="idx < 2">
+                    <template v-if="!isEditInfo">{{i['s_a']}}</template>
+                    <template v-else>
+                      <el-input type="number" :min="0" :maxlength="6" v-model.number="i['s_a']" placeholder="请输入"></el-input>
+                    </template>
+                  </el-form-item>
+                  <el-form-item label="年级人数(人)" :required="idx < 2">
+                    <template v-if="!isEditInfo">{{i['s_b']}}</template>
+                    <template v-else>
+                      <el-input type="number" :min="0" :maxlength="6" v-model.number="i['s_b']" placeholder="请输入"></el-input>
+                    </template>
+                  </el-form-item>
+                </div>
+              </div>
+            </div>
+            <div class="parents_info">
+              <p class="basic_tit">监护人信息</p>
+              <template v-for="i in 2">
+                <p class="parent-hint">监护人{{i}}</p>
+                <el-form-item label="姓名(关系):" :required="$route.query.enroll?true:i==1? true:false">
+                  <template v-if="i==1 && !$route.query.enroll">
+                    {{regInfo.parents[i-1]['s_g']}}
+                  </template>
+                  <template v-else>
+                    <el-input :maxlength="20" placeholder="示例：张三（父子）" v-model="regInfo.parents[i-1]['s_g']"/>
+                  </template>
+                </el-form-item>
+                <el-form-item label="手机:" :required="$route.query.enroll?true:i==1? true:false">
+                  <template v-if="i==1 && !$route.query.enroll">
+                    {{regInfo.parents[i-1]['s_h']}}
+                  </template>
+                  <template v-else>
+                    <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
+                  </template>
+                </el-form-item>
+                <el-form-item label="学历:" :required="$route.query.enroll?true:i==1? true:false">
+                  <template v-if="i==1 && !$route.query.enroll">
+                    {{regInfo.parents[i-1]['s_i']}}
+                  </template>
+                  <template v-else>
+                    <el-input :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
+                  </template>
+                </el-form-item>
+                <el-form-item label="工作单位:" :required="$route.query.enroll?true:i==1? true:false">
+                  <template v-if="i==1 && !$route.query.enroll">
+                    {{regInfo.parents[i-1]['s_j']}}
+                  </template>
+                  <template v-else>
+                    <el-input :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
+                  </template>
+                </el-form-item>
+                <el-form-item label="职务:">
+                  <template v-if="i==1 && !$route.query.enroll">
+                    {{regInfo.parents[i-1]['s_k']}}
+                  </template>
+                  <template v-else>
+                    <el-input :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
+                  </template>
+                </el-form-item>
+                <div class="line-1" v-if="i==1"></div>
+              </template>
+            </div>
+            <div class="reward_info" v-if="planInfo.phaseName  == '高中'">
+              <p class="basic_tit">获奖信息</p>
+              <template v-for="i in rewardRows">
+                <el-form-item label="获奖时间:">
+                  <el-date-picker placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
+                </el-form-item>
+                <el-form-item label="奖项名称:">
+                  <el-input placeholder="（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
+                </el-form-item>
+                <el-form-item label="奖项等级:">
+                  <el-input placeholder="（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
+                </el-form-item>
+                <el-form-item label="奖项范围:">
+                  <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in enumMap['s_t']"
+                      :key="item.seiValue"
+                      :label="item.seiName"
+                      :value="item.seiValue"/>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="奖项类别:">
+                  <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in enumMap['s_u']"
+                      :key="item.seiValue"
+                      :label="item.seiName"
+                      :value="item.seiValue"/>
+                  </el-select>
+                </el-form-item>
+                <div class="line-1" v-if="i != rewardRows"></div>
+                <template v-if="i == rewardRows">
+                  <div class="is_phone_reward">
+                    <span @click="addRewardRows">添加获奖</span>
+                    <span @click="delRewardRows">删除获奖</span>
+                  </div>
+                  <div class="line-1"></div>
+                </template>
+              </template>
+            </div>
+          </template>
+          <template v-if="planInfo.phaseName  == '高中'">
+            <el-form-item label="获奖附件:">
+              <div class="img_box">
+                <div class="img_thumbnail" v-for="(file,fid) in fileList" :key="fid"
+                     v-if="fileList && fileList.length>0">
+                  <img @error="errorImg($event,'image')" :src="imgUrl+file.fileId">
+                  <i v-if="isEditInfo" class="big_btn_l el-icon-close delete-icon"
+                     @click="fileList.splice(fid, 1)"></i>
+                  <div v-if="!isEditInfo" class="big_btn_l big_btn_bg" @click="showBigImg(file.fileId)"></div>
+                </div>
+                <div class="upload_item" v-if="!isPhone">
+                  <div class="up_idcard" @click="uploadEnclosure">
+                    <template><img src="@/imgs/upload.png">上传证件</template>
+                  </div>
+                  <div class="hint prove">请上传证书扫描件：格式为jpg、png等图片形式</div>
+                </div>
+
+                <el-upload
+                  class="phone_upload_img"
+                  v-if="isPhone"
+                  :action="uploadUrl"
+                  :multiple="true"
+                  :show-file-list="false"
+                  :file-list="fileList"
+                  :accept="'image/*'"
+                  :on-success="phoneEnclosure">
+                  <div class="file-list">
+                    <span>
+                        <img src="@/imgs/warp/default.png" class="org-img">
+                    </span>
+                  </div>
+                </el-upload>
+              </div>
+            </el-form-item>
+            <p class="phone-hint" v-if="isPhone">请上传证书扫描件：格式为jpg、png等图片形式</p>
+          </template>
+          <div :style="isPhone?'padding: 0 16px':''">
+            <el-form-item prop="eduConcept" v-if="planInfo.phaseName  != '高中'" label="家庭教育理念:">
+              <template v-if="!isEditInfo">
+                {{regInfo.eduConcept}}
+              </template>
+              <template v-else>
+                <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="regInfo.eduConcept"></el-input>
+              </template>
+            </el-form-item>
+          </div>
+        </el-form>
+        <div class="sign-btn" v-if="saveBtn">
+          <span class="save" @click="saveInfo">保存</span>
+          <span class="cancel" @click="cancel">取消</span>
         </div>
-        <div class="show_info" v-if="!idEdit">
-          <table>
-            <tbody>
-            <tr>
-              <td rowspan="4" width="30%">
-                <img :src="imgUrl+regInfo.photoId" class="user_img" @error="errorImg($event,'avatar')">
-              </td>
-              <td width="84px" align="right">学生姓名：</td>
-              <td width="150px">{{regInfo.stuName}}</td>
-              <td width="200px" align="right">证件号：</td>
-              <td>{{regInfo.idCard}}</td>
-            </tr>
-            <tr>
-              <td align="right">出生日期：</td>
-              <td>{{regInfo.stuBirthday | dateFormatYmd}}</td>
-              <td align="right">性别：</td>
-              <td>{{genderMap[regInfo.stuGender]}}</td>
-            </tr>
-            <tr>
-              <td align="right">户籍所在地：</td>
-              <td>
+      </div>
+      <div class="show_info" v-if="!idEdit">
+        <table>
+          <tbody>
+          <tr>
+            <td rowspan="4" width="30%">
+              <img :src="imgUrl+regInfo.photoId" class="user_img" @error="errorImg($event,'avatar')">
+            </td>
+            <td width="84px" align="right">学生姓名：</td>
+            <td width="150px">{{regInfo.stuName}}</td>
+            <td align="right">证件号：</td>
+            <td>{{regInfo.idCard}}</td>
+          </tr>
+          <tr>
+            <td align="right">出生日期：</td>
+            <td>{{regInfo.stuBirthday | dateFormatYmd}}</td>
+            <td align="right">性别：</td>
+            <td>{{genderMap[regInfo.stuGender]}}</td>
+          </tr>
+          <tr>
+            <td align="right">户籍所在地：</td>
+            <td>
               <span
                 style="width:150px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: inline-block"
                 :title="regInfo.localStr">{{regInfo.localStr}}</span>
-              </td>
-              <td align="right">现就读学校：</td>
-              <td>{{regInfo.nowSchool}}</td>
-            </tr>
-            <tr>
-              <td align="right">现就读年级：</td>
-              <td>{{regInfo.nowGradeName}}</td>
-            </tr>
-            </tbody>
-          </table>
-          <table v-if="planInfo.phaseName  == '高中'">
-            <tbody>
-            <tr>
-              <td width="110px" valign="top" align="right">考试成绩：</td>
-              <td>
-                <table class="table_list table-overflow">
-                  <thead>
-                  <tr>
-                    <th>考试名称</th>
-                    <th>年级排名(名)</th>
-                    <th>年级人数(人)</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-if="ksmcArr.length" v-for="i in regInfo.gradeRank" :key="i.s_v">
-                    <td :title="i.vName">
-                      <span>{{i.vName}}</span>
-                    </td>
-                    <td :title="i['s_a']">
-                      {{i['s_a']}}
-                    </td>
-                    <td :title="i['s_b']">
-                      {{i['s_b']}}
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <table>
-            <tbody>
-            <tr>
-              <td width="110px" valign="top" align="right">监护人：</td>
-              <td>
-                <table class="table_list table-overflow">
-                  <thead>
-                  <tr>
-                    <th width="100px">姓名(关系)</th>
-                    <th width="100px">手机</th>
-                    <th width="100px">学历</th>
-                    <th width="100px">工作单位</th>
-                    <th width="100px">职务</th>
-                  </tr>
-                  </thead>
-                  <tr v-for="i in 2" :key="i">
-                    <td :title="regInfo.parents[i-1]['s_g']">
-                      {{regInfo.parents[i-1]['s_g']}}
-                    </td>
-                    <td :title="regInfo.parents[i-1]['s_h']">
-                      {{regInfo.parents[i-1]['s_h']}}
-                    </td>
-                    <td :title="regInfo.parents[i-1]['s_i']">
-                      {{regInfo.parents[i-1]['s_i']}}
-                    </td>
-                    <td :title="regInfo.parents[i-1]['s_j']">
-                      {{regInfo.parents[i-1]['s_j']}}
-                    </td>
-                    <td :title="regInfo.parents[i-1]['s_k']">
-                      {{regInfo.parents[i-1]['s_k']}}
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <table>
-            <tbody>
-            <tr v-if="planInfo.phaseName  == '高中'">
-              <td width="110px" valign="top" align="right">
-                <div style="line-height:30px">获奖信息：</div>
-              </td>
-              <td>
-                <table class="table_list table-overflow">
-                  <thead>
-                  <tr>
-                    <th width="100px">获奖时间</th>
-                    <th width="100px">奖项名称</th>
-                    <th width="100px">奖项等级</th>
-                    <th width="100px">奖项范围</th>
-                    <th width="100px">奖项类别</th>
-                  </tr>
-                  </thead>
-                  <tr v-for="(item, idx) in regInfo.rewards" :key="idx">
-                    <template v-if="item['s_c'] && item['s_d'] && item['s_e']">
-                      <td :title="item['s_c'] | dateFormatYmdW">{{item['s_c'] | dateFormatYmdW}}</td>
-                      <td :title="item['s_d']">{{item['s_d']}}</td>
-                      <td :title="item['s_e']">{{item['s_e']}}</td>
-                      <td :title="item['s_t']">{{item['s_t']}}</td>
-                      <td :title="item['s_u']">{{item['s_u']}}</td>
-                    </template>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr v-if="planInfo.phaseName  == '高中'">
-              <td width="110px" valign="top" align="right">获奖附件：</td>
-              <td>
-                <div v-if="regInfo.rewardFile && regInfo.rewardFile.length > 0">
-                  <div class="img_thumbnail" v-for="(file,fid) in regInfo.rewardFile" :key="fid">
-                    <img
-                      v-if="file.fieldValue"
-                      :src="imgUrl+file.fieldValue"
-                      @error="errorImg($event,'image')">
-                    <div class="big_btn_l big_btn_bg" @click="showBigImg(file.fieldValue)"></div>
-                  </div>
+            </td>
+            <td align="right">现就读学校：</td>
+            <td>
+                <span
+                  style="width:200px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;display: inline-block"
+                  :title="regInfo.nowSchool">{{regInfo.nowSchool}}</span>
+            </td>
+          </tr>
+          <tr>
+            <td align="right">现就读年级：</td>
+            <td>{{regInfo.nowGradeName}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <table v-if="planInfo.phaseName  == '高中'">
+          <tbody>
+          <tr>
+            <td width="110px" valign="top" align="right">考试成绩：</td>
+            <td>
+              <table class="table_list table-overflow">
+                <thead>
+                <tr>
+                  <th>考试名称</th>
+                  <th>年级排名(名)</th>
+                  <th>年级人数(人)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-if="ksmcArr.length" v-for="i in regInfo.gradeRank" :key="i.s_v">
+                  <td :title="i.vName">
+                    <span>{{i.vName}}</span>
+                  </td>
+                  <td :title="i['s_a']">
+                    {{i['s_a']}}
+                  </td>
+                  <td :title="i['s_b']">
+                    {{i['s_b']}}
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <table>
+          <tbody>
+          <tr>
+            <td width="110px" valign="top" align="right">监护人：</td>
+            <td>
+              <table class="table_list table-overflow">
+                <thead>
+                <tr>
+                  <th width="100px">姓名(关系)</th>
+                  <th width="100px">手机</th>
+                  <th width="100px">学历</th>
+                  <th width="100px">工作单位</th>
+                  <th width="100px">职务</th>
+                </tr>
+                </thead>
+                <tr v-for="i in 2" :key="i">
+                  <td :title="regInfo.parents[i-1]['s_g']">
+                    {{regInfo.parents[i-1]['s_g']}}
+                  </td>
+                  <td :title="regInfo.parents[i-1]['s_h']">
+                    {{regInfo.parents[i-1]['s_h']}}
+                  </td>
+                  <td :title="regInfo.parents[i-1]['s_i']">
+                    {{regInfo.parents[i-1]['s_i']}}
+                  </td>
+                  <td :title="regInfo.parents[i-1]['s_j']">
+                    {{regInfo.parents[i-1]['s_j']}}
+                  </td>
+                  <td :title="regInfo.parents[i-1]['s_k']">
+                    {{regInfo.parents[i-1]['s_k']}}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <table>
+          <tbody>
+          <tr v-if="planInfo.phaseName  == '高中'">
+            <td width="110px" valign="top" align="right">
+              <div style="line-height:30px">获奖信息：</div>
+            </td>
+            <td>
+              <table class="table_list table-overflow">
+                <thead>
+                <tr>
+                  <th width="100px">获奖时间</th>
+                  <th width="100px">奖项名称</th>
+                  <th width="100px">奖项等级</th>
+                  <th width="100px">奖项范围</th>
+                  <th width="100px">奖项类别</th>
+                </tr>
+                </thead>
+                <tr v-for="(item, idx) in regInfo.rewards" :key="idx">
+                  <template v-if="item['s_c'] && item['s_d'] && item['s_e']">
+                    <td :title="item['s_c'] | dateFormatYmdW">{{item['s_c'] | dateFormatYmdW}}</td>
+                    <td :title="item['s_d']">{{item['s_d']}}</td>
+                    <td :title="item['s_e']">{{item['s_e']}}</td>
+                    <td :title="item['s_t']">{{item['s_t']}}</td>
+                    <td :title="item['s_u']">{{item['s_u']}}</td>
+                  </template>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr v-if="planInfo.phaseName  == '高中'">
+            <td width="110px" valign="top" align="right">获奖附件：</td>
+            <td>
+              <div v-if="regInfo.rewardFile && regInfo.rewardFile.length > 0">
+                <div class="img_thumbnail" v-for="(file,fid) in regInfo.rewardFile" :key="fid">
+                  <img
+                    v-if="file.fieldValue"
+                    :src="imgUrl+file.fieldValue"
+                    @error="errorImg($event,'image')">
+                  <div class="big_btn_l big_btn_bg" @click="showBigImg(file.fieldValue)"></div>
                 </div>
-              </td>
-            </tr>
-            <tr v-if="planInfo.phaseName != '高中'">
-              <td width="110px" valign="top" align="right">家庭教育理念：</td>
-              <td>{{regInfo.eduConcept}}</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="big_img" v-if="isShowBigImg">
-          <div class="img_main">
-            <span class="close_btn" @click="isShowBigImg = false"></span>
-            <img :src="imgUrl+bigimgId">
-          </div>
-        </div>
-      </template>
-      <div class="addparentFlag" v-if="addparentFlag">
-        <el-form ref="form_parent" :model="formParent" label-width="100px">
-          <el-form-item label="姓名(关系)">
-            <el-input v-model="formParent.s_g" placeholder="示例：张三（父子）"></el-input>
-          </el-form-item>
-          <el-form-item label="手机号">
-            <el-input v-model="formParent.s_h" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="学历">
-            <el-input v-model="formParent.s_i" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="职务">
-            <el-input v-model="formParent.s_j" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="工作单位">
-            <el-input v-model="formParent.s_k" placeholder="请输入"></el-input>
-          </el-form-item>
-          <div class="sign-btn">
-            <span class="save" @click="saveParent">保存</span>
-          </div>
-        </el-form>
+              </div>
+            </td>
+          </tr>
+          <tr v-if="planInfo.phaseName != '高中'">
+            <td width="110px" valign="top" align="right">家庭教育理念：</td>
+            <td>{{regInfo.eduConcept}}</td>
+          </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="addrewardsFlag" v-if="rankFlag">
-        <el-form :model="formRank" label-width="120px">
-          <el-form-item label="考试名称">
-            {{formRank.vName}}
-          </el-form-item>
-          <el-form-item label="年级排名(名)">
-            <el-input :min="0" :maxlength="6" v-model="formRank.s_a" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="年级人数(人)">
-            <el-input :min="0" :maxlength="6" v-model="formRank.s_b" placeholder="请输入"></el-input>
-          </el-form-item>
-          <div class="sign-btn">
-            <span class="save" @click="saveRank">保存</span>
-          </div>
-        </el-form>
-      </div>
-      <div class="addrewardsFlag" v-if="addrewardsFlag">
-        <el-form ref="form_rewards" :model="formRewards" label-width="72px">
-          <el-form-item label="获奖时间">
-            <el-date-picker
-              v-model="formRewards.s_c"
-              type="date"
-              placeholder="选择日期"
-              value-format="yyyy-MM-dd">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="奖项名称">
-            <el-input v-model="formRewards.s_d" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="奖项等级">
-            <el-input v-model="formRewards.s_e" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="奖项范围:">
-            <el-select v-model="formRewards.s_t" clearable placeholder="请选择">
-              <el-option
-                v-for="item in enumMap['s_t']"
-                :key="item.seiValue"
-                :label="item.seiName"
-                :value="item.seiValue"/>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="奖项类别:">
-            <el-select v-model="formRewards.s_u" clearable placeholder="请选择">
-              <el-option
-                v-for="item in enumMap['s_u']"
-                :key="item.seiValue"
-                :label="item.seiName"
-                :value="item.seiValue"/>
-            </el-select>
-          </el-form-item>
-          <div class="sign-btn">
-            <span class="save" @click="saveRewards">保存</span>
-          </div>
-        </el-form>
+      <div class="big_img" v-if="isShowBigImg">
+        <div class="img_main">
+          <span class="close_btn" @click="isShowBigImg = false"></span>
+          <img :src="imgUrl+bigimgId">
+        </div>
       </div>
     </template>
     <template v-else>
@@ -614,7 +596,6 @@
       return {
         rankIndex: "",
         formRank: "",
-        rankFlag: false,
         ksmcArr: [],
         // 绑数据
         planInfo: {},
@@ -634,11 +615,9 @@
         },
         planId: "",
         regId: "",
-        editFlag: false,
         addList: [],
         gradeList: [],
         fileList: [],
-        saveFlag: false,
         gradeMap: {},
         operation: "",
         otherEnum: "",
@@ -780,6 +759,8 @@
         vm.getReg();
         if (!vm.isPhone) {
           vm.idEdit = false;
+        } else {
+          vm.$emit("changeTitle", '个人中心');
         }
         if (vm.$route.query.enroll) {
           localStorage.clear();
@@ -815,6 +796,21 @@
       },
       saveInfo() {
         const vm = this;
+        // 监护人手机号1验证
+        for (let i = 0; i <= vm.regInfo.parents.length; i++) {
+          if (vm.$route.query.enroll) {
+            if (vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_g"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_h"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_i"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_j"]) {
+              vm.$message.warning("请完善监护人信息,提示'*'为必填项");
+              return false
+            }
+          }
+          let mobileRes = /^1[3456789]\d{9}$/;
+          if (vm.regInfo.parents[i] && vm.regInfo.parents[i]["s_h"] && !mobileRes.test(vm.regInfo.parents[i]["s_h"])) {
+            vm.$message.warning("监护人手机格式不正确");
+            return false;
+          }
+        }
+
         vm.$refs["ruleForm"].validate((valid) => {
           if (valid) {
             if (vm.planInfo.phaseName == '高中') {
@@ -1196,79 +1192,11 @@
         });
       },
       showBigImg(id) {
-        this.bigimgId = id
+        this.bigimgId = id;
         this.isShowBigImg = !this.isShowBigImg
       },
-      saveParent() {
-        let mobileRes = /^1[34578]\d{9}$/;
-        if (!mobileRes.test(this.formParent.s_h)) {
-          this.$message.error('手机格式错误');
-          return
-        }
-        this.regInfo.parents[this.addParentIndex] = _.cloneDeep(this.formParent)
-        if (this.isAddparentItem) {
-          this.parentsLength++
-        }
-        this.$emit("changeTitle", '报名信息')
-        this.addparentFlag = false
-      },
-      addparentFlagFn() {
-        for (let i in this.formParent) {
-          this.formParent[i] = ''
-        }
-        this.addParentIndex = this.parentsLength
-        this.isAddparentItem = true
-        this.$emit("changeTitle", '新增监护人')
-        this.addparentFlag = true
-      },
-      editParentFn(index, item) {
-        this.addParentIndex = index
-        this.formParent = item
-        this.isAddparentItem = false
-        this.$emit("changeTitle", '编辑监护人')
-        this.addparentFlag = true
-      },
-      editRankFn(index, item) {
-        this.rankFlag = true
-        this.rankIndex = index
-        this.formRank = item
-        this.$emit("changeTitle", '编辑考试成绩')
-      },
-      saveRank() {
-        if (Number(this.formRank.s_a) > Number(this.formRank.s_b)) {
-          this.$message.warning("排名不能大于年级人数");
-          return;
-        }
-        this.regInfo.gradeRank[this.rankIndex] = _.cloneDeep(this.formRank)
-        this.$emit("changeTitle", '报名信息')
-        this.rankFlag = false
-      },
-      saveRewards() {
-        this.regInfo.rewards[this.addRewardsIndex] = _.cloneDeep(this.formRewards)
-        if (this.isAddRewardItem) {
-          this.rewardsLength++
-        }
-        this.$emit("changeTitle", '报名信息')
-        this.addrewardsFlag = false
-      },
-      addrewardsFlagFn() {
-        for (let i in this.formRewards) {
-          this.formRewards[i] = ''
-        }
-        this.addRewardsIndex = this.rewardsLength
-        this.isAddRewardItem = true
-        this.$emit("changeTitle", '新增获奖信息')
-        this.addrewardsFlag = true
-      },
-      editRewardFn(index, item) {
-        this.addRewardsIndex = index
-        this.addrewardsFlag = true
-        this.isAddRewardItem = false
-        this.$emit("changeTitle", '编辑获奖信息')
-        this.formRewards = item
-      },
       goBackFn() {
-        this.addparentFlag = false
+        this.addparentFlag = false;
         this.addrewardsFlag = false
       }
     }
@@ -1737,7 +1665,7 @@
         height: 70px;
         margin-bottom: 20px;
         margin-right: 3%;
-        .big_btn_bg{
+        .big_btn_bg {
           background-position: 50px 40px;
         }
       }
@@ -1830,7 +1758,36 @@
         width: 100%;
       }
     }
-
+    .parents_info, .reward_info {
+      .el-input, .el-select {
+        width: 90%;
+      }
+    }
+    .line-1 {
+      border-bottom: 1px solid #e2e1e1;
+      margin-bottom: 24px;
+    }
+    .is_phone_reward {
+      text-align: right;
+      margin-bottom: 12px;
+      margin-right: 16px;
+      span {
+        color: #aa2f33;
+      }
+      span:last-child {
+        margin-left: 12px;
+      }
+    }
+    .phone-hint {
+      color: #aa2f33;
+      text-align: center;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    .parent-hint {
+      margin-left: 50px;
+      margin-bottom: 16px;
+    }
   }
 </style>
 <style lang="less">
@@ -1838,7 +1795,7 @@
     .el-select > .el-input {
       width: 90%;
     }
-    .el-date-editor.el-input{
+    .el-date-editor.el-input {
       width: 100%;
     }
   }
