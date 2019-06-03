@@ -59,7 +59,7 @@
       let checkIdCard = (rule, value, callback) => {
         let pattern = /^[a-zA-Z0-9]{6,18}$/;
         if (!pattern.test(this.formData.idCard)) {
-          return callback(new Error('身份证/护照号为数字和字母组合'));
+          return callback(new Error('身份证/护照号为6-18位数字和字母组合'));
         } else {
           callback();
         }

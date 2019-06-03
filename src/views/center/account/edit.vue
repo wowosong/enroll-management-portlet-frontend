@@ -113,7 +113,7 @@
         this.$refs.ruleForm.validateField('idCard');
         this.$refs.ruleForm.validateField('userName');
 
-        let pattern = /^\d{9,}?$/;
+        let pattern = /^[a-zA-Z0-9]{6,18}$/;
         if (this.formData.idCard == '' || this.formData.userName == '' || !pattern.test(this.formData.idCard)) {
           return this.isNextFalg = false
         } else {

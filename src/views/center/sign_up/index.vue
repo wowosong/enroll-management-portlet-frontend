@@ -35,7 +35,7 @@
           </div>
           <div class="basic_info clearfix">
             <el-form-item label="学生姓名:" required style="margin-bottom:5px">
-              <template v-if="$route.query.enroll">
+              <template v-if="isEditInfo">
                 <el-input v-model="regInfo.stuName"></el-input>
               </template>
               <span class="phone-fill" v-else>{{regInfo.stuName}}</span>
@@ -44,7 +44,7 @@
               <span class="phone-fill">{{regInfo.idCard}}</span>
             </el-form-item>
             <el-form-item label="出生日期:" required class="date-input" style="margin-bottom:5px">
-              <template v-if="$route.query.enroll">
+              <template v-if="isEditInfo">
                 <el-date-picker
                   type="date"
                   placeholder="请填写"
@@ -54,7 +54,7 @@
               <span class="phone-fill" v-else> {{regInfo.stuBirthday | dateFormatYmd}}</span>
             </el-form-item>
             <el-form-item label="性别:" required style="margin-bottom:5px">
-              <template v-if="$route.query.enroll">
+              <template v-if="isEditInfo">
                 <el-radio-group v-model="regInfo.stuGender" style="padding-left: 15px">
                   <el-radio v-for="(gender,index) in genderList" :key="index" :label="gender.seiValue">
                     {{gender.seiName}}
