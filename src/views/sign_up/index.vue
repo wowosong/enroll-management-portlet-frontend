@@ -1187,6 +1187,8 @@
           let data = _.cloneDeep(vm.regInfo);
           data.rewards[vm.rewardRows++] = obj;
           vm.regInfo = data;
+        } else {
+          vm.$message.warning('不能超过8条获奖信息');
         }
       },
 
@@ -1195,6 +1197,8 @@
         if (vm.rewardRows != 1) {
           let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
           vm.regInfo.rewards[vm.rewardRows--] = obj
+        } else {
+          vm.$message.warning('不能低于1条获奖信息');
         }
       },
       // 保存
