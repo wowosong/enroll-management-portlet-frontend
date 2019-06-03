@@ -261,8 +261,11 @@
       },
     },
     mounted() {
-      this.query();
-      this.viewScore();
+      if(this.$store.state.userInfo.id){
+        this.query();
+        this.viewScore();
+      }
+
     },
     components: {
       reserve,
