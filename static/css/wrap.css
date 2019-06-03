@@ -395,6 +395,12 @@ input {
   min-width: 100px !important;
   max-width: 100px;
 }
+input{
+  border:none !important;
+}
+.el-select{
+  width: 100% !important;
+}
 
 
 

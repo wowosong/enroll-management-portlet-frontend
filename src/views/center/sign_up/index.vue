@@ -35,22 +35,39 @@
           </div>
           <div class="basic_info clearfix">
             <el-form-item label="学生姓名:" required style="margin-bottom:5px">
-              {{regInfo.stuName}}
+              <template v-if="$route.query.enroll">
+                <el-input v-model="regInfo.stuName"></el-input>
+              </template>
+              <span class="phone-fill" v-else>{{regInfo.stuName}}</span>
             </el-form-item>
-            <el-form-item label="证件号:" required style="margin-bottom:5px">
-              {{regInfo.idCard}}
+            <el-form-item label="证件号:" required style="margin-bottom:5px;">
+              <span class="phone-fill">{{regInfo.idCard}}</span>
             </el-form-item>
-            <el-form-item label="出生日期:" required style="margin-bottom:5px">
-              {{regInfo.stuBirthday | dateFormatYmd}}
+            <el-form-item label="出生日期:" required class="date-input" style="margin-bottom:5px">
+              <template v-if="$route.query.enroll">
+                <el-date-picker
+                  type="date"
+                  placeholder="请填写"
+                  v-model="regInfo.stuBirthday"
+                  format="yyyy-MM-dd"></el-date-picker>
+              </template>
+              <span class="phone-fill" v-else> {{regInfo.stuBirthday | dateFormatYmd}}</span>
             </el-form-item>
             <el-form-item label="性别:" required style="margin-bottom:5px">
-              {{genderMap[regInfo.stuGender]}}
+              <template v-if="$route.query.enroll">
+                <el-radio-group v-model="regInfo.stuGender" style="padding-left: 15px">
+                  <el-radio v-for="(gender,index) in genderList" :key="index" :label="gender.seiValue">
+                    {{gender.seiName}}
+                  </el-radio>
+                </el-radio-group>
+              </template>
+              <span class="phone-fill" v-else>{{genderMap[regInfo.stuGender]}}</span>
             </el-form-item>
             <el-form-item label="户籍所在地:" prop="stuAdds" :required="isrequired">
               <el-col :span="12">
-                <template v-if="!isEditInfo">
+                <span class="phone-fill" v-if="!isEditInfo">
                   {{regInfo.localStr}}
-                </template>
+                </span>
                 <template v-else>
                   <el-cascader
                     filterable
@@ -61,9 +78,9 @@
             </el-form-item>
             <el-form-item label="现就读学校:" prop="nowSchool">
               <el-col :span="12">
-                <template v-if="!isEditInfo">
+               <span class="phone-fill" v-if="!isEditInfo">
                   {{regInfo.nowSchool}}
-                </template>
+               </span>
                 <template v-else>
                   <el-autocomplete style="width: 100%" v-model="regInfo.nowSchool" :fetch-suggestions="querySearch"
                                    placeholder="请填写"/>
@@ -72,9 +89,9 @@
             </el-form-item>
             <el-form-item label="现就读年级:" prop="nowGrade">
               <el-col :span="12">
-                <template v-if="!isEditInfo">
+             <span class="phone-fill" v-if="!isEditInfo">
                   {{regInfo.nowGradeName}}
-                </template>
+             </span>
                 <template v-else>
                   <el-select clearable v-model="regInfo.nowGrade">
                     <el-option
@@ -137,7 +154,7 @@
                 <tbody>
                 <tr v-for="i in 2" :key="i">
                   <td>
-                    <template v-if="i == 1">{{regInfo.parents[i-1]['s_g']}}</template>
+                    <template v-if="i == 1 && !isEditInfo">{{regInfo.parents[i-1]['s_g']}}</template>
                     <el-input placeholder="示例：张三（父子）" :maxlength="20" v-model="regInfo.parents[i-1]['s_g']" v-else/>
                   </td>
                   <td>
@@ -226,15 +243,17 @@
                 </div>
                 <div class="parent_about">
                   <el-form-item label="年级排名(名)" :required="idx < 2">
-                    <template v-if="!isEditInfo">{{i['s_a']}}</template>
+                    <p class="phone-fill" v-if="!isEditInfo">{{i['s_a']}}</p>
                     <template v-else>
-                      <el-input type="number" :min="0" :maxlength="6" v-model.number="i['s_a']" placeholder="请输入"></el-input>
+                      <el-input type="number" :min="0" :maxlength="6" v-model.number="i['s_a']"
+                                placeholder="请输入"></el-input>
                     </template>
                   </el-form-item>
                   <el-form-item label="年级人数(人)" :required="idx < 2">
-                    <template v-if="!isEditInfo">{{i['s_b']}}</template>
+                    <p class="phone-fill" v-if="!isEditInfo">{{i['s_b']}}</p>
                     <template v-else>
-                      <el-input type="number" :min="0" :maxlength="6" v-model.number="i['s_b']" placeholder="请输入"></el-input>
+                      <el-input type="number" :min="0" :maxlength="6" v-model.number="i['s_b']"
+                                placeholder="请输入"></el-input>
                     </template>
                   </el-form-item>
                 </div>
@@ -245,43 +264,48 @@
               <template v-for="i in 2">
                 <p class="parent-hint">监护人{{i}}</p>
                 <el-form-item label="姓名(关系):" :required="$route.query.enroll?true:i==1? true:false">
-                  <template v-if="i==1 && !$route.query.enroll">
+                  <p class="phone-fill" v-if="i==1 && !$route.query.enroll">
                     {{regInfo.parents[i-1]['s_g']}}
-                  </template>
+                  </p>
                   <template v-else>
-                    <el-input :maxlength="20" placeholder="示例：张三（父子）" v-model="regInfo.parents[i-1]['s_g']"/>
+                    <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_g']}}</span>
+                    <el-input v-else :maxlength="20" placeholder="示例：张三（父子）" v-model="regInfo.parents[i-1]['s_g']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="手机:" :required="$route.query.enroll?true:i==1? true:false">
-                  <template v-if="i==1 && !$route.query.enroll">
+                  <p class="phone-fill" v-if="i==1 && !$route.query.enroll">
                     {{regInfo.parents[i-1]['s_h']}}
-                  </template>
+                  </p>
                   <template v-else>
-                    <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
+                    <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_h']}}</span>
+                    <el-input v-else :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="学历:" :required="$route.query.enroll?true:i==1? true:false">
-                  <template v-if="i==1 && !$route.query.enroll">
+                  <p class="phone-fill" v-if="i==1 && !$route.query.enroll">
                     {{regInfo.parents[i-1]['s_i']}}
-                  </template>
+                  </p>
                   <template v-else>
-                    <el-input :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
+                    <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_i']}}</span>
+                    <el-input v-else :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="工作单位:" :required="$route.query.enroll?true:i==1? true:false">
-                  <template v-if="i==1 && !$route.query.enroll">
+                  <p class="phone-fill" v-if="i==1 && !$route.query.enroll">
                     {{regInfo.parents[i-1]['s_j']}}
-                  </template>
+                  </p>
                   <template v-else>
-                    <el-input :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
+                    <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_j']}}</span>
+                    <el-input v-else :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="职务:">
-                  <template v-if="i==1 && !$route.query.enroll">
+                  <p class="phone-fill" v-if="i==1 && !$route.query.enroll">
                     {{regInfo.parents[i-1]['s_k']}}
-                  </template>
+                  </p>
                   <template v-else>
-                    <el-input :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
+                    <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_k']}}</span>
+                    <el-input v-else :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
                   </template>
                 </el-form-item>
                 <div class="line-1" v-if="i==1"></div>
@@ -291,16 +315,20 @@
               <p class="basic_tit">获奖信息</p>
               <template v-for="i in rewardRows">
                 <el-form-item label="获奖时间:">
-                  <el-date-picker placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
+                  <span v-if="!isEditInfo">{{regInfo.rewards[i-1]['s_c']}}</span>
+                  <el-date-picker v-else placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
                 </el-form-item>
                 <el-form-item label="奖项名称:">
-                  <el-input placeholder="（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
+                  <span v-if="!isEditInfo">{{regInfo.rewards[i-1]['s_d']}}</span>
+                  <el-input v-else placeholder="（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
                 </el-form-item>
                 <el-form-item label="奖项等级:">
-                  <el-input placeholder="（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
+                  <span v-if="!isEditInfo">{{regInfo.rewards[i-1]['s_e']}}</span>
+                  <el-input v-else placeholder="（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
                 </el-form-item>
                 <el-form-item label="奖项范围:">
-                  <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
+                  <span v-if="!isEditInfo">{{regInfo.rewards[i-1]['s_t']}}</span>
+                  <el-select v-else v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
                     <el-option
                       v-for="item in enumMap['s_t']"
                       :key="item.seiValue"
@@ -309,7 +337,8 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item label="奖项类别:">
-                  <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
+                  <span v-if="!isEditInfo">{{regInfo.rewards[i-1]['s_u']}}</span>
+                  <el-select v-else v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
                     <el-option
                       v-for="item in enumMap['s_u']"
                       :key="item.seiValue"
@@ -318,7 +347,7 @@
                   </el-select>
                 </el-form-item>
                 <div class="line-1" v-if="i != rewardRows"></div>
-                <template v-if="i == rewardRows">
+                <template v-if="i == rewardRows && isEditInfo">
                   <div class="is_phone_reward">
                     <span @click="addRewardRows">添加获奖</span>
                     <span @click="delRewardRows">删除获奖</span>
@@ -347,7 +376,7 @@
 
                 <el-upload
                   class="phone_upload_img"
-                  v-if="isPhone"
+                  v-if="isPhone && isEditInfo"
                   :action="uploadUrl"
                   :multiple="true"
                   :show-file-list="false"
@@ -362,7 +391,7 @@
                 </el-upload>
               </div>
             </el-form-item>
-            <p class="phone-hint" v-if="isPhone">请上传证书扫描件：格式为jpg、png等图片形式</p>
+            <p class="phone-hint" v-if="isPhone && isEditInfo">请上传证书扫描件：格式为jpg、png等图片形式</p>
           </template>
           <div :style="isPhone?'padding: 0 16px':''">
             <el-form-item prop="eduConcept" v-if="planInfo.phaseName  != '高中'" label="家庭教育理念:">
@@ -796,23 +825,36 @@
       },
       saveInfo() {
         const vm = this;
-        // 监护人手机号1验证
-        for (let i = 0; i <= vm.regInfo.parents.length; i++) {
-          if (vm.$route.query.enroll) {
-            if (vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_g"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_h"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_i"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_j"]) {
-              vm.$message.warning("请完善监护人信息,提示'*'为必填项");
-              return false
-            }
-          }
-          let mobileRes = /^1[3456789]\d{9}$/;
-          if (vm.regInfo.parents[i] && vm.regInfo.parents[i]["s_h"] && !mobileRes.test(vm.regInfo.parents[i]["s_h"])) {
-            vm.$message.warning("监护人手机格式不正确");
-            return false;
-          }
-        }
-
         vm.$refs["ruleForm"].validate((valid) => {
           if (valid) {
+            if (vm.$route.query.enroll) {
+              if (!vm.regInfo.stuName) {
+                vm.$message.warning("请填写学生姓名");
+                return false
+              }
+              if (!vm.regInfo.stuBirthday) {
+                vm.$message.warning("请填写出生日期");
+                return false
+              }
+              if (!vm.regInfo.stuGender) {
+                vm.$message.warning("请填写性别");
+                return false
+              }
+            }
+            // 监护人手机号1验证
+            for (let i = 0; i <= vm.regInfo.parents.length; i++) {
+              if (vm.$route.query.enroll) {
+                if (vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_g"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_h"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_i"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_j"]) {
+                  vm.$message.warning("请完善监护人信息,提示'*'为必填项");
+                  return false
+                }
+              }
+              let mobileRes = /^1[3456789]\d{9}$/;
+              if (vm.regInfo.parents[i] && vm.regInfo.parents[i]["s_h"] && !mobileRes.test(vm.regInfo.parents[i]["s_h"])) {
+                vm.$message.warning("监护人手机格式不正确");
+                return false;
+              }
+            }
             if (vm.planInfo.phaseName == '高中') {
               for (let i = 0; i < vm.regInfo.gradeRank.length; i++) {
                 let regObj = vm.regInfo.gradeRank[i];
@@ -1763,6 +1805,11 @@
         width: 90%;
       }
     }
+    .date-input {
+      .el-date-editor.el-input {
+        width: 100%;
+      }
+    }
     .line-1 {
       border-bottom: 1px solid #e2e1e1;
       margin-bottom: 24px;
@@ -1787,6 +1834,10 @@
     .parent-hint {
       margin-left: 50px;
       margin-bottom: 16px;
+    }
+    .phone-fill {
+      font-size: 12px;
+      padding-left: 15px
     }
   }
 </style>
