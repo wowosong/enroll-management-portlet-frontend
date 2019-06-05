@@ -129,43 +129,6 @@
                   </template>
                 </el-form-item>
               </div>
-              <!--手机浏览器显示-->
-              <template v-if="isPhone && phaseName == '高中'">
-                <!--间隔线-->
-                <div class="line"></div>
-                <div class="guardian_info" id="regInfo_ranks">
-                  <p class="item-tit open-info">
-                    考试成绩
-                    <label class="error-info" style="font-size: 12px" v-if="rankMsg"><i
-                      class="el-icon-circle-close"></i>{{rankMsg}}</label>
-                    <span v-if="!rankOpen" @click="rankOpen = !rankOpen">展开<i
-                      class="el-icon-arrow-down"></i> </span>
-                    <span v-else @click="rankOpen = !rankOpen">收起 <i class="el-icon-arrow-up"></i> </span>
-                  </p>
-                  <template v-for="(i, idx) in regInfo.gradeRank" v-if="rankOpen && ksmcArr.length">
-                    <el-form-item label="考试名称:">
-                      <span>{{i.vName}}</span>
-                    </el-form-item>
-                    <el-form-item label="年级排名(名):" :required="idx < 2">
-                      <el-input
-                        type="number"
-                        :min="1"
-                        :step="1"
-                        placeholder="请填写"
-                        v-model="i['s_a']"/>
-                    </el-form-item>
-                    <el-form-item label="年级人数(人):" :required="idx < 2">
-                      <el-input
-                        type="number"
-                        :min="1"
-                        :step="1"
-                        placeholder="请填写"
-                        v-model="i['s_b']"/>
-                    </el-form-item>
-                    <div class="line-1" v-if="idx+1 < ksmcArr.length"></div>
-                  </template>
-                </div>
-              </template>
               <!--pc 显示-->
               <template v-if="!isPhone && phaseName == '高中'">
                 <div class="user-info-table" id="regInfo_ranks">
@@ -361,6 +324,43 @@
             </div>
             <!--手机浏览器 显示-->
             <template v-if="isPhone">
+              <!--手机浏览器显示-->
+              <template v-if="phaseName == '高中'">
+                <!--间隔线-->
+                <div class="line"></div>
+                <div class="guardian_info">
+                  <p class="item-tit open-info">
+                    考试成绩
+                    <label class="error-info" style="font-size: 12px" v-if="rankMsg"><i
+                      class="el-icon-circle-close"></i>{{rankMsg}}</label>
+                    <span v-if="!rankOpen" @click="rankOpen = !rankOpen">展开<i
+                      class="el-icon-arrow-down"></i> </span>
+                    <span v-else @click="rankOpen = !rankOpen">收起 <i class="el-icon-arrow-up"></i> </span>
+                  </p>
+                  <template v-for="(i, idx) in regInfo.gradeRank" v-if="rankOpen && ksmcArr.length">
+                    <el-form-item label="考试名称:">
+                      <span>{{i.vName}}</span>
+                    </el-form-item>
+                    <el-form-item label="年级排名(名):" :required="idx < 2">
+                      <el-input
+                        type="number"
+                        :min="1"
+                        :step="1"
+                        placeholder="请填写"
+                        v-model="i['s_a']"/>
+                    </el-form-item>
+                    <el-form-item label="年级人数(人):" :required="idx < 2">
+                      <el-input
+                        type="number"
+                        :min="1"
+                        :step="1"
+                        placeholder="请填写"
+                        v-model="i['s_b']"/>
+                    </el-form-item>
+                    <div class="line-1" v-if="idx+1 < ksmcArr.length"></div>
+                  </template>
+                </div>
+              </template>
               <!--间隔线-->
               <div class="line"></div>
               <!--监护人信息-->
