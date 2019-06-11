@@ -1,4 +1,4 @@
-node('nodejs-slave-123||nodejs-slave-148||nodejs-slave-149||nodejs-slave') {
+node('nodejs-slave-123-nodejs10||nodejs-slave-140-nodejs10') {
     def docker_push_repo_url = '192.168.99.123:10001'
     def docker_pull_repo_url = '192.168.99.123:10000'
     def docker_compose_path = '/root/docker/docker-compose/hbd'
