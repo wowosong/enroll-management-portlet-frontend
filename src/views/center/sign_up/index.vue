@@ -407,6 +407,13 @@
               </template>
             </el-form-item>
           </div>
+          <el-form-item v-if="isPhone && this.$route.query.enroll && planInfo.phaseName  != '高中'" label="是否选择了本校为第一志愿:" required>
+
+            <el-radio-group v-model="regInfo.isRadio">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="2">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
         </el-form>
         <div class="sign-btn" v-if="saveBtn">
           <span class="save" @click="saveInfo">保存</span>
@@ -634,6 +641,7 @@
         planInfo: {},
         rewardRows: 3,
         regInfo: {
+          isRadio:'0',
           otherData: {},
           parents: [
             {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""},
@@ -840,6 +848,10 @@
                 vm.$message.warning("请填写学生姓名");
                 return false
               }
+              if (!vm.regInfo.isRadio || vm.regInfo.isRadio == 0) {
+                vm.$message.warning("请选择本校是否为第一志愿");
+                return false
+              }
               if (!vm.regInfo.stuBirthday) {
                 vm.$message.warning("请填写出生日期");
                 return false
@@ -1016,6 +1028,7 @@
             }
           }
           vm.regInfo = data;
+          console.log("vm.regInfo",vm.regInfo);
           // 判断报名信息是否可修改
           if (vm.$store.state.isPhone) {
             vm.idEdit = true;
