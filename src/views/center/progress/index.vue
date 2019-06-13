@@ -374,11 +374,10 @@
         let vm = this;
         // vm.scoreDialogVisible = true;
         vm.tableQuery.filter.regId = vm.stempInfo.id;
-        console.log("vm.stempInfo",vm.stempInfo);
         let obj = $.extend({}, vm.tableQuery, {
           filter: eduFilterParam(vm.tableQuery.filter)
         });
-        http.get("/enroll/api/erEnter/page", {params: obj}).then(function (xhr) {
+        http.get("/gateway/enroll/api/erEnter/page", {params: obj}).then(function (xhr) {
           vm.tableData = xhr.data;
           if (vm.tableData.aaData && vm.tableData.aaData.length > 0) {
             vm.nowStuInfo = vm.tableData.aaData[0];
