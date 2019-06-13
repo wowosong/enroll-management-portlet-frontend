@@ -48,6 +48,7 @@
                 <!--<span class="btn" @click="viewScore()">查看成绩</span>-->
                 <div class="bottomBorder"
                      v-if="nowStuInfo && nowStuInfo.scores && nowStuInfo.scores.length">
+                  <span style="color: #00ff00">成绩</span>
                   <table class="my-table" v-if="!isPhone">
                     <thead>
                     <tr>
@@ -61,6 +62,25 @@
                       <td>{{nowStuInfo.stuName}}</td>
                       <td v-for="stuScore in nowStuInfo.scores"><span>{{stuScore.testScore}}</span>
                       </td>
+                    </tr>
+                  </table>
+                  <span style="color: #00ff00">缴费</span>
+                  <table class="my-table" v-if="!isPhone">
+                    <thead>
+                    <tr>
+                      <th>{{str}}卡编号</th>
+                      <th>姓名</th>
+                      <th>身份证号</th>
+                      <th>奖学金(元)</th>
+                      <th>应缴费(元)</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                      <td>{{nowStuInfo.signCardCode}}</td>
+                      <td>{{nowStuInfo.stuName}}</td>
+                      <td>{{nowStuInfo.idCard}}</td>
+                      <td>{{nowStuInfo.scholarship}}</td>
+                      <td>{{nowStuInfo.assessment}}</td>
                     </tr>
                   </table>
                   <div v-if="isPhone" class="phone_scores">
@@ -263,7 +283,6 @@
     mounted() {
       if(this.$store.state.userInfo.id){
         this.query();
-        this.viewScore();
       }
 
     },
@@ -303,6 +322,7 @@
             return;
           }
           vm.stempInfo = xhr.data;
+          this.viewScore();
           vm.getPlanInfo();
           vm.expireFlag = false
           if (vm.stempInfo.paymentDeadline) {
@@ -354,10 +374,11 @@
         let vm = this;
         // vm.scoreDialogVisible = true;
         vm.tableQuery.filter.regId = vm.stempInfo.id;
+        console.log("vm.stempInfo",vm.stempInfo);
         let obj = $.extend({}, vm.tableQuery, {
           filter: eduFilterParam(vm.tableQuery.filter)
         });
-        http.get("/gateway/enroll/api/erEnter/page", {params: obj}).then(function (xhr) {
+        http.get("/enroll/api/erEnter/page", {params: obj}).then(function (xhr) {
           vm.tableData = xhr.data;
           if (vm.tableData.aaData && vm.tableData.aaData.length > 0) {
             vm.nowStuInfo = vm.tableData.aaData[0];
