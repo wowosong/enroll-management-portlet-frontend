@@ -144,6 +144,23 @@
                 </div>
               </div>
             </div>
+            //未录取,并且显示成绩开关==1 显示成绩
+            <span style="color: #00ff00" v-if="nowStuInfo.isShowScore == 1">成绩</span>
+            <table class="my-table" v-if="!isPhone && nowStuInfo.isShowScore == 1">
+              <thead>
+              <tr>
+                <th>{{str}}卡编号</th>
+                <th>姓名</th>
+                <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
+              </tr>
+              </thead>
+              <tr>
+                <td>{{nowStuInfo.signCardCode}}</td>
+                <td>{{nowStuInfo.stuName}}</td>
+                <td v-for="stuScore in nowStuInfo.scores"><span>{{stuScore.testScore}}</span>
+                </td>
+              </tr>
+            </table>
           </template>
         </div>
         <!-- 缴费成功 -->
