@@ -118,7 +118,7 @@
           </div>
           <!-- 未录取 -->
           <template v-if="stempInfo.ifEnter == 0">
-            <div>您<span class="color1">未已被录取</span></div>
+            <div>您<span class="color1">未被录取</span></div>
             <div class="over_hint">人生的机会还有很多哦...</div>
             <!--<span class="btn" @click="viewScore()">查看成绩</span>-->
             <div v-if="nowStuInfo && nowStuInfo.scores && nowStuInfo.scores.length">
