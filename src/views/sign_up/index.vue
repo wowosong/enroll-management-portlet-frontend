@@ -884,6 +884,7 @@
           if (xhr.data.code) {
             //处理数据
             vm.clData();
+            vm.$message.warning(xhr.data.message);
             return;
           }
           vm.regId = xhr.data.data;
@@ -1147,13 +1148,13 @@
       handleAvatarSuccess(res, file) {
         this.regInfo.photoId = res.data.id;
       },
-      // 上获奖附件
+      // 上传获奖附件
       uploadEnclosure() {
         let vm = this;
         fileUpload({
           title: '上传获奖附件',
           uploadFileMaxNum: 10,
-          mimeTypes: '.png,.jpg,.jpeg,.pdf',
+          mimeTypes: '.png,.jpg,.jpeg',
           confirm: function (files) {
             // 成功回调
             let tempList = [];
