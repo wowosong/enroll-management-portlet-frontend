@@ -48,8 +48,8 @@
                 <!--<span class="btn" @click="viewScore()">查看成绩</span>-->
                 <div class="bottomBorder"
                      v-if="nowStuInfo && nowStuInfo.scores && nowStuInfo.scores.length">
-                  <span style="color: #00ff00">成绩</span>
-                  <table class="my-table" v-if="!isPhone">
+                  <span style="color: #00ff00" v-if="nowStuInfo.isShowScore == 1">成绩</span>
+                  <table class="my-table" v-if="!isPhone && nowStuInfo.isShowScore == 1">
                     <thead>
                     <tr>
                       <th>{{str}}卡编号</th>
