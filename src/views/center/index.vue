@@ -20,7 +20,7 @@
       <signUpWidget v-if="tabIndex == 0" @changeTitle="changeTitle" ref="signUp"></signUpWidget>
       <progressWidget v-if="tabIndex == 1"></progressWidget>
       <!--校服登记-->
-      <schooluniformWidget v-if="tabIndex == 2"></schooluniformWidget>
+      <schooluniformWidget v-if="tabIndex == 2" ></schooluniformWidget>
       <accountWidget v-if="tabIndex == 3"></accountWidget>
     </div>
     <div class="comm_item float_right">

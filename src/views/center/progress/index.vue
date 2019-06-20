@@ -301,7 +301,6 @@
       if(this.$store.state.userInfo.id){
         this.query();
       }
-
     },
     components: {
       reserve,
