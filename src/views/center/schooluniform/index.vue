@@ -126,13 +126,13 @@
         //表单验证规则
         rules: {
           height: [
-            {validator: checkHeight, trigger: 'blur'}
+            {validator: checkHeight, required: true, trigger: 'blur'}
           ],
           weight: [
-            {validator: checkWeight, trigger: 'blur'}
+            {validator: checkWeight, required: true, trigger: 'blur'}
           ],
           size: [
-            {validator: checkSize, trigger: 'blur'}
+            {validator: checkSize,required: true, trigger: 'blur'}
           ]
         },
         planInfo:{},
