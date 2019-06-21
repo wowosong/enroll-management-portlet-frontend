@@ -14,19 +14,19 @@ module.exports = {
     proxyTable: {
       '/platform': {
         // target:'http://119.23.47.139',
-        target: 'http://microtest.hanboard.com.cn:8084',
+        target: 'http://dev.hanboard.cn:8100',
         changeOrigin: true,
         secure: false
       },
       '/gateway': {
         // target:'http://119.23.47.139',
-        target: 'http://microtest.hanboard.com.cn:8084',
+        target: 'http://dev.hanboard.cn:8100',
         changeOrigin: true,
         secure: false
       },
       '/enroll': {
         // target:'http://119.23.47.139',
-        target: 'http://microtest.hanboard.com.cn:8084',
+        target: 'http://microservice.hanboard.com.cn:8090',
         // target: 'http://localhost:8140',
         changeOrigin: true,
         secure: false

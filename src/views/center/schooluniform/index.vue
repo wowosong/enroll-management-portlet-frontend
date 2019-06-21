@@ -24,7 +24,7 @@
             </el-col>
             <el-col :span="1" class="cpy">CM</el-col>
           </template>
-          <template v-else>150CM</template>
+          <template v-else>{{regInfo.clothesInfos['s_height']}}CM</template>
           <!--错误信息-->
           <template slot="error" slot-scope="scope">
             <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
@@ -37,7 +37,7 @@
             </el-col>
             <el-col :span="1" class="cpy">KG</el-col>
           </template>
-          <template v-else>160GK</template>
+          <template v-else>{{regInfo.clothesInfos['s_weight']}}KG</template>
           <!--错误信息-->
           <template slot="error" slot-scope="scope">
             <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
