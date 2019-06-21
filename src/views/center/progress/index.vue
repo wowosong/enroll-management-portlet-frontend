@@ -144,7 +144,7 @@
                 </div>
               </div>
             </div>
-            //未录取,并且显示成绩开关==1 显示成绩
+          <!--  未录取,并且显示成绩开关==1 显示成绩 -->
             <span style="color: #00ff00" v-if="nowStuInfo.isShowScore == 1">成绩</span>
             <table class="my-table" v-if="!isPhone && nowStuInfo.isShowScore == 1">
               <thead>
