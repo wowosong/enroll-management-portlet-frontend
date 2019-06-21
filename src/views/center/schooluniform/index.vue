@@ -1,6 +1,6 @@
 <template>
   <div class="uniform-wrap">
-    <div class="uniform-header">
+    <div class="uniform-header" v-if="regInfo.isRegistration == 1">
       您于<span class="text-red">{{regInfo.schoolUniformsDate | dateFormatYmd}}</span>完成校服登记~
       <span class="btn" v-if="!isEdit" @click="isEdit =  true">修改</span>
     </div>
