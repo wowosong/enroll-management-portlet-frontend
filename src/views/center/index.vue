@@ -76,7 +76,8 @@
       if (this.$route.query && this.$route.query.enroll) {
         this.tabIndex = 0
       }
-      this.tabIndexFn(this.tabIndex)
+      this.tabIndexFn(this.tabIndex);
+      this.init();
     },
     methods: {
       init() {
@@ -93,11 +94,14 @@
         const vm = this;
         http.get("/gateway/enroll/api/erRegister/Clothes/" + vm.regId).then((xhr) => {
           if (xhr.code) return;
-          vm.regInfo = data;
+          vm.regInfo = xhr.data;
         });
       },
       tabIndexFn(index) {
         if (index != null) {
+          if(this.regInfo.ifPayment != 1 && index == 3){
+            index = index - 1;
+          }
           this.tabIndex = index
           this.left = index * 132 + 30
           this.title = this.titleList[index]
