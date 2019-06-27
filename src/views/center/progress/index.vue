@@ -85,8 +85,8 @@
                   <div class="score-header bottomBorder">
                     <span class="score-txt">缴费:请选择支付方式</span>
                     <el-radio-group v-model="isOnLine">
-                      <el-radio label="underLine">线下缴费</el-radio>
                       <el-radio label="onLine">在线缴费</el-radio>
+                      <el-radio label="underLine">线下缴费</el-radio>
                     </el-radio-group>
                     <span class="down-file" v-if="false">点击下载《缴费标准》</span>
                   </div>
@@ -132,8 +132,13 @@
                       <button class="save" @click="submit">提交预约</button>
                     </template>
                     <template v-else>
-                      <button class="save" @click="PayCost">网页支付</button>
-                      <button class="save" @click="ScanPay">扫码支付</button>
+                      <template v-if="isPhone">
+                        <button class="save" @click="PayCost">在线支付</button>
+                      </template>
+                      <temlate v-if="!isPhone">
+                        <button class="save" @click="PayCost">网页支付</button>
+                        <button class="save" @click="ScanPay">扫码支付</button>
+                      </temlate>
                     </template>
                   </div>
                 </div>
@@ -262,6 +267,9 @@
         <!-- <reportInfo></reportInfo> -->
       </template>
     </div>
+    <!--<form id="ajaxFormSubmit" onsubmit="return saveFolr" :action="url+'/Netpayment_dl/BaseHttp.dll?QuerySingleOrder'">-->
+      <!--<input type="hidden" :value="jsonTest" :name="jsonTest">-->
+    <!--</form>-->
   </div>
 </template>
 <script>
@@ -310,7 +318,10 @@
         expireFlag: false,
         planInfo: {},
         str: '',
-        isOnLine: 'underLine'
+        isOnLine: 'onLine',
+        orderNo:'',
+        jsonTest:'',
+        url:window.systemParameter.CmbBank_B2B_Pay
       }
     },
     computed: {
@@ -320,13 +331,17 @@
     },
     mounted() {
         this.query();
+        this.orderNo = localStorage.getItem('orderNo');
+        if(this.orderNo){
+          // this.getSinglePay();
+        }
+
     },
     components: {
       reserve,
       reportInfo
     },
     methods: {
-
       serReserve(id) {
         const vm = this;
         let obj = {
@@ -350,7 +365,7 @@
 
         });
       },
-      query:async function(){
+      query(){
         let vm = this;
         vm.isLoading = true;
         let idCard = window.userInfo.idCard;
@@ -445,7 +460,8 @@
             "orderNo": orderNo,  //  订单号,商户定义(32位,支持数字,字母)
             "amount": '0.01',   //  金额
             "payNoticeUrl": 'http://119.23.47.139/gateway/enroll/erCmbPay/payNotice',    //  支付成功回调地址
-            "returnUrl":'http://119.23.47.139/center?progress=true'
+            // "returnUrl":'http://119.23.47.139/center?progress=true'
+            "returnUrl":'http://localhost:8080/center?progress=true'
           }
         }
         http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
@@ -456,7 +472,6 @@
             form.attr('id', 'ajaxForm');
             form.attr('target', '');
             form.attr('method', 'post');
-
             form.attr('action', window.systemParameter.CmbBank_B2B_Pay + "/netpayment/BaseHttp.dll?MB_EUserPay");
             let input = $('<input>');
             input.attr('type', 'hidden');
@@ -467,6 +482,54 @@
             form.submit();   //表单提交
           })
       },
+      //查询单笔订单
+      getSinglePay() {
+        let vm = this;
+        let date = new Date();
+        let jsonRequestData = {
+          "version": "1.0",
+          "charset": "UTF-8",
+          "sign": "",
+          "signType": "SHA-256",
+          "reqData": {
+            "dateTime": this.$options.filters['dateFormatHms'](date.getTime()), //  请求时间,商户发起该请求的当前时间，精确到秒。
+            "branchNo": "0028",
+            "merchantNo": "000133",
+            "type": "B",
+            "date": this.$options.filters['dateFormat'](date.getTime()),    //  商户订单日期，格式：yyyyMMdd
+            "orderNo": this.orderNo,  //  商户订单号
+          }
+        };
+        http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
+          .then((xhr) => {
+            jsonRequestData.sign = xhr.bodyText;
+            vm.jsonTest = JSON.stringify(jsonRequestData);
+            // var form = $("<form>");   //定义一个form表单
+            // form.attr('style', 'display:none');   //下面为在form表单中添加查询参数
+            // form.attr('id', 'ajaxForm');
+            // form.attr('target', '');
+            // form.attr('method', 'post');
+            // form.attr('onsubmit','return false');
+            // form.attr('action', window.systemParameter.CmbBank_B2B_Pay + "/Netpayment_dl/BaseHttp.dll?QuerySingleOrder");
+            // var input = $('<input>');
+            // input.attr('type', 'hidden');
+            // input.attr('name', 'jsonRequestData');
+            // input.attr('value', JSON.stringify(jsonRequestData));
+            // form.append(input);   //将查询参数控件提交到表单上
+            // $('body').append(form);  //将表单放置在web中
+            // form.submit();//表单提交
+            $("#ajaxFormSubmit").submit();
+            $("#ajaxFormSubmit").on('submit',function (e) {
+
+            })
+
+          })
+      },
+      saveFolr(){
+        console.log(1111)
+      },
+
+
       //扫码支付
       ScanPay() {
         let date = new Date();
