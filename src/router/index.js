@@ -24,9 +24,13 @@ import page404 from '../views/error/404'
 /**********wrap start****************/
 // 登录
 import login from '../views/wrap/login'
+
+// 招生缴费登录
+import payLogin from '../views/wrap/pay_login'
+
 // 忘记密码
 import reset from '../views/wrap/reset_pwd'
-
+l
 
 // 招生系统扫码跳转
 import checking from '../views/enroll/index'
@@ -91,6 +95,11 @@ const list = [{
     path: '/login',
     name: 'login',
     component: login,
+  },
+  {
+    path: '/payLogin',
+    name: 'payLogin',
+    component: payLogin,
   },
   {
     path: '/reset',
