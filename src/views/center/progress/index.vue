@@ -442,6 +442,9 @@
           random = random + charactors.charAt(parseInt(10*Math.random()));
         }
         let date = new Date();
+        //订单号
+        let orderNo = 'JX' + date.getTime() + random;
+        localStorage.setItem('orderNo',orderNo);
         let jsonRequestData = {
           "version": "1.0",
           "charset": "UTF-8",
@@ -452,7 +455,7 @@
             "branchNo": "0028", //  分行号
             "merchantNo": "000133", //  商户号
             "date": vm.$options.filters['dateFormat'](date.getTime()),    //  当前日期按yyyyMMdd获取
-            "orderNo": 'JX' + date.getTime() + random,  //  订单号,商户定义(32位,支持数字,字母)
+            "orderNo": orderNo,  //  订单号,商户定义(32位,支持数字,字母)
             "amount": '0.01',   //  金额
             "payNoticeUrl": 'http://119.23.47.139/gateway/enroll/erCmbPay/payNotice',    //  支付成功回调地址
             "returnUrl":'http://119.23.47.139/center?progress=true'
@@ -480,6 +483,14 @@
       //扫码支付
       ScanPay() {
         let date = new Date();
+        let charactors="1234567890";
+        let random = '';
+        for(let j=1;j<=4;j++){
+          random = random + charactors.charAt(parseInt(10*Math.random()));
+        }
+        //订单号
+        let orderNo = 'JX' + date.getTime() + random;
+        localStorage.setItem('orderNo',orderNo);
         let jsonRequestData = {
           "version": "1.0",
           "charset": "UTF-8",
@@ -490,7 +501,7 @@
             "branchNo": "0028",
             "merchantNo": "000133",
             "date": this.$options.filters['dateFormat'](date.getTime()),
-            "orderNo": 'orderNo' + date.getTime(),  //  订单号
+            "orderNo": orderNo,  //  订单号
             "amount": vm.nowStuInfo.assessment,
             "payNoticeUrl": 'http://119.23.47.139/gateway/enroll/erCmbPay/payNotice',
             "returnUrl":'http://119.23.47.139/center?progress=true',
