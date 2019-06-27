@@ -98,12 +98,13 @@
         });
       },
       tabIndexFn(index) {
+        let tempIndex = index;
         if (index != null) {
-          if(this.regInfo.ifPayment != 1 && index == 3){
-            index = index - 1;
+          if(this.regInfo.ifPayment != 1 && tempIndex == 3){
+            tempIndex = tempIndex - 1;
           }
           this.tabIndex = index
-          this.left = index * 132 + 30
+          this.left = tempIndex * 132 + 30
           this.title = this.titleList[index]
         }
       },

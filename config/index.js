@@ -14,13 +14,13 @@ module.exports = {
     proxyTable: {
       '/platform': {
         // target:'http://119.23.47.139',
-        target: 'http://dev.hanboard.cn:8100',
+        target: 'http://demo.hanboard.cn:8100',
         changeOrigin: true,
         secure: false
       },
       '/gateway': {
         // target:'http://119.23.47.139',
-        target: 'http://dev.hanboard.cn:8100',
+        target: 'http://119.23.47.139',
         changeOrigin: true,
         secure: false
       },
@@ -33,7 +33,7 @@ module.exports = {
       },
     },
     // Various Dev Server settings
-    host: '0.0.0.0', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

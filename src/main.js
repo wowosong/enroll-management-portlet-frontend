@@ -95,10 +95,10 @@ Vue.http.interceptors.push(function (request, next) {
     }
     // 出现异常 401
     if (!response.ok) {
-      if (!data.data || data.error == 'invalid_token' || data.error == 'unauthorized') {
-        // 跳到登录页
-        logout();
-      }
+      // if (!data.data || data.error == 'invalid_token' || data.error == 'unauthorized') {
+      //   // 跳到登录页
+      //   logout();
+      // }
     }
 
   });
@@ -117,7 +117,7 @@ Vue.http.interceptors.push(function (request, next) {
  *-------------------------------------------------------------------------------*/
 // 初始化路由
 const router = new Router({
-  mode: 'hash',
+  mode: 'history',
   routes: router_list,
 });
 // window 自定义
