@@ -161,36 +161,22 @@
             <div class="text-left">您<span class="color1">未被录取</span></div>
             <div class="over_hint text-left">人生的机会还有很多哦...</div>
             <!--<span class="btn" @click="viewScore()">查看成绩</span>-->
-            <div v-if="nowStuInfo && nowStuInfo.scores && nowStuInfo.scores.length">
-              <table class="my-table" v-if="!isPhone">
-                <thead>
-                <tr>
-                  <th>{{str}}卡编号</th>
-                  <th>姓名</th>
-                  <th v-for="stuScore in nowStuInfo.scores">{{stuScore.name}}</th>
-                </tr>
-                </thead>
-                <tr>
-                  <td>{{nowStuInfo.signCardCode}}</td>
-                  <td>{{nowStuInfo.stuName}}</td>
-                  <td v-for="stuScore in nowStuInfo.scores"><span>{{stuScore.testScore}}</span>
-                  </td>
-                </tr>
-              </table>
-              <div v-if="isPhone" class="phone_scores">
-                <div><span>{{str}}卡编号：</span>{{nowStuInfo.signCardCode}}</div>
-                <div><span>姓名：</span>{{nowStuInfo.stuName}}</div>
-                <div v-for="(stuScore,index) in nowStuInfo.scores" :key="index"><span>{{stuScore.name}}：</span>{{stuScore.testScore}}
-                </div>
-              </div>
-            </div>
             <!--  未录取,并且显示成绩开关==1 显示成绩 -->
             <!--成绩-->
             <div class="score-wrap" v-if="nowStuInfo.isShowScore == 1">
               <div class="score-header bottomBorder">
                 <span class="score-txt">成绩</span>
               </div>
-              <table class="my-table">
+              <!--h5-->
+              <el-form label-width="120px" label-position="left" v-if="isPhone">
+                <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
+                <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
+                <template v-for="(stuScore,index) in nowStuInfo.scores" >
+                  <el-form-item :label="stuScore.name">{{stuScore.testScore}}</el-form-item>
+                </template>
+              </el-form>
+              <!--pc-->
+              <table class="my-table" v-if="!isPhone">
                 <thead>
                 <tr>
                   <th>身份证/护照号</th>
@@ -340,6 +326,7 @@
       reportInfo
     },
     methods: {
+
       serReserve(id) {
         const vm = this;
         let obj = {
@@ -363,7 +350,7 @@
 
         });
       },
-      query() {
+      query:async function(){
         let vm = this;
         vm.isLoading = true;
         let idCard = window.userInfo.idCard;

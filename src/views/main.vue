@@ -68,6 +68,7 @@
         }).then(xhr => {
           window.userInfo = xhr.data.data;
           vm.$store.commit('getUserInfo', xhr.data.data);
+          vm.$router.push({path: '/center', query: {progress: true}});
           vm.getSystemParam();
         })
       },
