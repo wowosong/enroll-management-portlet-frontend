@@ -14,26 +14,26 @@ module.exports = {
     proxyTable: {
       '/platform': {
         // target:'http://119.23.47.139',
-        target: 'http://microtest.hanboard.com.cn:8084',
+        target: 'http://demo.hanboard.cn:8100',
         changeOrigin: true,
         secure: false
       },
       '/gateway': {
         // target:'http://119.23.47.139',
-        target: 'http://microtest.hanboard.com.cn:8084',
+        target: 'http://119.23.47.139',
         changeOrigin: true,
         secure: false
       },
       '/enroll': {
         // target:'http://119.23.47.139',
-        target: 'http://microtest.hanboard.com.cn:8084',
+        target: 'http://microservice.hanboard.com.cn:8090',
         // target: 'http://localhost:8140',
         changeOrigin: true,
         secure: false
       },
     },
     // Various Dev Server settings
-    host: '0.0.0.0', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

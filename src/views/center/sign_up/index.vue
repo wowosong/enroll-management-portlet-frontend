@@ -37,7 +37,7 @@
             <el-form-item label="学生姓名:" required style="margin-bottom:5px">
               <template v-if="isEditInfo">
                 <el-col :span="12">
-                  <el-input v-model="regInfo.stuName"></el-input>
+                  <el-input v-model="regInfo.stuName" :maxlength="18"></el-input>
                 </el-col>
               </template>
               <span class="phone-fill" v-else>{{regInfo.stuName}}</span>
@@ -86,7 +86,7 @@
                   {{regInfo.nowSchool}}
                </span>
                 <template v-else>
-                  <el-autocomplete style="width: 100%" v-model="regInfo.nowSchool" :fetch-suggestions="querySearch"
+                  <el-autocomplete :maxlength="32" style="width: 100%" v-model="regInfo.nowSchool" :fetch-suggestions="querySearch"
                                    placeholder="请填写"/>
                 </template>
               </el-col>
@@ -1231,13 +1231,13 @@
           }
         });
       },
-      // 上获奖附件
+      // 上传获奖附件
       uploadEnclosure() {
         let vm = this;
         fileUpload({
           title: '上传获奖附件',
           uploadFileMaxNum: 1,
-          mimeTypes: '.png,.jpg,.jpeg,.pdf',
+          mimeTypes: '.png,.jpg,.jpeg',
           confirm: function (files) {
             // 成功回调
             let f = files[0];

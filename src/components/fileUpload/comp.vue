@@ -13,6 +13,7 @@
     height: 500px;
     margin-left: -320px;
     margin-top: -250px;
+    overflow: auto;
     .dialog_tit{
       border-bottom:1px solid #ccc;
       line-height:40px;

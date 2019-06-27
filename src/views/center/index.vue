@@ -13,12 +13,15 @@
       <div class="center_tabs clearfix">
         <span @click="tabIndexFn(0)" :class="{active:tabIndex == 0}"><img src="@/imgs/warp/center_tab1.png">{{titleList[0]}}</span>
         <span @click="tabIndexFn(1)" :class="{active:tabIndex == 1}"><img src="@/imgs/warp/center_tab2.png">{{titleList[1]}}</span>
-        <span @click="tabIndexFn(2)" :class="{active:tabIndex == 2}"><img src="@/imgs/warp/center_tab3.png">{{titleList[2]}}</span>
+        <span v-if="regInfo.ifPayment == 1" @click="tabIndexFn(2)" :class="{active:tabIndex == 2}"><img src="@/imgs/warp/center_tab1.png">{{titleList[2]}}</span>
+        <span @click="tabIndexFn(3)" :class="{active:tabIndex == 3}"><img src="@/imgs/warp/center_tab3.png">{{titleList[3]}}</span>
         <div class="tab_active_border" :style="'left:'+left+'px'"></div>
       </div>
       <signUpWidget v-if="tabIndex == 0" @changeTitle="changeTitle" ref="signUp"></signUpWidget>
       <progressWidget v-if="tabIndex == 1"></progressWidget>
-      <accountWidget v-if="tabIndex == 2"></accountWidget>
+      <!--校服登记-->
+      <schooluniformWidget v-if="tabIndex == 2"></schooluniformWidget>
+      <accountWidget v-if="tabIndex == 3"></accountWidget>
     </div>
     <div class="comm_item float_right">
       <div class="campus_tit">嘉祥官网</div>
@@ -30,23 +33,27 @@
 <script>
   import progressWidget from './progress/index'
   import signUpWidget from './sign_up/index'
+  import schooluniformWidget from './schooluniform/index'
   import accountWidget from './account/index'
 
   export default {
     components: {
       progressWidget,
       signUpWidget,
-      accountWidget
+      accountWidget,
+      schooluniformWidget
     },
     data() {
       return {
         tabIndex: 0,
         left: 30,
         title: '个人中心',
-        titleList: ['报名信息', '招生进度', '账号安全'],
+        titleList: ['报名信息', '招生进度', '校服登记', '账号安全'],
         userName: userInfo.userName,
         avatar_url: window.systemParameter.FILE_SYSTEM_URL + "/file/thumbnail/",
-        accountAvatar: userInfo.accountAvatar
+        accountAvatar: userInfo.accountAvatar,
+        regId: '',
+        regInfo:{}
       }
     },
     computed: {
@@ -66,16 +73,38 @@
       if (progress) {
         this.tabIndex = 1
       }
-      if(this.$route.query && this.$route.query.enroll){
+      if (this.$route.query && this.$route.query.enroll) {
         this.tabIndex = 0
       }
-      this.tabIndexFn(this.tabIndex)
+      this.tabIndexFn(this.tabIndex);
+      this.init();
     },
     methods: {
+      init() {
+        const vm = this;
+        http.get("/gateway/enroll/api/erRegister/byPhone", {params: {phoneNum: window.userInfo.idCard}}).then((xhr) => {
+          if (xhr.data.code) {
+            return;
+          }
+          vm.regId = xhr.data.data.regId;
+          vm.getReg();
+        })
+      },
+      getReg() {
+        const vm = this;
+        http.get("/gateway/enroll/api/erRegister/Clothes/" + vm.regId).then((xhr) => {
+          if (xhr.code) return;
+          vm.regInfo = xhr.data;
+        });
+      },
       tabIndexFn(index) {
+        let tempIndex = index;
         if (index != null) {
+          if(this.regInfo.ifPayment != 1 && tempIndex == 3){
+            tempIndex = tempIndex - 1;
+          }
           this.tabIndex = index
-          this.left = index * 132 + 30
+          this.left = tempIndex * 132 + 30
           this.title = this.titleList[index]
         }
       },

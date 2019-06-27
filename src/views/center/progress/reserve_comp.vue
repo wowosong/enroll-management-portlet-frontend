@@ -1,26 +1,36 @@
 <template>
-  <div>
-    <table v-if="pageFlag" style="width: 100%; font-size: 13px; margin-bottom: 10px;">
-      <tr>
-        <td style="background: #ebeef5">
-          <el-button type="primary" @click="beforeWeek" icon="el-icon-arrow-left"/>
-          <el-button type="primary" @click="afterWeek" icon="el-icon-arrow-right"/>
-        </td>
-        <td :style="(item.today?'background: #409EFF; color: #fff':'background: #ebeef5')" v-for="item in tableHead"
-            :key="item.date">
-          <div>{{item.date| dateFormatYmd}}</div>
-          <div>{{item.weekday}}</div>
-        </td>
-      </tr>
-      <tr v-for="item in trTime" :key="item.seiValue">
-        <td style="background: #ebeef5">{{item.seiName}}</td>
-        <td v-for="i in tableHead"
-            :key="i.date"
-            @mouseover="changeBg('#409EFF', i.date+item.seiValue, (reserveMap[i.date]&&new Date()<i.date)?reserveMap[i.date][item.seiValue].nonChange:true)"
-            @mouseout="changeBg('#fff', i.date+item.seiValue, (reserveMap[i.date]&&new Date()<i.date)?reserveMap[i.date][item.seiValue].nonChange:true)"
-            @click="choseTime((reserveMap[i.date]&&new Date()<i.date&&!reserveMap[i.date][item.seiValue].nonChange)?reserveMap[i.date][item.seiValue].id:'')"
-            :id="i.date+item.seiValue"
-            :style="(reserveMap[i.date]&&new Date()<i.date)?(reserveMap[i.date][item.seiValue].nonChange?'background: #ff0000; color: #fff':'background: #fff'):'background: #e4e7ed'">
+  <div class="reserve-wrap" v-if="pageFlag">
+    <div class="reserve-ceil" v-if="isPhone">
+      <div class="grid">
+        <el-button class="arrow-btn" type="primary" @click="beforeWeek" icon="el-icon-arrow-left"/>
+        <el-button class="arrow-btn" type="primary" @click="afterWeek" icon="el-icon-arrow-right"/>
+      </div>
+      <div class="grid" v-for="item in trTime" :key="item.seiValue">
+        {{item.seiName}}
+      </div>
+    </div>
+    <div class="reserve-table">
+      <table>
+        <tr>
+          <td style="background: #ebeef5" v-if="!isPhone">
+            <el-button class="arrow-btn" type="primary" @click="beforeWeek" icon="el-icon-arrow-left"/>
+            <el-button class="arrow-btn" type="primary" @click="afterWeek" icon="el-icon-arrow-right"/>
+          </td>
+          <td :style="(item.today?'background: #409EFF; color: #fff':'background: #ebeef5')" v-for="item in tableHead"
+              :key="item.date">
+            <div>{{item.date| dateFormatYmd}}</div>
+            <div>{{item.weekday}}</div>
+          </td>
+        </tr>
+        <tr v-for="item in trTime" :key="item.seiValue">
+          <td v-if="!isPhone" style="background: #ebeef5">{{item.seiName}}</td>
+          <td v-for="i in tableHead"
+              :key="i.date"
+              @mouseover="changeBg('#409EFF', i.date+item.seiValue, (reserveMap[i.date]&&new Date()<i.date)?reserveMap[i.date][item.seiValue].nonChange:true)"
+              @mouseout="changeBg('#fff', i.date+item.seiValue, (reserveMap[i.date]&&new Date()<i.date)?reserveMap[i.date][item.seiValue].nonChange:true)"
+              @click="choseTime((reserveMap[i.date]&&new Date()<i.date&&!reserveMap[i.date][item.seiValue].nonChange)?reserveMap[i.date][item.seiValue].id:'')"
+              :id="i.date+item.seiValue"
+              :style="(reserveMap[i.date]&&new Date()<i.date)?(reserveMap[i.date][item.seiValue].nonChange?'background: #ff0000; color: #fff':'background: #fff'):'background: #e4e7ed'">
           <span v-if="reserveMap[i.date] && new Date() < i.date">
             <span v-if="reserveMap[i.date][item.seiValue].nonChange">
               已约满
@@ -29,11 +39,13 @@
               可预约
             </span>
           </span>
-          <span v-else>不可预约</span>
-        </td>
-      </tr>
-    </table>
+            <span v-else>不可预约</span>
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
+
 </template>
 
 <script>
@@ -51,7 +63,13 @@
         today: {},
         reserveMap: {},
         pageFlag: false,
+        selectId: ''
       }
+    },
+    computed: {
+      isPhone: function () {
+        return this.$store.state.isPhone
+      },
     },
     mounted() {
       const vm = this;
@@ -63,7 +81,6 @@
         if (!id) {
           return;
         }
-        console.log("id, id: ", id)
         this.$emit("serReserve", id);
       },
       changeBg(color, id, nonChange) {
@@ -142,16 +159,64 @@
   };
 </script>
 
-<style scoped>
+<style scoped lang="less">
+  .reserve-table {
+    width: 100%;
+    font-size: 13px;
+    margin-bottom: 10px;
+    table {
+      width: 100%;
+    }
+  }
+
   td {
     text-align: center;
     border: 1px solid #e5e7ea;
     padding: 5px;
   }
 
-  .set_reserve {
-    margin-bottom: 8px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #ebeef5;
+  .is_phone {
+    .reserve-wrap {
+      font-size: 13px;
+      position: relative;
+      .reserve-ceil {
+        background: #ebeef5;
+        width: 100px;
+        position: absolute;
+        left: 0;
+        z-index: 999;
+        .grid:first-child {
+          height: 57px;
+          line-height: 57px;
+        }
+        .grid {
+          height: 31px;
+          line-height: 31px;
+        }
+      }
+      .reserve-table {
+        width: 100%;
+        overflow-x: scroll;
+        table {
+          width: 800px;
+          margin-left: 100px;
+        }
+        .reserve-tr {
+          td:first-child {
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+        }
+
+      }
+      .arrow-btn {
+        padding: 2px 4px;
+      }
+      td {
+        padding: 2px;
+      }
+    }
+
   }
 </style>
