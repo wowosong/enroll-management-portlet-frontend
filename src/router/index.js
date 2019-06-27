@@ -30,7 +30,7 @@ import payLogin from '../views/wrap/pay_login'
 
 // 忘记密码
 import reset from '../views/wrap/reset_pwd'
-l
+
 
 // 招生系统扫码跳转
 import checking from '../views/enroll/index'
