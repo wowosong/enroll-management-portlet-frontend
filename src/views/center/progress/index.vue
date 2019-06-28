@@ -530,7 +530,7 @@
             "date": this.$options.filters['dateFormat'](date.getTime()),
             "orderNo": vm.orderNo,  //  订单号
             "amount": vm.nowStuInfo.assessment,
-            "payNoticePara": `${vm.stempInfo.id}|${vm.stempInfo.guardianPhone}`,//注册id电话
+            "payNoticePara": `${vm.stempInfo.id}|'15184472066'`,//注册id电话
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',
             "returnUrl": 'http://zs.jxfls.com/center?progress=true',
             "productDesc": '测试扫码支付' //  扫码描述
