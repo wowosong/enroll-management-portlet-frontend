@@ -54,7 +54,7 @@
                   <el-form label-width="120px" label-position="left" v-if="isPhone">
                     <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
                     <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
-                    <template v-for="(stuScore,index) in nowStuInfo.scores" >
+                    <template v-for="(stuScore,index) in nowStuInfo.scores">
                       <el-form-item :label="stuScore.name">{{stuScore.testScore}}</el-form-item>
                     </template>
                   </el-form>
@@ -133,11 +133,11 @@
                     </template>
                     <template v-else>
                       <template v-if="isPhone">
-                        <button class="save" @click="PayCost">在线支付</button>
+                        <button class="save" @click="payBefore('web')">在线支付</button>
                       </template>
                       <template v-if="!isPhone">
-                        <button class="save" @click="PayCost">网页支付</button>
-                        <button class="save" @click="ScanPay">扫码支付</button>
+                        <button class="save" @click="payBefore('web')">网页支付</button>
+                        <button class="save" @click="payBefore('h5')">扫码支付</button>
                       </template>
                     </template>
                   </div>
@@ -176,7 +176,7 @@
               <el-form label-width="120px" label-position="left" v-if="isPhone">
                 <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
                 <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
-                <template v-for="(stuScore,index) in nowStuInfo.scores" >
+                <template v-for="(stuScore,index) in nowStuInfo.scores">
                   <el-form-item :label="stuScore.name">{{stuScore.testScore}}</el-form-item>
                 </template>
               </el-form>
@@ -268,9 +268,6 @@
         <!-- <reportInfo></reportInfo> -->
       </template>
     </div>
-    <!--<form id="ajaxFormSubmit" onsubmit="return saveFolr" :action="url+'/Netpayment_dl/BaseHttp.dll?QuerySingleOrder'">-->
-      <!--<input type="hidden" :value="jsonTest" :name="jsonTest">-->
-    <!--</form>-->
   </div>
 </template>
 <script>
@@ -296,7 +293,7 @@
     },
     data() {
       return {
-        isLoading:false,
+        isLoading: false,
         stempInfo: {},
         formData: {
           dataTime: '',
@@ -324,9 +321,9 @@
         planInfo: {},
         str: '',
         isOnLine: 'onLine',
-        orderNo:'',
-        jsonTest:'',
-        url:window.systemParameter.CmbBank_B2B_Pay
+        orderNo: '',
+        jsonTest: '',
+        url: window.systemParameter.CmbBank_B2B_Pay
       }
     },
     computed: {
@@ -335,13 +332,11 @@
       },
     },
     mounted() {
-        this.query();
-        this.orderNo = localStorage.getItem('orderNo');
-        if(this.orderNo){
-
-          // this.getSinglePay();
-        }
-
+      this.orderNo = localStorage.getItem('orderNo');
+      if(this.orderNo){
+        this.paySuccess();
+      }
+      this.query();
     },
     methods: {
       serReserve(id) {
@@ -367,14 +362,14 @@
 
         });
       },
-      query(){
+      query() {
         let vm = this;
         vm.isLoading = true;
         let idCard = window.userInfo.idCard;
         http.get("/gateway/enroll/api/erRegister/admissionsProgress/" + idCard).then((xhr) => {
           if (xhr.code) return;
           vm.isLoading = false;
-          if(vm.orderNo){
+          if (vm.orderNo) {
             xhr.data.orderNo = vm.orderNo;
             xhr.data.ifPayment = 1;
           }
@@ -442,18 +437,45 @@
           }
         });
       },
+      //支付前调用
+      payBefore(type) {
+        let vm = this;
+        //生成订单号
+        let charactors = "1234567890";
+        let random = '';
+        for (let j = 1; j <= 4; j++) {
+          random = random + charactors.charAt(parseInt(10 * Math.random()));
+        }
+         let date = new Date();
+         vm.orderNo = 'JX' + date.getTime() + random;
+        let obj = {
+          regId:vm.stempInfo.id, // 注册id
+          mobileNo:vm.stempInfo.guardianPhone,
+          payType:type == 'h5' ? 1 : 2,
+          amount:vm.nowStuInfo.assessment,
+          orderNo:vm.orderNo
+        };
+        if(type == 'web'){
+          obj.payDesc = '网页支付'
+        }
+        http.post("/gateway/enroll/erCmbPay/insert", obj).then(function (xhr) {
+          if(xhr.status == 2){
+            vm.$message.warning('请重新支付');
+            return
+          }else{
+            localStorage.setItem('orderNo', vm.orderNo);
+            if(type == 'web'){
+                vm.PayCost()
+            }else{
+              vm.ScanPay()
+            }
+          }
+        });
+      },
       //网页支付
       PayCost() {
         let vm = this;
-        let charactors="1234567890";
-        let random = '';
-        for(let j=1;j<=4;j++){
-          random = random + charactors.charAt(parseInt(10*Math.random()));
-        }
         let date = new Date();
-        //订单号
-        let orderNo = 'JX' + date.getTime() + random;
-        localStorage.setItem('orderNo',orderNo);
         let jsonRequestData = {
           "version": "1.0",
           "charset": "UTF-8",
@@ -464,10 +486,12 @@
             "branchNo": "0028", //  分行号
             "merchantNo": "000133", //  商户号
             "date": vm.$options.filters['dateFormat'](date.getTime()),    //  当前日期按yyyyMMdd获取
-            "orderNo": orderNo,  //  订单号,商户定义(32位,支持数字,字母)
+            "orderNo": vm.orderNo,  //  订单号,商户定义(32位,支持数字,字母)
             "amount": '0.01',   //  金额
+            "payNoticePara": `${vm.stempInfo.idCard}|${vm.stempInfo.guardianPhone}`,//订单号身份证号
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',    //  支付成功回调地址
-            "returnUrl":'http://zs.jxfls.com/center?progress=true'
+            // "returnUrl": 'http://zs.jxfls.com/center?progress=true'
+            "returnUrl": 'http://localhost:8080/center?progress=true'
           }
         }
         http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
@@ -488,65 +512,17 @@
             form.submit();   //表单提交
           })
       },
-      //查询单笔订单
-      getSinglePay() {
-        let vm = this;
-        let date = new Date();
-        let jsonRequestData = {
-          "version": "1.0",
-          "charset": "UTF-8",
-          "sign": "",
-          "signType": "SHA-256",
-          "reqData": {
-            "dateTime": this.$options.filters['dateFormatHms'](date.getTime()), //  请求时间,商户发起该请求的当前时间，精确到秒。
-            "branchNo": "0028",
-            "merchantNo": "000133",
-            "type": "B",
-            "date": this.$options.filters['dateFormat'](date.getTime()),    //  商户订单日期，格式：yyyyMMdd
-            "orderNo": this.orderNo,  //  商户订单号
-          }
-        };
-        http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
-          .then((xhr) => {
-            jsonRequestData.sign = xhr.bodyText;
-            vm.jsonTest = JSON.stringify(jsonRequestData);
-            // var form = $("<form>");   //定义一个form表单
-            // form.attr('style', 'display:none');   //下面为在form表单中添加查询参数
-            // form.attr('id', 'ajaxForm');
-            // form.attr('target', '');
-            // form.attr('method', 'post');
-            // form.attr('onsubmit','return false');
-            // form.attr('action', window.systemParameter.CmbBank_B2B_Pay + "/Netpayment_dl/BaseHttp.dll?QuerySingleOrder");
-            // var input = $('<input>');
-            // input.attr('type', 'hidden');
-            // input.attr('name', 'jsonRequestData');
-            // input.attr('value', JSON.stringify(jsonRequestData));
-            // form.append(input);   //将查询参数控件提交到表单上
-            // $('body').append(form);  //将表单放置在web中
-            // form.submit();//表单提交
-            $("#ajaxFormSubmit").submit();
-            $("#ajaxFormSubmit").on('submit',function (e) {
-
-            })
-
-          })
-      },
-      saveFolr(){
-        console.log(1111)
-      },
-
-
       //扫码支付
       ScanPay() {
         let date = new Date();
-        let charactors="1234567890";
+        let charactors = "1234567890";
         let random = '';
-        for(let j=1;j<=4;j++){
-          random = random + charactors.charAt(parseInt(10*Math.random()));
+        for (let j = 1; j <= 4; j++) {
+          random = random + charactors.charAt(parseInt(10 * Math.random()));
         }
         //订单号
         let orderNo = 'JX' + date.getTime() + random;
-        localStorage.setItem('orderNo',orderNo);
+        localStorage.setItem('orderNo', orderNo);
         let jsonRequestData = {
           "version": "1.0",
           "charset": "UTF-8",
@@ -557,10 +533,11 @@
             "branchNo": "0028",
             "merchantNo": "000133",
             "date": this.$options.filters['dateFormat'](date.getTime()),
-            "orderNo": orderNo,  //  订单号
+            "orderNo": vm.orderNo,  //  订单号
             "amount": vm.nowStuInfo.assessment,
+            "payNoticePara": `${vm.stempInfo.idCard}|${vm.stempInfo.guardianPhone}`,//订单号身份证号
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',
-            "returnUrl":'http://zs.jxfls.com/center?progress=true',
+            "returnUrl": 'http://zs.jxfls.com/center?progress=true',
             "productDesc": '测试扫码支付' //  扫码描述
           }
         }
@@ -574,7 +551,7 @@
             form.attr('method', 'post');
 
             form.attr('action', window.systemParameter.CmbBank_B2B_Pay + "/netpayment/BaseHttp.dll?PC_EUserPay");
-            let  input = $('<input>');
+            let input = $('<input>');
             input.attr('type', 'hidden');
             input.attr('name', 'jsonRequestData');
             input.attr('value', JSON.stringify(jsonRequestData));
@@ -582,7 +559,17 @@
             $('body').append(form);  //将表单放置在web中
             form.submit();   //表单提交
           })
-      }
+      },
+      //  支付成功回调
+      paySuccess(){
+        let vm = this;
+        http.get("/gateway/enroll/erCmbPay/singleOrder?orderNo=" + vm.orderNo).then(function (xhr) {
+              console.log('回调成功',xhr);
+             // if(xhr.returnStatus == 0){
+             //
+             // }
+        });
+      },
     }
   }
 </script>
@@ -736,6 +723,7 @@
     }
 
   }
+
   .pay_info {
     margin-top: 24px;
     & > div {
@@ -750,9 +738,11 @@
       border-bottom: none;
     }
   }
-  .pay_hint{
+
+  .pay_hint {
     margin-top: 24px;
   }
+
   .pay-tips {
     margin: 12px 0;
     font-size: 12px;
@@ -814,20 +804,20 @@
         }
       }
     }
-    .score-wrap{
+    .score-wrap {
       text-align: left;
-      .score-txt{
+      .score-txt {
         margin-bottom: 16px;
         display: block;
       }
     }
-    .over_hint{
+    .over_hint {
       margin-left: 24px;
     }
-    .text-left{
+    .text-left {
       text-align: left;
     }
-    .el-form-item{
+    .el-form-item {
       margin-bottom: 0;
     }
   }
