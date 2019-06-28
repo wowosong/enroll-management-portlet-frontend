@@ -484,7 +484,7 @@
             "date": vm.$options.filters['dateFormat'](date.getTime()),    //  当前日期按yyyyMMdd获取
             "orderNo": vm.orderNo,  //  订单号,商户定义(32位,支持数字,字母)
             "amount": '0.01',   //  金额
-            "payNoticePara": `${vm.stempInfo.id}|${vm.stempInfo.guardianPhone}`,//注册id电话
+            "payNoticePara": `${vm.stempInfo.id}|14786154890`,//注册id电话
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',    //  支付成功回调地址
             "returnUrl": 'http://zs.jxfls.com/center?progress=true'
           }
@@ -530,7 +530,7 @@
             "date": this.$options.filters['dateFormat'](date.getTime()),
             "orderNo": vm.orderNo,  //  订单号
             "amount": vm.nowStuInfo.assessment,
-            "payNoticePara": `${vm.stempInfo.id}|'15184472066'`,//注册id电话
+            "payNoticePara": `${vm.stempInfo.id}|${vm.stempInfo.guardianPhone}`,//注册id电话
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',
             "returnUrl": 'http://zs.jxfls.com/center?progress=true',
             "productDesc": '测试扫码支付' //  扫码描述
