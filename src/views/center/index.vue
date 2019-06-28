@@ -275,4 +275,11 @@
       }
     }
   }
+  .el-radio__input.is-checked+.el-radio__label{
+    color: #2f3861;
+  }
+  .el-radio__input.is-checked .el-radio__inner{
+    background: #2f3861;
+    border-color: #2f3861;
+  }
 </style>

@@ -135,10 +135,10 @@
                       <template v-if="isPhone">
                         <button class="save" @click="PayCost">在线支付</button>
                       </template>
-                      <temlate v-if="!isPhone">
+                      <template v-if="!isPhone">
                         <button class="save" @click="PayCost">网页支付</button>
                         <button class="save" @click="ScanPay">扫码支付</button>
-                      </temlate>
+                      </template>
                     </template>
                   </div>
                 </div>
@@ -206,19 +206,20 @@
         </div>
         <!-- 缴费成功 -->
         <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null">
-          <p>您于<span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
-            class="color1">{{stempInfo.payAmount}}元</span>~
+          <p class="bottomBorder">您于<span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
+            class="color1">{{stempInfo.payAmount || 0}}元</span>，请及时完成
+            <span class="color1">校服登记</span>~
           </p>
           <div class="pay_info">
             <div><span>姓名：</span>{{stempInfo.stuName}}</div>
             <div><span>身份证/护照号：</span>{{stempInfo.idCard}}</div>
             <div><span>奖学金：</span>{{stempInfo.scholarship}}元</div>
-            <div><span>实际缴费：</span>{{stempInfo.payAmount}}元</div>
-            <div><span>订单号：</span>{{stempInfo.payAmount}}元</div>
-            <div><span>交易流水号：</span>{{stempInfo.payAmount}}元</div>
-            <div><span>订单交易时间：</span>{{stempInfo.payAmount}}元</div>
+            <div><span>实际缴费：</span>{{nowStuInfo.assessment}}元</div>
+            <div><span>订单号：</span>{{stempInfo.orderNo}}</div>
+            <div><span>交易流水号：</span>19262738000000000050</div>
+            <div><span>订单交易时间：</span>{{new Date().getTime() | dateFormatYmd}}</div>
           </div>
-          <p class="pay_hint">友情提示：若需要退学退费，请线下联系学校财务。</p>
+          <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务。)</p>
         </template>
         <!-- 分班结果 -->
         <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport == null">分班与寝室分配已公布~
@@ -277,6 +278,10 @@
   import reportInfo from "./report_info"
 
   export default {
+    components: {
+      reserve,
+      reportInfo
+    },
     filters: {
       dateFormatHms: function (date) {
         if (date) {
@@ -333,13 +338,10 @@
         this.query();
         this.orderNo = localStorage.getItem('orderNo');
         if(this.orderNo){
+
           // this.getSinglePay();
         }
 
-    },
-    components: {
-      reserve,
-      reportInfo
     },
     methods: {
       serReserve(id) {
@@ -372,7 +374,12 @@
         http.get("/gateway/enroll/api/erRegister/admissionsProgress/" + idCard).then((xhr) => {
           if (xhr.code) return;
           vm.isLoading = false;
+          if(vm.orderNo){
+            xhr.data.orderNo = vm.orderNo;
+            xhr.data.ifPayment = 1;
+          }
           vm.stempInfo = xhr.data;
+          console.log(vm.stempInfo)
           vm.viewScore();
           vm.getPlanInfo();
           vm.expireFlag = false;
@@ -459,9 +466,8 @@
             "date": vm.$options.filters['dateFormat'](date.getTime()),    //  当前日期按yyyyMMdd获取
             "orderNo": orderNo,  //  订单号,商户定义(32位,支持数字,字母)
             "amount": '0.01',   //  金额
-            "payNoticeUrl": 'http://119.23.47.139/gateway/enroll/erCmbPay/payNotice',    //  支付成功回调地址
-            // "returnUrl":'http://119.23.47.139/center?progress=true'
-            "returnUrl":'http://localhost:8080/center?progress=true'
+            "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',    //  支付成功回调地址
+            "returnUrl":'http://zs.jxfls.com/center?progress=true'
           }
         }
         http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
@@ -553,8 +559,8 @@
             "date": this.$options.filters['dateFormat'](date.getTime()),
             "orderNo": orderNo,  //  订单号
             "amount": vm.nowStuInfo.assessment,
-            "payNoticeUrl": 'http://119.23.47.139/gateway/enroll/erCmbPay/payNotice',
-            "returnUrl":'http://119.23.47.139/center?progress=true',
+            "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',
+            "returnUrl":'http://zs.jxfls.com/center?progress=true',
             "productDesc": '测试扫码支付' //  扫码描述
           }
         }
@@ -730,7 +736,23 @@
     }
 
   }
-
+  .pay_info {
+    margin-top: 24px;
+    & > div {
+      text-align: left;
+      padding: 5px 0;
+      span {
+        display: inline-block;
+        width: 140px;
+      }
+    }
+    & > div:last-child {
+      border-bottom: none;
+    }
+  }
+  .pay_hint{
+    margin-top: 24px;
+  }
   .pay-tips {
     margin: 12px 0;
     font-size: 12px;
@@ -790,22 +812,6 @@
           width: 88px;
           text-align: right;
         }
-      }
-    }
-    .pay_info {
-      border: 1px solid #eee;
-      & > div {
-        border-bottom: 1px solid #eee;
-        text-align: left;
-        padding: 5px 0;
-        span {
-          display: inline-block;
-          width: 110px;
-          text-align: right;
-        }
-      }
-      & > div:last-child {
-        border-bottom: none;
       }
     }
     .score-wrap{
