@@ -214,10 +214,10 @@
             <div><span>姓名：</span>{{stempInfo.stuName}}</div>
             <div><span>身份证/护照号：</span>{{stempInfo.idCard}}</div>
             <div><span>奖学金：</span>{{stempInfo.scholarship}}元</div>
-            <div><span>实际缴费：</span>{{nowStuInfo.assessment}}元</div>
+            <div><span>实际缴费：</span>{{stempInfo.payAmount}}元</div>
             <div><span>订单号：</span>{{stempInfo.orderNo}}</div>
-            <div><span>交易流水号：</span>19262738000000000050</div>
-            <div><span>订单交易时间：</span>{{new Date().getTime() | dateFormatYmd}}</div>
+            <div><span>交易流水号：</span>{{stempInfo.bankSerialNo}}</div>
+            <div><span>订单交易时间：</span>{{stempInfo.payTime | dateFormatYmd}}</div>
           </div>
           <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务。)</p>
         </template>
@@ -369,12 +369,8 @@
         http.get("/gateway/enroll/api/erRegister/admissionsProgress/" + idCard).then((xhr) => {
           if (xhr.code) return;
           vm.isLoading = false;
-          if (vm.orderNo) {
-            xhr.data.orderNo = vm.orderNo;
-            xhr.data.ifPayment = 1;
-          }
           vm.stempInfo = xhr.data;
-          console.log(vm.stempInfo)
+          console.log('页面数据',vm.stempInfo);
           vm.viewScore();
           vm.getPlanInfo();
           vm.expireFlag = false;
@@ -563,10 +559,10 @@
       paySuccess(){
         let vm = this;
         http.get("/gateway/enroll/erCmbPay/singleOrder?orderNo=" + vm.orderNo).then(function (xhr) {
-              console.log('回调成功',xhr);
-             // if(xhr.returnStatus == 0){
-             //
-             // }
+             if(xhr.body.returnStatus == 0){
+                // 回调成功
+               console.log('回调成功',xhr.body);
+             }
         });
       },
     }
