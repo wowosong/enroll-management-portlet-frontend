@@ -490,8 +490,7 @@
             "amount": '0.01',   //  金额
             "payNoticePara": `${vm.stempInfo.idCard}|${vm.stempInfo.guardianPhone}`,//订单号身份证号
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',    //  支付成功回调地址
-            // "returnUrl": 'http://zs.jxfls.com/center?progress=true'
-            "returnUrl": 'http://localhost:8080/center?progress=true'
+            "returnUrl": 'http://zs.jxfls.com/center?progress=true'
           }
         }
         http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
