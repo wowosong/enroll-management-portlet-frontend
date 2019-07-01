@@ -231,7 +231,7 @@
             <template v-if="stempInfo.paymentType == 1">
               <div><span>订单号：</span>{{stempInfo.orderNumber}}</div>
               <div><span>交易流水号：</span>{{stempInfo.paymentNum}}</div>
-              <div><span>订单交易时间：</span>{{stempInfo.modifyTime | dateFormatYmd}}</div>
+              <div><span>订单交易时间：</span>{{stempInfo.modifyTime | dateFormatYmdHm}}</div>
             </template>
           </div>
           <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务)</p>
@@ -590,7 +590,7 @@
             "payNoticePara": `${vm.stempInfo.id}|${vm.stempInfo.guardianPhone}`,//注册id电话
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',
             "returnUrl": 'http://zs.jxfls.com/center?progress=true',
-            "productDesc": '测试扫码支付', //  扫码描述
+            "productDesc": '扫码支付', //  扫码描述
             "agrNo": vm.agrNo,    //  客户协议号,商户生成,确保客户与协议号一一对应
             "merchantSerialNo": vm.merchantSerialNo, //  首次签约必填,协议开通请求流水号，开通协议时必填。
             "signNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/signNotice',
