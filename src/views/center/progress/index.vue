@@ -218,7 +218,7 @@
         </div>
         <!-- 缴费成功 -->
         <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null">
-          <p class="bottomBorder">您于<span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
+          <p class="bottomBorder text-left">您于<span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
             class="color1">{{stempInfo.payAmount || 0}}元</span>，请及时完成
             <span class="color1">校服登记</span>~
             <span class="uniform-btn" @click="changeTab">校服登记</span>
