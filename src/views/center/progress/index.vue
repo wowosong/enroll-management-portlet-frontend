@@ -35,9 +35,10 @@
                   </span>
                     被学校录取
                     <span v-if="stempInfo.scholarship">
-                    ，并获得奖学金{{stempInfo.scholarship}}元/3年~
+                    ，并获得本学年奖学金{{stempInfo.scholarship}}元~
                   </span>
                   </div>
+                  <div class="text-left font-12">备注：{{stempInfo.remark}}</div>
                   <div class="over_hint text-left">
                     请在截止时间前完成缴费~
                     <span class="color1">
@@ -97,7 +98,7 @@
                   <el-form label-width="120px" label-position="left" v-if="isPhone">
                     <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
                     <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
-                    <el-form-item label="奖学金：">{{nowStuInfo.scholarship || 0}}</el-form-item>
+                    <el-form-item label="本学年奖学金：">{{nowStuInfo.scholarship || 0}}</el-form-item>
                     <el-form-item label="应缴费：">{{nowStuInfo.assessment || 0}}</el-form-item>
                   </el-form>
                   <!--pc-->
@@ -106,7 +107,7 @@
                     <tr>
                       <th>身份证/护照号</th>
                       <th>姓名</th>
-                      <th>奖学金(元)</th>
+                      <th>本学年奖学金(元)</th>
                       <th>应缴费(元)</th>
                     </tr>
                     </thead>
@@ -132,12 +133,23 @@
                       <button class="save" @click="submit">提交预约</button>
                     </template>
                     <template v-else>
+                      <div class="agreement">
+                        <a @click="payDialog = true">点击查看《在线缴费须知》</a>
+                        <a target="_blank" href="http://openhome.cmbchina.com/pay/H5Pay/AppIntro/SceneIntro.aspx">点击查看《招行一网通介绍》</a>
+                        <el-checkbox v-model="isAgree">我已同意并了解《在线缴费须知》事项。</el-checkbox>
+                      </div>
                       <template v-if="isPhone">
-                        <button class="save" @click="payBefore('web')">在线支付</button>
+                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="payBefore('web')">
+                          在线支付
+                        </button>
                       </template>
                       <template v-if="!isPhone">
-                        <button class="save" @click="payBefore('web')">网页支付</button>
-                        <button class="save" @click="payBefore('h5')">扫码支付</button>
+                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="payBefore('web')">
+                          网页支付
+                        </button>
+                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="payBefore('h5')">
+                          扫码支付
+                        </button>
                       </template>
                     </template>
                   </div>
@@ -209,17 +221,20 @@
           <p class="bottomBorder">您于<span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
             class="color1">{{stempInfo.payAmount || 0}}元</span>，请及时完成
             <span class="color1">校服登记</span>~
+            <span class="uniform-btn" @click="changeTab">校服登记</span>
           </p>
           <div class="pay_info">
             <div><span>姓名：</span>{{stempInfo.stuName}}</div>
             <div><span>身份证/护照号：</span>{{stempInfo.idCard}}</div>
-            <div><span>奖学金：</span>{{stempInfo.scholarship}}元</div>
+            <div><span>本学年奖学金：</span>{{stempInfo.scholarship}}元</div>
             <div><span>实际缴费：</span>{{stempInfo.payAmount}}元</div>
-            <div><span>订单号：</span>{{stempInfo.orderNo}}</div>
-            <div><span>交易流水号：</span>{{stempInfo.bankSerialNo}}</div>
-            <div><span>订单交易时间：</span>{{stempInfo.payTime | dateFormatYmd}}</div>
+            <template v-if="stempInfo.payType == 1">
+              <div><span>订单号：</span>{{stempInfo.orderNumber}}</div>
+              <div><span>交易流水号：</span>{{stempInfo.paymentNum}}</div>
+              <div><span>订单交易时间：</span>{{stempInfo.modifyTime | dateFormatYmd}}</div>
+            </template>
           </div>
-          <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务。)</p>
+          <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务)</p>
         </template>
         <!-- 分班结果 -->
         <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport == null">分班与寝室分配已公布~
@@ -268,6 +283,20 @@
         <!-- <reportInfo></reportInfo> -->
       </template>
     </div>
+    <!--缴费须知-->
+    <el-dialog title="在线缴费须知" center :visible.sync="payDialog" width="600px">
+      <ul class="pay-know">
+        <li>请准备一张银行卡，确认卡内金额满足缴费；</li>
+        <li>请确认该卡的银行预留手机号能正常接收短信；</li>
+        <li>请确认是本人信息后，点击界面下方的“支付”按钮进入招行一网通界面缴费；</li>
+        <li>若是招行一网通新用户，需手机注册，同时添加银联银行卡；</li>
+        <li>不要点击任何形式推送的缴费网页链接；</li>
+        <li>缴费票据请报到时到校打印；</li>
+        <li>缴费前请仔细阅读《招行一网通介绍》；</li>
+        <li>本人已阅读须知，并承担相应责任。</li>
+      </ul>
+    </el-dialog>
+
   </div>
 </template>
 <script>
@@ -293,6 +322,8 @@
     },
     data() {
       return {
+        payDialog: false,
+        isAgree: false,
         isLoading: false,
         stempInfo: {},
         formData: {
@@ -323,7 +354,9 @@
         isOnLine: 'onLine',
         orderNo: '',
         jsonTest: '',
-        url: window.systemParameter.CmbBank_B2B_Pay
+        //协议号
+        agrNo:'',
+        merchantSerialNo:''
       }
     },
     computed: {
@@ -333,7 +366,7 @@
     },
     mounted() {
       this.orderNo = localStorage.getItem('orderNo');
-      if(this.orderNo){
+      if (this.orderNo) {
         this.paySuccess();
       }
       this.query();
@@ -344,7 +377,7 @@
         let obj = {
           id: vm.stempInfo.id,
           paymentReserve: id,
-        }
+        };
         http.post("/gateway/enroll/erPayment/reserve", obj).then((xhr) => {
           if (xhr.data.code) {
             return;
@@ -370,7 +403,7 @@
           if (xhr.code) return;
           vm.isLoading = false;
           vm.stempInfo = xhr.data;
-          console.log('页面数据',vm.stempInfo);
+          console.log('页面数据', vm.stempInfo);
           vm.viewScore();
           vm.getPlanInfo();
           vm.expireFlag = false;
@@ -381,6 +414,7 @@
           if (vm.stempInfo.paymentReserve) {
             vm.getReserve(vm.stempInfo.paymentReserve);
           }
+          this.getAgrNo();
         });
       },
       getPlanInfo() {
@@ -433,6 +467,25 @@
           }
         });
       },
+      //获取客户协议号
+      getAgrNo() {
+        let vm = this;
+        http.get(`/gateway/enroll/erCmbPay/getAgrNo/${vm.stempInfo.id}`).then(function (xhr) {
+          //生成协议号
+          let charactors = "1234567890";
+          let random = '';
+          for (let j = 1; j <= 4; j++) {
+            random = random + charactors.charAt(parseInt(10 * Math.random()));
+          }
+          let date = new Date();
+          if(xhr.bodyText){
+            vm.agrNo = xhr.bodyText;
+          }else{
+            vm.agrNo = 'agrNo' + date.getTime() + random;
+          }
+          vm.merchantSerialNo = 'ms' + date.getTime() + random;
+        });
+      },
       //支付前调用
       payBefore(type) {
         let vm = this;
@@ -442,27 +495,28 @@
         for (let j = 1; j <= 4; j++) {
           random = random + charactors.charAt(parseInt(10 * Math.random()));
         }
-         let date = new Date();
-         vm.orderNo = 'JX' + date.getTime() + random;
+        let date = new Date();
+        vm.orderNo = 'JX' + date.getTime() + random;
         let obj = {
-          regId:vm.stempInfo.id, // 注册id
-          mobileNo:vm.stempInfo.guardianPhone,
-          payType:type == 'h5' ? 1 : 2,
-          amount:vm.nowStuInfo.assessment,
-          orderNo:vm.orderNo
+          regId: vm.stempInfo.id, // 注册id
+          mobileNo: vm.stempInfo.guardianPhone,
+          payType: type == 'h5' ? 1 : 2,
+          amount: vm.nowStuInfo.assessment,
+          orderNo: vm.orderNo,
+          agrNo:vm.agrNo
         };
-        if(type == 'web'){
+        if (type == 'web') {
           obj.payDesc = '网页支付'
         }
         http.post("/gateway/enroll/erCmbPay/insert", obj).then(function (xhr) {
-          if(xhr.status == 2){
+          if (xhr.status == 2) {
             vm.$message.warning('请重新支付');
             return
-          }else{
+          } else {
             localStorage.setItem('orderNo', vm.orderNo);
-            if(type == 'web'){
-                vm.PayCost()
-            }else{
+            if (type == 'web') {
+              vm.PayCost()
+            } else {
               vm.ScanPay()
             }
           }
@@ -486,9 +540,12 @@
             "amount": '0.01',   //  金额
             "payNoticePara": `${vm.stempInfo.id}|14786154890`,//注册id电话
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',    //  支付成功回调地址
-            "returnUrl": 'http://zs.jxfls.com/center?progress=true'
+            "returnUrl": 'http://zs.jxfls.com/center?progress=true',
+            "agrNo": vm.agrNo,    //  客户协议号,商户生成,确保客户与协议号一一对应
+            "merchantSerialNo": vm.merchantSerialNo, //  首次签约必填,协议开通请求流水号，开通协议时必填。
+            "signNoticeUrl": 'http://119.23.47.139/gateway/enroll/erCmbPay/signNotice',
           }
-        }
+        };
         http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
           .then((xhr) => {
             jsonRequestData.sign = xhr.bodyText;
@@ -533,7 +590,10 @@
             "payNoticePara": `${vm.stempInfo.id}|${vm.stempInfo.guardianPhone}`,//注册id电话
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',
             "returnUrl": 'http://zs.jxfls.com/center?progress=true',
-            "productDesc": '测试扫码支付' //  扫码描述
+            "productDesc": '测试扫码支付', //  扫码描述
+            "agrNo": vm.agrNo,    //  客户协议号,商户生成,确保客户与协议号一一对应
+            "merchantSerialNo": vm.merchantSerialNo, //  首次签约必填,协议开通请求流水号，开通协议时必填。
+            "signNoticeUrl": 'http://119.23.47.139/gateway/enroll/erCmbPay/signNotice',
           }
         }
         http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
@@ -556,14 +616,17 @@
           })
       },
       //  支付成功回调
-      paySuccess(){
+      paySuccess() {
         let vm = this;
         http.get("/gateway/enroll/erCmbPay/singleOrder?orderNo=" + vm.orderNo).then(function (xhr) {
-             if(xhr.body.returnStatus == 0){
-                // 回调成功
-               console.log('回调成功',xhr.body);
-             }
+          if (xhr.body.returnStatus == 0) {
+            // 回调成功
+            console.log('回调成功', xhr.body);
+          }
         });
+      },
+      changeTab() {
+        this.$emit('changeTab')
       },
     }
   }
@@ -630,6 +693,9 @@
     .save {
       background: #2f3861;
       margin: 0 8px;
+    }
+    .disabled {
+      background-color: rgba(204, 204, 204, 1);
     }
   }
 
@@ -742,6 +808,37 @@
     margin: 12px 0;
     font-size: 12px;
   }
+
+  .uniform-btn {
+    font-size: 12px;
+    color: #2f3861;
+    border: 1px solid #2f3861;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 4px 30px;
+    margin-left: 12px;
+    cursor: pointer;
+  }
+
+  .font-12 {
+    font-size: 12px;
+  }
+
+  .agreement {
+    text-align: left;
+    font-size: 12px;
+    margin-bottom: 24px;
+    a {
+      display: block;
+      color: #409eff;
+    }
+  }
+
+  .pay-know {
+    line-height: 2;
+    list-style: decimal;
+    padding: 0 16px;
+  }
 </style>
 <style lang="less" scoped>
   //warp
@@ -784,9 +881,8 @@
       color: #2f3861;
       border: 1px solid #2f3861;
       border-radius: 4px;
-      margin: 0 auto;
+      margin: 10px auto;
       display: block;
-      margin-top: 10px;
     }
     .phone_scores {
       & > div {
@@ -815,5 +911,24 @@
     .el-form-item {
       margin-bottom: 0;
     }
+    .font-12{
+      margin-left: 24px;
+    }
+    .uniform-btn{
+      padding: 0 12px;
+    }
   }
+</style>
+<style lang="less">
+  .el-checkbox__label {
+    font-size: 12px;
+    color: #aa2f33;
+  }
+
+  .is_phone {
+    .el-dialog {
+      width: 90% !important;
+    }
+  }
+
 </style>
