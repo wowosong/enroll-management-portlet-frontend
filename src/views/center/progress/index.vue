@@ -228,7 +228,7 @@
             <div><span>身份证/护照号：</span>{{stempInfo.idCard}}</div>
             <div><span>本学年奖学金：</span>{{stempInfo.scholarship}}元</div>
             <div><span>实际缴费：</span>{{stempInfo.payAmount}}元</div>
-            <template v-if="stempInfo.payType == 1">
+            <template v-if="stempInfo.paymentType == 1">
               <div><span>订单号：</span>{{stempInfo.orderNumber}}</div>
               <div><span>交易流水号：</span>{{stempInfo.paymentNum}}</div>
               <div><span>订单交易时间：</span>{{stempInfo.modifyTime | dateFormatYmd}}</div>
@@ -537,13 +537,13 @@
             "merchantNo": "000133", //  商户号
             "date": vm.$options.filters['dateFormat'](date.getTime()),    //  当前日期按yyyyMMdd获取
             "orderNo": vm.orderNo,  //  订单号,商户定义(32位,支持数字,字母)
-            "amount": '0.01',   //  金额
-            "payNoticePara": `${vm.stempInfo.id}|14786154890`,//注册id电话
+            "amount": '99.99',   //  金额
+            "payNoticePara": `${vm.stempInfo.id}|14786154890`,//注册id电话 vm.stempInfo.guardianPhone
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',    //  支付成功回调地址
             "returnUrl": 'http://zs.jxfls.com/center?progress=true',
             "agrNo": vm.agrNo,    //  客户协议号,商户生成,确保客户与协议号一一对应
             "merchantSerialNo": vm.merchantSerialNo, //  首次签约必填,协议开通请求流水号，开通协议时必填。
-            "signNoticeUrl": 'http://119.23.47.139/gateway/enroll/erCmbPay/signNotice',
+            "signNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/signNotice',
           }
         };
         http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
@@ -586,14 +586,14 @@
             "merchantNo": "000133",
             "date": this.$options.filters['dateFormat'](date.getTime()),
             "orderNo": vm.orderNo,  //  订单号
-            "amount": vm.nowStuInfo.assessment,
+            "amount": '99.99',//vm.nowStuInfo.assessment
             "payNoticePara": `${vm.stempInfo.id}|${vm.stempInfo.guardianPhone}`,//注册id电话
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',
             "returnUrl": 'http://zs.jxfls.com/center?progress=true',
             "productDesc": '测试扫码支付', //  扫码描述
             "agrNo": vm.agrNo,    //  客户协议号,商户生成,确保客户与协议号一一对应
             "merchantSerialNo": vm.merchantSerialNo, //  首次签约必填,协议开通请求流水号，开通协议时必填。
-            "signNoticeUrl": 'http://119.23.47.139/gateway/enroll/erCmbPay/signNotice',
+            "signNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/signNotice',
           }
         }
         http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
