@@ -493,7 +493,7 @@
           random = random + charactors.charAt(parseInt(10 * Math.random()));
         }
         let date = new Date();
-        vm.orderNo = 'JX' + date.getTime() + random;
+        vm.orderNo = 'JX' + vm.$options.filters['dateFormat'](date.getTime())+ date.getTime() + random;
         let obj = {
           regId: vm.stempInfo.id, // 注册id
           mobileNo: vm.stempInfo.guardianPhone,
@@ -503,7 +503,7 @@
           agrNo:vm.agrNo
         };
         if (type == 'web') {
-          obj.payDesc = '网页支付'
+          obj.payDesc = '嘉祥招生缴费'
         }
         http.post("/gateway/enroll/erCmbPay/insert", obj).then(function (xhr) {
           if (xhr.status == 2) {
@@ -511,7 +511,7 @@
             return
           } else {
             localStorage.setItem('orderNo', vm.orderNo);
-            if (type == 'web') {
+            if (type == 'h5') {
               vm.PayCost()
             } else {
               vm.ScanPay()
@@ -565,14 +565,6 @@
       ScanPay() {
         let vm  = this;
         let date = new Date();
-        let charactors = "1234567890";
-        let random = '';
-        for (let j = 1; j <= 4; j++) {
-          random = random + charactors.charAt(parseInt(10 * Math.random()));
-        }
-        //订单号
-        let orderNo = 'JX' + date.getTime() + random;
-        localStorage.setItem('orderNo', orderNo);
         let jsonRequestData = {
           "version": "1.0",
           "charset": "UTF-8",
@@ -593,7 +585,7 @@
             "merchantSerialNo": vm.merchantSerialNo, //  首次签约必填,协议开通请求流水号，开通协议时必填。
             "signNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/signNotice',
           }
-        }
+        };
         http.post('/gateway/enroll/erCmbPay/getSignStr', jsonRequestData.reqData)
           .then((xhr) => {
             jsonRequestData.sign = xhr.bodyText;
