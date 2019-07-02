@@ -1,285 +1,289 @@
 <template>
-  <div class="progress" v-loading="isLoading">
-    <div class="rate_hint">
-      <div class="hint_img">
-        <img src="@/imgs/pass.png" v-if="stempInfo.ifEnter == 1">
-        <img src="@/imgs/sh.png" v-if="stempInfo.ifEnter != 1">
-      </div>
-      <div class="hint_info">
+  <div>
+    <div class="progress" v-loading="isLoading">
+      <div class="rate_hint">
+        <div class="hint_img">
+          <img src="@/imgs/pass.png" v-if="stempInfo.ifEnter == 1">
+          <img src="@/imgs/sh.png" v-if="stempInfo.ifEnter != 1">
+        </div>
+        <div class="hint_info">
 
-        <!-- 完成报名 -->
-        <template v-if="stempInfo.regStatus != 1">
-          <p class="text-left">您于<span class="color1">{{stempInfo.createTime | dateFormatYmd}}</span>完成网上报名，请在<span
-            class="color1">“报名信息”</span>页面完善信息~
-          </p>
-          <p class="text-left">并按学校通知时间<span class="color1">到校现场确认</span>，打印{{str}}卡~</p>
-        </template>
+          <!-- 完成报名 -->
+          <template v-if="stempInfo.regStatus != 1">
+            <p class="text-left">您于<span class="color1">{{stempInfo.createTime | dateFormatYmd}}</span>完成网上报名，请在<span
+              class="color1">“报名信息”</span>页面完善信息~
+            </p>
+            <p class="text-left">并按学校通知时间<span class="color1">到校现场确认</span>，打印{{str}}卡~</p>
+          </template>
 
-        <!-- 完成测试卡 -->
-        <template v-if="stempInfo.regStatus == 1 && stempInfo.ifEnter == null">
-          <p class="text-left">您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了{{str}}卡~</p>
-          <p class="text-left">并按{{str}}卡的{{str}}时间到校<span class="color1">参加{{str}}</span>~</p>
-          <span v-if="!isPhone" class="uniform-btn m-t" @click="showCard = true">打印测试卡</span>
-        </template>
-        <!-- 录取结果-->
-        <div v-if="!stempInfo.ifPayment">
-          <div v-if="stempInfo.ifEnter == 1">
-            <!-- 录取 -->
-            <template v-if="!expireFlag">
-              <!-- 预约缴费 -->
-              <template v-if="!reserveObj">
-                <div class="bottomBorder">
-                  <div class="text-left">
-                    您于
-                    <span class="color1">
+          <!-- 完成测试卡 -->
+          <template v-if="stempInfo.regStatus == 1 && stempInfo.ifEnter == null">
+            <p class="text-left">您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了{{str}}卡~
+            </p>
+            <p class="text-left">并按{{str}}卡的{{str}}时间到校<span class="color1">参加{{str}}</span>~</p>
+            <span v-if="!isPhone" class="uniform-btn m-t" @click="print">打印测试卡</span>
+          </template>
+          <!-- 录取结果-->
+          <div v-if="!stempInfo.ifPayment">
+            <div v-if="stempInfo.ifEnter == 1">
+              <!-- 录取 -->
+              <template v-if="!expireFlag">
+                <!-- 预约缴费 -->
+                <template v-if="!reserveObj">
+                  <div class="bottomBorder">
+                    <div class="text-left">
+                      您于
+                      <span class="color1">
                     {{stempInfo.admitTime | dateFormatYmd}}
                   </span>
-                    被学校录取
-                    <span v-if="stempInfo.scholarship">
+                      被学校录取
+                      <span v-if="stempInfo.scholarship">
                     ，并获得本学年奖学金{{stempInfo.scholarship}}元~
                   </span>
-                  </div>
-                  <div class="text-left font-12" v-if="stempInfo.remark">备注：{{stempInfo.remark}}</div>
-                  <div class="over_hint text-left">
-                    请在截止时间前完成缴费~
-                    <span class="color1">
+                    </div>
+                    <div class="text-left font-12" v-if="stempInfo.remark">备注：{{stempInfo.remark}}</div>
+                    <div class="over_hint text-left">
+                      请在截止时间前完成缴费~
+                      <span class="color1">
                     (缴费截止时间：{{stempInfo.paymentDeadline | dateFormatYmd}})
                   </span>
-                  </div>
-                </div>
-                <!--成绩-->
-                <div class="score-wrap" v-if="nowStuInfo.isShowScore == 1">
-                  <div class="score-header bottomBorder">
-                    <span class="score-txt">成绩</span>
-                  </div>
-                  <!--h5-->
-                  <el-form label-width="120px" label-position="left" v-if="isPhone">
-                    <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
-                    <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
-                    <template v-for="(stuScore,index) in nowStuInfo.scores">
-                      <el-form-item :label="stuScore.name">{{stuScore.testScore}}</el-form-item>
-                    </template>
-                  </el-form>
-                  <!--pc-->
-                  <table class="my-table" v-if="!isPhone">
-                    <thead>
-                    <tr>
-                      <th>身份证/护照号</th>
-                      <th>姓名</th>
-                      <th v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
-                        {{stuScore.name}}
-                      </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                      <td>{{nowStuInfo.idCard}}</td>
-                      <td>{{nowStuInfo.stuName}}</td>
-                      <td v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
-                        {{stuScore.testScore}}
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <!--缴费-->
-                <div class="score-wrap">
-                  <div class="score-header bottomBorder">
-                    <span class="score-txt">缴费:请选择支付方式</span>
-                    <el-radio-group v-model="isOnLine">
-                      <el-radio label="onLine">在线缴费</el-radio>
-                      <el-radio label="underLine">线下缴费</el-radio>
-                    </el-radio-group>
-                    <span class="down-file" v-if="false">点击下载《缴费标准》</span>
-                  </div>
-                  <div class="pay-tips text-left">
-                    <span class="color1">缴费金额</span>
-                  </div>
-                  <!--h5-->
-                  <el-form label-width="120px" label-position="left" v-if="isPhone">
-                    <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
-                    <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
-                    <el-form-item label="本学年奖学金：">{{nowStuInfo.scholarship || 0}}</el-form-item>
-                    <el-form-item label="应缴费：">{{nowStuInfo.assessment || 0}}</el-form-item>
-                  </el-form>
-                  <!--pc-->
-                  <table class="my-table" v-if="!isPhone">
-                    <thead>
-                    <tr>
-                      <th>身份证/护照号</th>
-                      <th>姓名</th>
-                      <th>本学年奖学金(元)</th>
-                      <th>应缴费(元)</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                      <td>{{nowStuInfo.stuName}}</td>
-                      <td>{{nowStuInfo.idCard}}</td>
-                      <td>{{nowStuInfo.scholarship || 0}}</td>
-                      <td>{{nowStuInfo.assessment || 0}}</td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <template v-if="isOnLine == 'underLine'">
-                    <div class="pay-tips text-left">
-                      <span class="color1">预约线下缴费的时间段</span>（友情提示：为了节省您宝贵的时间，可进行缴费时间预约）
                     </div>
-                    <reserve :planId="planId" @serReserve="serReserve"/>
-                  </template>
-                  <div class="sign-btn">
-                    <template v-if="isOnLine == 'underLine'">
-                      <button class="save" @click="submit">提交预约</button>
-                    </template>
-                    <template v-else>
-                      <div class="agreement">
-                        <a @click="payDialog = true">点击查看《在线缴费须知》</a>
-                        <a target="_blank" href="http://openhome.cmbchina.com/pay/H5Pay/AppIntro/SceneIntro.aspx">点击查看《招行一网通介绍》</a>
-                        <el-checkbox v-model="isAgree">我已同意并了解《在线缴费须知》事项。</el-checkbox>
-                      </div>
-                      <template v-if="isPhone">
-                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="getAgrNo('h5')">
-                          在线支付
-                        </button>
-                      </template>
-                      <template v-if="!isPhone">
-                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="getAgrNo('web')">
-                          在线支付
-                        </button>
-                      </template>
-                    </template>
                   </div>
-                </div>
-              </template>
+                  <!--成绩-->
+                  <div class="score-wrap" v-if="nowStuInfo.isShowScore == 1">
+                    <div class="score-header bottomBorder">
+                      <span class="score-txt">成绩</span>
+                    </div>
+                    <!--h5-->
+                    <el-form label-width="120px" label-position="left" v-if="isPhone">
+                      <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
+                      <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
+                      <template v-for="(stuScore,index) in nowStuInfo.scores">
+                        <el-form-item :label="stuScore.name">{{stuScore.testScore}}</el-form-item>
+                      </template>
+                    </el-form>
+                    <!--pc-->
+                    <table class="my-table" v-if="!isPhone">
+                      <thead>
+                      <tr>
+                        <th>身份证/护照号</th>
+                        <th>姓名</th>
+                        <th v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
+                          {{stuScore.name}}
+                        </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr>
+                        <td>{{nowStuInfo.idCard}}</td>
+                        <td>{{nowStuInfo.stuName}}</td>
+                        <td v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
+                          {{stuScore.testScore}}
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--缴费-->
+                  <div class="score-wrap">
+                    <div class="score-header bottomBorder">
+                      <span class="score-txt">缴费:请选择支付方式</span>
+                      <el-radio-group v-model="isOnLine">
+                        <el-radio label="onLine">在线缴费</el-radio>
+                        <el-radio label="underLine">线下缴费</el-radio>
+                      </el-radio-group>
+                      <span class="down-file" v-if="false">点击下载《缴费标准》</span>
+                    </div>
+                    <div class="pay-tips text-left">
+                      <span class="color1">缴费金额</span>
+                    </div>
+                    <!--h5-->
+                    <el-form label-width="120px" label-position="left" v-if="isPhone">
+                      <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
+                      <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
+                      <el-form-item label="本学年奖学金：">{{nowStuInfo.scholarship || 0}}</el-form-item>
+                      <el-form-item label="应缴费：">{{nowStuInfo.assessment || 0}}</el-form-item>
+                    </el-form>
+                    <!--pc-->
+                    <table class="my-table" v-if="!isPhone">
+                      <thead>
+                      <tr>
+                        <th>身份证/护照号</th>
+                        <th>姓名</th>
+                        <th>本学年奖学金(元)</th>
+                        <th>应缴费(元)</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr>
+                        <td>{{nowStuInfo.stuName}}</td>
+                        <td>{{nowStuInfo.idCard}}</td>
+                        <td>{{nowStuInfo.scholarship || 0}}</td>
+                        <td>{{nowStuInfo.assessment || 0}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div>
+                    <template v-if="isOnLine == 'underLine'">
+                      <div class="pay-tips text-left">
+                        <span class="color1">预约线下缴费的时间段</span>（友情提示：为了节省您宝贵的时间，可进行缴费时间预约）
+                      </div>
+                      <reserve :planId="planId" @serReserve="serReserve"/>
+                    </template>
+                    <div class="sign-btn">
+                      <template v-if="isOnLine == 'underLine'">
+                        <button class="save" @click="submit">提交预约</button>
+                      </template>
+                      <template v-else>
+                        <div class="agreement">
+                          <a @click="payDialog = true">点击查看《在线缴费须知》</a>
+                          <a target="_blank" href="http://openhome.cmbchina.com/pay/H5Pay/AppIntro/SceneIntro.aspx">点击查看《招行一网通介绍》</a>
+                          <el-checkbox v-model="isAgree">我已同意并了解《在线缴费须知》事项。</el-checkbox>
+                        </div>
+                        <template v-if="isPhone">
+                          <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="getAgrNo('h5')">
+                            在线支付
+                          </button>
+                        </template>
+                        <template v-if="!isPhone">
+                          <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="getAgrNo('web')">
+                            在线支付
+                          </button>
+                        </template>
+                      </template>
+                    </div>
+                  </div>
+                </template>
 
-              <!-- 预约缴费成功 -->
-              <template v-if="reserveObj">
-                <div class="text-left">
-                  <i class="el-icon-circle-check" style="color: #00ff00">
-                    请在预约时间段前往学校缴费
-                  </i>
-                </div>
-                <div class="text-left" style="color: #ff0000">
-                  {{reserveObj.reserveDate | dateFormatYmd}}&nbsp;{{reserveObj.timeText}}
-                </div>
+                <!-- 预约缴费成功 -->
+                <template v-if="reserveObj">
+                  <div class="text-left">
+                    <i class="el-icon-circle-check" style="color: #00ff00">
+                      请在预约时间段前往学校缴费
+                    </i>
+                  </div>
+                  <div class="text-left" style="color: #ff0000">
+                    {{reserveObj.reserveDate | dateFormatYmd}}&nbsp;{{reserveObj.timeText}}
+                  </div>
+                </template>
               </template>
-            </template>
-            <!-- 逾期未缴费 -->
-            <template v-if="expireFlag">
-              <p class="text-left">您<span class="color1">逾期未缴费</span>，视为自动放弃录取资格~</p>
+              <!-- 逾期未缴费 -->
+              <template v-if="expireFlag">
+                <p class="text-left">您<span class="color1">逾期未缴费</span>，视为自动放弃录取资格~</p>
+              </template>
+            </div>
+            <!-- 未录取 -->
+            <template v-if="stempInfo.ifEnter == 0">
+              <div class="text-left">您<span class="color1">未被录取</span></div>
+              <div class="over_hint text-left">人生的机会还有很多哦...</div>
+              <!--<span class="btn" @click="viewScore()">查看成绩</span>-->
+              <!--  未录取,并且显示成绩开关==1 显示成绩 -->
+              <!--成绩-->
+              <div class="score-wrap" v-if="nowStuInfo.isShowScore == 1">
+                <div class="score-header bottomBorder">
+                  <span class="score-txt">成绩</span>
+                </div>
+                <!--h5-->
+                <el-form label-width="120px" label-position="left" v-if="isPhone">
+                  <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
+                  <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
+                  <template v-for="(stuScore,index) in nowStuInfo.scores">
+                    <el-form-item :label="stuScore.name">{{stuScore.testScore}}</el-form-item>
+                  </template>
+                </el-form>
+                <!--pc-->
+                <table class="my-table" v-if="!isPhone">
+                  <thead>
+                  <tr>
+                    <th>身份证/护照号</th>
+                    <th>姓名</th>
+                    <th v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
+                      {{stuScore.name}}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{nowStuInfo.idCard}}</td>
+                    <td>{{nowStuInfo.stuName}}</td>
+                    <td v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
+                      {{stuScore.testScore}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
             </template>
           </div>
-          <!-- 未录取 -->
-          <template v-if="stempInfo.ifEnter == 0">
-            <div class="text-left">您<span class="color1">未被录取</span></div>
-            <div class="over_hint text-left">人生的机会还有很多哦...</div>
-            <!--<span class="btn" @click="viewScore()">查看成绩</span>-->
-            <!--  未录取,并且显示成绩开关==1 显示成绩 -->
-            <!--成绩-->
-            <div class="score-wrap" v-if="nowStuInfo.isShowScore == 1">
-              <div class="score-header bottomBorder">
-                <span class="score-txt">成绩</span>
-              </div>
-              <!--h5-->
-              <el-form label-width="120px" label-position="left" v-if="isPhone">
-                <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
-                <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
-                <template v-for="(stuScore,index) in nowStuInfo.scores">
-                  <el-form-item :label="stuScore.name">{{stuScore.testScore}}</el-form-item>
-                </template>
-              </el-form>
-              <!--pc-->
-              <table class="my-table" v-if="!isPhone">
-                <thead>
-                <tr>
-                  <th>身份证/护照号</th>
-                  <th>姓名</th>
-                  <th v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
-                    {{stuScore.name}}
-                  </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <td>{{nowStuInfo.idCard}}</td>
-                  <td>{{nowStuInfo.stuName}}</td>
-                  <td v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
-                    {{stuScore.testScore}}
-                  </td>
-                </tr>
-                </tbody>
-              </table>
+          <!-- 缴费成功 -->
+          <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null">
+            <p class="bottomBorder text-left">您于<span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
+              class="color1">{{stempInfo.payAmount || 0}}元</span>，请及时完成
+              <span class="color1">校服登记</span>~
+              <span class="uniform-btn" @click="changeTab">校服登记</span>
+            </p>
+            <div class="pay_info">
+              <div><span>姓名：</span>{{stempInfo.stuName}}</div>
+              <div><span>身份证/护照号：</span>{{stempInfo.idCard}}</div>
+              <div><span>本学年奖学金：</span>{{stempInfo.scholarship}}元</div>
+              <div><span>实际缴费：</span>{{stempInfo.payAmount}}元</div>
+              <template v-if="stempInfo.paymentType == 1">
+                <div><span>订单号：</span>{{stempInfo.orderNumber}}</div>
+                <div><span>交易流水号：</span>{{stempInfo.paymentNum}}</div>
+                <div><span>订单交易时间：</span>{{stempInfo.payTime | dateFormatYmdHm}}</div>
+              </template>
+            </div>
+            <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务)</p>
+          </template>
+          <!-- 分班结果 -->
+          <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport == null">分班与寝室分配已公布~
+            <table class="table_list" v-if="!isPhone">
+              <thead>
+              <tr>
+                <th>{{str}}卡编号</th>
+                <th>姓名</th>
+                <th>身份证号</th>
+                <th>校区</th>
+                <th>年级</th>
+                <th>所属班级</th>
+                <th>所属寝室</th>
+              </tr>
+              </thead>
+              <tr>
+                <td>{{stempInfo.signCardCode}}</td>
+                <td>{{stempInfo.stuName}}</td>
+                <td>{{stempInfo.idCard}}</td>
+                <td>{{stempInfo.campusName}}</td>
+                <td>{{stempInfo.gradeName}}</td>
+                <td>{{stempInfo.className}}</td>
+                <td>{{stempInfo.dormitoryName}}</td>
+              </tr>
+            </table>
+            <div v-if="isPhone" class="pay_info">
+              <div><span>{{str}}卡编号：</span>{{stempInfo.signCardCode}}</div>
+              <div><span>姓名：</span>{{stempInfo.stuName}}</div>
+              <div><span>身份证号：</span>{{stempInfo.idCard}}</div>
+              <div><span>校区：</span>{{stempInfo.campusName}}</div>
+              <div><span>年级：</span>{{stempInfo.gradeName}}</div>
+              <div><span>所属班级：</span>{{stempInfo.className}}</div>
+              <div><span>所属寝室：</span>{{stempInfo.dormitoryName}}</div>
             </div>
           </template>
+          <!-- 报到成功 -->
+          <template v-if="stempInfo.ifReport == 1">您于<span
+            class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>完成到校报到注册手续~
+          </template>
+          <!-- 逾期未报到 -->
+          <template v-if="false">您<span class="color1">逾期未到学校报到</span>，视为自动放弃入学资格~</template>
         </div>
-        <!-- 缴费成功 -->
-        <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null">
-          <p class="bottomBorder text-left">您于<span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
-            class="color1">{{stempInfo.payAmount || 0}}元</span>，请及时完成
-            <span class="color1">校服登记</span>~
-            <span class="uniform-btn" @click="changeTab">校服登记</span>
-          </p>
-          <div class="pay_info">
-            <div><span>姓名：</span>{{stempInfo.stuName}}</div>
-            <div><span>身份证/护照号：</span>{{stempInfo.idCard}}</div>
-            <div><span>本学年奖学金：</span>{{stempInfo.scholarship}}元</div>
-            <div><span>实际缴费：</span>{{stempInfo.payAmount}}元</div>
-            <template v-if="stempInfo.paymentType == 1">
-              <div><span>订单号：</span>{{stempInfo.orderNumber}}</div>
-              <div><span>交易流水号：</span>{{stempInfo.paymentNum}}</div>
-              <div><span>订单交易时间：</span>{{stempInfo.payTime | dateFormatYmdHm}}</div>
-            </template>
-          </div>
-          <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务)</p>
-        </template>
-        <!-- 分班结果 -->
-        <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport == null">分班与寝室分配已公布~
-          <table class="table_list" v-if="!isPhone">
-            <thead>
-            <tr>
-              <th>{{str}}卡编号</th>
-              <th>姓名</th>
-              <th>身份证号</th>
-              <th>校区</th>
-              <th>年级</th>
-              <th>所属班级</th>
-              <th>所属寝室</th>
-            </tr>
-            </thead>
-            <tr>
-              <td>{{stempInfo.signCardCode}}</td>
-              <td>{{stempInfo.stuName}}</td>
-              <td>{{stempInfo.idCard}}</td>
-              <td>{{stempInfo.campusName}}</td>
-              <td>{{stempInfo.gradeName}}</td>
-              <td>{{stempInfo.className}}</td>
-              <td>{{stempInfo.dormitoryName}}</td>
-            </tr>
-          </table>
-          <div v-if="isPhone" class="pay_info">
-            <div><span>{{str}}卡编号：</span>{{stempInfo.signCardCode}}</div>
-            <div><span>姓名：</span>{{stempInfo.stuName}}</div>
-            <div><span>身份证号：</span>{{stempInfo.idCard}}</div>
-            <div><span>校区：</span>{{stempInfo.campusName}}</div>
-            <div><span>年级：</span>{{stempInfo.gradeName}}</div>
-            <div><span>所属班级：</span>{{stempInfo.className}}</div>
-            <div><span>所属寝室：</span>{{stempInfo.dormitoryName}}</div>
-          </div>
-        </template>
-        <!-- 报到成功 -->
-        <template v-if="stempInfo.ifReport == 1">您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>完成到校报到注册手续~
-        </template>
-        <!-- 逾期未报到 -->
-        <template v-if="false">您<span class="color1">逾期未到学校报到</span>，视为自动放弃入学资格~</template>
-      </div>
 
-      <!-- 填写报到信息 -->
-      <template v-if="stempInfo.ifReport == 1">请按学校通知时间<span class="color1">到校报到</span>，并<span
-        class="color1">填写报到信息</span>~
-        <!-- <reportInfo></reportInfo> -->
-      </template>
+        <!-- 填写报到信息 -->
+        <template v-if="stempInfo.ifReport == 1">请按学校通知时间<span class="color1">到校报到</span>，并<span
+          class="color1">填写报到信息</span>~
+          <!-- <reportInfo></reportInfo> -->
+        </template>
+      </div>
     </div>
     <!--缴费须知-->
     <el-dialog title="在线缴费须知" center :visible.sync="payDialog" width="600px">
@@ -294,13 +298,14 @@
         <li>本人已阅读须知，并承担相应责任。</li>
       </ul>
     </el-dialog>
-    <card v-if="showCard" :planId="planId" :regId="stempInfo.id"/>
+    <card v-if="planId && stempInfo.id" :planId="planId" :regId="stempInfo.id"/>
   </div>
 </template>
 <script>
   import reserve from "./reserve_comp"
   import reportInfo from "./report_info"
   import card from "./card"
+
   export default {
     components: {
       reserve,
@@ -321,7 +326,7 @@
     },
     data() {
       return {
-        showCard:false,
+        showCard: false,
         payDialog: false,
         isAgree: false,
         isLoading: false,
@@ -355,9 +360,9 @@
         orderNo: '',
         jsonTest: '',
         //协议号
-        agrNo:'',
-        merchantSerialNo:'',
-        amount:''
+        agrNo: '',
+        merchantSerialNo: '',
+        amount: ''
       }
     },
     computed: {
@@ -478,9 +483,9 @@
             random = random + charactors.charAt(parseInt(10 * Math.random()));
           }
           let date = new Date();
-          if(xhr.bodyText){
+          if (xhr.bodyText) {
             vm.agrNo = xhr.bodyText;
-          }else{
+          } else {
             vm.agrNo = 'agrNo' + date.getTime() + random;
           }
           vm.merchantSerialNo = 'ms' + date.getTime() + random;
@@ -497,7 +502,7 @@
           random = random + charactors.charAt(parseInt(10 * Math.random()));
         }
         let date = new Date();
-        vm.orderNo = 'JX' + vm.$options.filters['dateFormat'](date.getTime())+ date.getTime() + random;
+        vm.orderNo = 'JX' + vm.$options.filters['dateFormat'](date.getTime()) + date.getTime() + random;
         vm.amount = random / 10;
         let obj = {
           regId: vm.stempInfo.id, // 注册id
@@ -505,7 +510,7 @@
           payType: type == 'h5' ? 1 : 2,
           amount: vm.amount, // nowStuInfo.assessment
           orderNo: vm.orderNo,
-          agrNo:vm.agrNo
+          agrNo: vm.agrNo
         };
         if (type == 'web') {
           obj.payDesc = '嘉祥招生缴费'
@@ -568,7 +573,7 @@
       },
       //扫码支付
       ScanPay() {
-        let vm  = this;
+        let vm = this;
         let date = new Date();
         let jsonRequestData = {
           "version": "1.0",
@@ -623,6 +628,10 @@
       changeTab() {
         this.$emit('changeTab')
       },
+      //打印测试卡
+      print() {
+        window.print();
+      }
     }
   }
 </script>
@@ -814,9 +823,11 @@
     margin-left: 12px;
     cursor: pointer;
   }
-  .m-t{
+
+  .m-t {
     margin-top: 16px;
   }
+
   .font-12 {
     font-size: 12px;
   }
@@ -908,10 +919,10 @@
     .el-form-item {
       margin-bottom: 0;
     }
-    .font-12{
+    .font-12 {
       margin-left: 24px;
     }
-    .uniform-btn{
+    .uniform-btn {
       padding: 0 12px;
     }
   }

@@ -6,7 +6,7 @@
         <div class="title-wrap">
           <div class="title">
             <div class="logo"><img src="~css_img/logo1.png"></div>
-            <div>
+            <div v-if="planInfo.planSn">
               <span v-html="planInfo.planSn.replace(/#/g, '<p>')"/>
             </div>
           </div>
@@ -78,7 +78,7 @@
         <div class="title-wrap">
           <div class="title">
             <div class="logo"><img src="~css_img/logo1.png"></div>
-            <div>
+            <div v-if="planInfo.planSn">
               <span v-html="planInfo.planSn.replace(/#/g, '<p>')"/>
             </div>
           </div>
@@ -124,9 +124,7 @@
           </tbody>
         </table>
       </div>
-
     </div>
-
   </div>
 </template>
 <script>
@@ -215,7 +213,6 @@
             }
           }
           vm.regInfo = data;
-          console.log('面谈卡',vm.regInfo)
           if (!vm.regInfo.otherData) {
             vm.regInfo.otherData = {};
           }
@@ -230,9 +227,9 @@
 </script>
 <style lang="less" scoped>
   .print-box {
+    width: 900px;
+    display: none;
     padding: 50px;
-    width: 1000px;
-    margin: 0 auto;
     .title-wrap {
       text-align: center;
       font-size: 30px;
@@ -244,7 +241,6 @@
         color: #30385c;
         font-family: "NSimSun";
         font-weight: bold;
-        font-size: 36px;
         .logo {
           width: 70px;
           height: 77px;
@@ -267,15 +263,7 @@
     border: 1px solid #cccccc;
     background: rgba(255, 255, 255, 0.5) url("~css_img/card-bg.png") no-repeat center center;
     .m-a {
-      margin: 40px 60px 40px;
-    }
-  }
-
-  .print-item {
-    border: 1px solid #cccccc;
-    background: rgba(255, 255, 255, 0.5) url("~css_img/card-bg.png") no-repeat center center;
-    .m-a {
-      margin: 38px 60px 60px;
+      margin: 20px 40px 20px;
     }
   }
 
@@ -285,7 +273,6 @@
 
   .confirm_table {
     width: 100%;
-    /*table-layout: fixed;*/
 
     td {
       font-size: 18px;
@@ -311,39 +298,20 @@
 </style>
 <style lang="less">
   @media print {
-    .frameTop, .frameLeft, .operation, .topMenuWrap, .mainBreadcrumb, .comm_action_bar, .print-btn {
-      display: none !important;
+    .progress,.header, .footer,.center_tabs,.float_right {
+      display: none;
     }
-
-    .leftNavFrame .frameRight {
-      margin-left: 0;
+    .comm_main{
+      width: 900px;
+      margin-top: 0;
     }
-
-    .contentPageView .entry_cont {
-      margin: 0;
-      width: auto;
+    .float_left{
+      width: 100%;
+      padding: 0;
     }
-
-    .appFrame, .topNavFrame .contentPageView {
-      padding-top: 0 !important;
-    }
-
-    .leftNavFrame .frameRight .contentPageView {
-      padding: 0 !important;
-      overflow: visible;
-    }
-
-    .leftNavFrame .mainFrame {
-      padding-right: 0;
-    }
-
-    .leftNavFrame .frameRight {
-      overflow: visible;
-    }
-
     .print-box {
+      display: block !important;
       background: #fff;
-      height: 1415px;
     }
   }
 
