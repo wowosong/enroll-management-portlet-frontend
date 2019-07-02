@@ -563,6 +563,7 @@
       },
       //扫码支付
       ScanPay() {
+        let vm  = this;
         let date = new Date();
         let charactors = "1234567890";
         let random = '';
