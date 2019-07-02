@@ -35,10 +35,16 @@
             }
         },
       mounted() {
-        let vm = this;
-        vm.datail = JSON.parse(vm.$route.query.datail);
+        this.initNotice();
       },
       methods: {
+        initNotice() {
+          //初始化数据
+          let vm = this;
+          http.get("/gateway/enroll/api/erNotice/getById/" + vm.$route.query.id).then(function (xhr) {
+            vm.datail = xhr.data.data;
+          })
+        },
         down(file){
           window.filesystemSingleDownload([{id:file.fileId},{filename:file.fileName}])
         },

@@ -19,6 +19,7 @@
         <template v-if="stempInfo.regStatus == 1 && stempInfo.ifEnter == null">
           <p class="text-left">您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了{{str}}卡~</p>
           <p class="text-left">并按{{str}}卡的{{str}}时间到校<span class="color1">参加{{str}}</span>~</p>
+          <span v-if="!isPhone" class="uniform-btn m-t" @click="showCard = true">打印测试卡</span>
         </template>
         <!-- 录取结果-->
         <div v-if="!stempInfo.ifPayment">
@@ -202,8 +203,8 @@
                 </thead>
                 <tbody>
                 <tr>
-                  <td>{{nowStuInfo.stuName}}</td>
                   <td>{{nowStuInfo.idCard}}</td>
+                  <td>{{nowStuInfo.stuName}}</td>
                   <td v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
                     {{stuScore.testScore}}
                   </td>
@@ -293,17 +294,18 @@
         <li>本人已阅读须知，并承担相应责任。</li>
       </ul>
     </el-dialog>
-
+    <card v-if="showCard" :planId="planId" :regId="stempInfo.id"/>
   </div>
 </template>
 <script>
   import reserve from "./reserve_comp"
   import reportInfo from "./report_info"
-
+  import card from "./card"
   export default {
     components: {
       reserve,
-      reportInfo
+      reportInfo,
+      card
     },
     filters: {
       dateFormatHms: function (date) {
@@ -319,6 +321,7 @@
     },
     data() {
       return {
+        showCard:false,
         payDialog: false,
         isAgree: false,
         isLoading: false,
@@ -811,7 +814,9 @@
     margin-left: 12px;
     cursor: pointer;
   }
-
+  .m-t{
+    margin-top: 16px;
+  }
   .font-12 {
     font-size: 12px;
   }
