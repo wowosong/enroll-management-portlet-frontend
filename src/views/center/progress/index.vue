@@ -228,7 +228,7 @@
             <template v-if="stempInfo.paymentType == 1">
               <div><span>订单号：</span>{{stempInfo.orderNumber}}</div>
               <div><span>交易流水号：</span>{{stempInfo.paymentNum}}</div>
-              <div><span>订单交易时间：</span>{{stempInfo.modifyTime | dateFormatYmdHm}}</div>
+              <div><span>订单交易时间：</span>{{stempInfo.payTime | dateFormatYmdHm}}</div>
             </template>
           </div>
           <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务)</p>
