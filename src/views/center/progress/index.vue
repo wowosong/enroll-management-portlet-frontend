@@ -139,12 +139,12 @@
                         <el-checkbox v-model="isAgree">我已同意并了解《在线缴费须知》事项。</el-checkbox>
                       </div>
                       <template v-if="isPhone">
-                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="payBefore('h5')">
+                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="getAgrNo('h5')">
                           在线支付
                         </button>
                       </template>
                       <template v-if="!isPhone">
-                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="payBefore('web')">
+                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="getAgrNo('web')">
                           在线支付
                         </button>
                       </template>
@@ -465,7 +465,7 @@
         });
       },
       //获取客户协议号
-      getAgrNo() {
+      getAgrNo(type) {
         let vm = this;
         http.get(`/gateway/enroll/erCmbPay/getAgrNo/${vm.stempInfo.id}`).then(function (xhr) {
           //生成协议号
@@ -481,12 +481,12 @@
             vm.agrNo = 'agrNo' + date.getTime() + random;
           }
           vm.merchantSerialNo = 'ms' + date.getTime() + random;
+          vm.payBefore(type)
         });
       },
       //支付前调用
       payBefore(type) {
         let vm = this;
-        vm.getAgrNo();
         //生成订单号
         let charactors = "1234567890";
         let random = '';
