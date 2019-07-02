@@ -498,7 +498,7 @@
           regId: vm.stempInfo.id, // 注册id
           mobileNo: vm.stempInfo.guardianPhone,
           payType: type == 'h5' ? 1 : 2,
-          amount: vm.nowStuInfo.assessment,
+          amount: '99.99', // nowStuInfo.assessment
           orderNo: vm.orderNo,
           agrNo:vm.agrNo
         };
@@ -534,7 +534,7 @@
             "merchantNo": "000133", //  商户号
             "date": vm.$options.filters['dateFormat'](date.getTime()),    //  当前日期按yyyyMMdd获取
             "orderNo": vm.orderNo,  //  订单号,商户定义(32位,支持数字,字母)
-            "amount": '99.99',   //  金额
+            "amount": '99.99',   //  金额 nowStuInfo.assessment
             "payNoticePara": `${vm.stempInfo.id}|14786154890`,//注册id电话 vm.stempInfo.guardianPhone
             "payNoticeUrl": 'http://zs.jxfls.com/gateway/enroll/erCmbPay/payNotice',    //  支付成功回调地址
             "returnUrl": 'http://zs.jxfls.com/center?progress=true',
@@ -611,7 +611,7 @@
         http.get("/gateway/enroll/erCmbPay/singleOrder?orderNo=" + vm.orderNo).then(function (xhr) {
           if (xhr.body.returnStatus == 0) {
             // 回调成功
-            console.log('回调成功', xhr.body);
+
           }
         });
       },
