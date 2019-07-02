@@ -227,9 +227,8 @@
 </script>
 <style lang="less" scoped>
   .print-box {
-    width: 900px;
     display: none;
-    padding: 50px;
+    padding: 16px 0;
     .title-wrap {
       text-align: center;
       font-size: 30px;
@@ -275,10 +274,10 @@
     width: 100%;
 
     td {
-      font-size: 18px;
-      height: 40px;
+      font-size: 16px;
+      height: 30px;
       border: 1px solid #cbc7c7;
-      padding: 0 32px;
+      padding: 0 12px;
       color: #333;
     }
     .f-th {
@@ -302,7 +301,7 @@
       display: none;
     }
     .comm_main{
-      width: 900px;
+      width: 200mm !important;
       margin-top: 0;
     }
     .float_left{
@@ -310,6 +309,7 @@
       padding: 0;
     }
     .print-box {
+      width: 100% !important;
       display: block !important;
       background: #fff;
     }
