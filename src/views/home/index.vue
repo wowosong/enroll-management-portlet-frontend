@@ -145,7 +145,7 @@
         this.$router.push({path: '/notice'});
       },
       showNotice(data) {
-        this.$router.push({path: '/notice/detail', query: {datail: data}});
+        this.$router.push({path: '/notice/detail', query: {datail: JSON.stringify(data)}});
       },
       changePwd(){
         let pattern = /^\d{6,18}$/;
