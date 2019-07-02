@@ -38,7 +38,7 @@
                     ，并获得本学年奖学金{{stempInfo.scholarship}}元~
                   </span>
                   </div>
-                  <div class="text-left font-12">备注：{{stempInfo.remark}}</div>
+                  <div class="text-left font-12" v-if="stempInfo.remark">备注：{{stempInfo.remark}}</div>
                   <div class="over_hint text-left">
                     请在截止时间前完成缴费~
                     <span class="color1">
@@ -139,16 +139,13 @@
                         <el-checkbox v-model="isAgree">我已同意并了解《在线缴费须知》事项。</el-checkbox>
                       </div>
                       <template v-if="isPhone">
-                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="payBefore('web')">
+                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="payBefore('h5')">
                           在线支付
                         </button>
                       </template>
                       <template v-if="!isPhone">
                         <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="payBefore('web')">
-                          网页支付
-                        </button>
-                        <button :disabled="!isAgree" :class="['save',{'disabled':!isAgree}]" @click="payBefore('h5')">
-                          扫码支付
+                          在线支付
                         </button>
                       </template>
                     </template>
