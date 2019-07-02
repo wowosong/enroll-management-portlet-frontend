@@ -36,8 +36,7 @@
         },
       mounted() {
         let vm = this;
-        vm.datail =JSON.parse(vm.$route.query.datail)
-        console.log(vm.$route.query.datail)
+        vm.datail = JSON.parse(vm.$route.query.datail);
       },
       methods: {
         down(file){
