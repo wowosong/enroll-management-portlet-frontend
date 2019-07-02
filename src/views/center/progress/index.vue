@@ -72,8 +72,8 @@
                     </thead>
                     <tbody>
                     <tr>
-                      <td>{{nowStuInfo.stuName}}</td>
                       <td>{{nowStuInfo.idCard}}</td>
+                      <td>{{nowStuInfo.stuName}}</td>
                       <td v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
                         {{stuScore.testScore}}
                       </td>
