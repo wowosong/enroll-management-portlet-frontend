@@ -412,7 +412,6 @@
           if (vm.stempInfo.paymentReserve) {
             vm.getReserve(vm.stempInfo.paymentReserve);
           }
-          this.getAgrNo();
         });
       },
       getPlanInfo() {
@@ -487,6 +486,7 @@
       //支付前调用
       payBefore(type) {
         let vm = this;
+        vm.getAgrNo();
         //生成订单号
         let charactors = "1234567890";
         let random = '';
