@@ -973,7 +973,11 @@
                         break;
                       }
                     }
-                    vm.$set(vm.regInfo.otherData, key, value + "#," + text);
+                    if(text) {
+                      vm.$set(vm.regInfo.otherData, key, value + "#," + text);
+                    } else {
+                      vm.$set(vm.regInfo.otherData, key, '');
+                    }
                   } else {
                     vm.$set(vm.regInfo.otherData, key, value + "#," + value);
                   }
