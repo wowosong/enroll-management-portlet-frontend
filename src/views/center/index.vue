@@ -18,7 +18,7 @@
         <div class="tab_active_border" :style="'left:'+left+'px'"></div>
       </div>
       <signUpWidget v-if="tabIndex == 0" @changeTitle="changeTitle" ref="signUp"></signUpWidget>
-      <progressWidget v-if="tabIndex == 1"></progressWidget>
+      <progressWidget v-if="tabIndex == 1" @changeTab="changeTab"></progressWidget>
       <!--校服登记-->
       <schooluniformWidget v-if="tabIndex == 2"></schooluniformWidget>
       <accountWidget v-if="tabIndex == 3"></accountWidget>
@@ -69,7 +69,7 @@
         this.tabIndex = null
         $("#app>div").addClass("phone_center")
       }
-      let progress = this.$route.query ? this.$route.query.progress : false//是否直接显示招生进度
+      let progress = this.$route.query ? this.$route.query.progress : false //是否直接显示招生进度
       if (progress) {
         this.tabIndex = 1
       }
@@ -121,7 +121,10 @@
         if (this.isPhone) {
           this.tabIndex = null;
         }
-      }
+      },
+      changeTab(){
+       this.tabIndexFn(2)
+      },
     },
     destroyed() {
       if (this.isPhone) {

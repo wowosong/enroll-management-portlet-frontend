@@ -44,7 +44,7 @@
         },
         methods:{
             noticeDetail(item){
-              this.$router.push({path:'/notice/detail',query:{datail:item}});
+              this.$router.push({path:'/notice/detail',query:{id:item.id}});
             },
           queryCampus(data){
             //校区查询

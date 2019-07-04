@@ -3,7 +3,7 @@
         <div class="comm_item float_left">
             <h6 class="detail_tit">{{datail.noticeTitle}}</h6>
             <div class="notice_about">
-                <span v-if="datail.publishTime">发布时间：{{datail.publishTime | dateFormatYmdHms}}</span>
+                <!--<span v-if="datail.publishTime">发布时间：{{datail.publishTime | dateFormatYmdHms}}</span>-->
                 <span>发布单位：{{datail.orgName}}</span>
             </div>
             <div class="cont">
@@ -16,7 +16,7 @@
                     </div>
                 </div>
             </div>
-            <div class="no_data" v-if="!datail || datail.noticeContent == ''"></div>
+            <!--<div class="no_data" v-if="!datail || datail.noticeContent == ''"></div>-->
         </div>
         <campus @query="goNoticeListFn"></campus>
     </div>
@@ -35,10 +35,16 @@
             }
         },
       mounted() {
-        let vm = this;
-        vm.datail = vm.$route.query.datail
+        this.initNotice();
       },
       methods: {
+        initNotice() {
+          //初始化数据
+          let vm = this;
+          http.get("/gateway/enroll/api/erNotice/getById/" + vm.$route.query.id).then(function (xhr) {
+            vm.datail = xhr.data.data;
+          })
+        },
         down(file){
           window.filesystemSingleDownload([{id:file.fileId},{filename:file.fileName}])
         },
