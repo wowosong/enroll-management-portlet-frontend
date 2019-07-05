@@ -117,7 +117,7 @@ Vue.http.interceptors.push(function (request, next) {
  *-------------------------------------------------------------------------------*/
 // 初始化路由
 const router = new Router({
-  mode: 'hash',
+  mode: 'history',
   routes: router_list,
 });
 // window 自定义
