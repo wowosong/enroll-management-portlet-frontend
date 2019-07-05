@@ -66,7 +66,7 @@
                     <table class="my-table" v-if="!isPhone">
                       <thead>
                       <tr>
-                        <th>身份证/护照号</th>
+                        <th width="160px">身份证/护照号</th>
                         <th>姓名</th>
                         <th v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
                           {{stuScore.name}}
@@ -196,7 +196,7 @@
                 <table class="my-table" v-if="!isPhone">
                   <thead>
                   <tr>
-                    <th>身份证/护照号</th>
+                    <th width="160px">身份证/护照号</th>
                     <th>姓名</th>
                     <th v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
                       {{stuScore.name}}
