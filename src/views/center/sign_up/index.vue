@@ -268,46 +268,46 @@
               <template v-for="i in 2">
                 <p class="parent-hint">监护人{{i}}</p>
                 <el-form-item label="姓名(关系):" :required="$route.query.enroll?true:i==1? true:false">
-                  <p class="phone-fill" v-if="i==1 && !$route.query.enroll">
-                    {{regInfo.parents[i-1]['s_g']}}
-                  </p>
-                  <template v-else>
+                  <!--<p class="phone-fill" v-if="i==1 && !$route.query.enroll">-->
+                    <!--{{regInfo.parents[i-1]['s_g']}}-->
+                  <!--</p>-->
+                  <template>
                     <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_g']}}</span>
                     <el-input v-else :maxlength="20" placeholder="示例：张三（父子）" v-model="regInfo.parents[i-1]['s_g']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="手机:" :required="$route.query.enroll?true:i==1? true:false">
-                  <p class="phone-fill" v-if="i==1 && !$route.query.enroll">
-                    {{regInfo.parents[i-1]['s_h']}}
-                  </p>
-                  <template v-else>
+                  <!--<p class="phone-fill" v-if="i==1 && !$route.query.enroll">-->
+                    <!--{{regInfo.parents[i-1]['s_h']}}-->
+                  <!--</p>-->
+                  <template>
                     <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_h']}}</span>
                     <el-input v-else :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="学历:" :required="$route.query.enroll?true:i==1? true:false">
-                  <p class="phone-fill" v-if="i==1 && !$route.query.enroll">
-                    {{regInfo.parents[i-1]['s_i']}}
-                  </p>
-                  <template v-else>
+                  <!--<p class="phone-fill" v-if="i==1 && !$route.query.enroll">-->
+                    <!--{{regInfo.parents[i-1]['s_i']}}-->
+                  <!--</p>-->
+                  <template>
                     <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_i']}}</span>
                     <el-input v-else :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="工作单位:" :required="$route.query.enroll?true:i==1? true:false">
-                  <p class="phone-fill" v-if="i==1 && !$route.query.enroll">
-                    {{regInfo.parents[i-1]['s_j']}}
-                  </p>
-                  <template v-else>
+                  <!--<p class="phone-fill" v-if="i==1 && !$route.query.enroll">-->
+                    <!--{{regInfo.parents[i-1]['s_j']}}-->
+                  <!--</p>-->
+                  <template>
                     <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_j']}}</span>
                     <el-input v-else :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="职务:">
-                  <p class="phone-fill" v-if="i==1 && !$route.query.enroll">
-                    {{regInfo.parents[i-1]['s_k']}}
-                  </p>
-                  <template v-else>
+                  <!--<p class="phone-fill" v-if="i==1 && !$route.query.enroll">-->
+                    <!--{{regInfo.parents[i-1]['s_k']}}-->
+                  <!--</p>-->
+                  <template>
                     <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_k']}}</span>
                     <el-input v-else :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
                   </template>
@@ -863,12 +863,12 @@
             }
             // 监护人手机号1验证
             for (let i = 0; i <= vm.regInfo.parents.length; i++) {
-              if (vm.$route.query.enroll) {
-                if (vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_g"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_h"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_i"] || vm.regInfo.parents[i] && !vm.regInfo.parents[i]["s_j"]) {
+              // if (vm.$route.query.enroll) {
+                if (vm.regInfo.parents[i] && !vm.regInfo.parents[0]["s_g"] || vm.regInfo.parents[i] && !vm.regInfo.parents[0]["s_h"] || vm.regInfo.parents[i] && !vm.regInfo.parents[0]["s_i"] || vm.regInfo.parents[i] && !vm.regInfo.parents[0]["s_j"]) {
                   vm.$message.warning("请完善监护人信息,提示'*'为必填项");
                   return false
                 }
-              }
+              // }
               let mobileRes = /^1[3456789]\d{9}$/;
               if (vm.regInfo.parents[i] && vm.regInfo.parents[i]["s_h"] && !mobileRes.test(vm.regInfo.parents[i]["s_h"])) {
                 vm.$message.warning("监护人手机格式不正确");
