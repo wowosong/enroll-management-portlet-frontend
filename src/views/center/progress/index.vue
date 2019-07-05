@@ -89,8 +89,8 @@
                     <div class="score-header bottomBorder">
                       <span class="score-txt">缴费:请选择支付方式</span>
                       <el-radio-group v-model="isOnLine">
-                        <el-radio label="onLine">在线缴费</el-radio>
-                        <el-radio label="underLine">线下缴费</el-radio>
+                        <el-radio v-if="planInfo.onLine" label="onLine">在线缴费</el-radio>
+                        <el-radio v-if="planInfo.underLine" label="underLine">线下缴费</el-radio>
                       </el-radio-group>
                       <span class="down-file" v-if="false">点击下载《缴费标准》</span>
                     </div>
@@ -409,7 +409,6 @@
           if (xhr.code) return;
           vm.isLoading = false;
           vm.stempInfo = xhr.data;
-          console.log('页面数据', vm.stempInfo);
           vm.viewScore();
           vm.getPlanInfo();
           vm.expireFlag = false;
@@ -430,6 +429,25 @@
             return;
           }
           vm.planInfo = xhr.data.data;
+          vm.planInfo.onLine = false;
+          vm.planInfo.underLine = false;
+          if(vm.planInfo.paymentType){
+            vm.planInfo.paymentType = vm.planInfo.paymentType.split(',');
+            if(vm.planInfo.paymentType.length>=2){
+              vm.isOnLine = 'onLine';
+              vm.planInfo.onLine = true;
+              vm.planInfo.underLine = true;
+            }else{
+              if(vm.planInfo.paymentType[0] == '1'){
+                vm.isOnLine = 'onLine';
+                vm.planInfo.onLine = true;
+              }
+              if(vm.planInfo.paymentType[0] == '2'){
+                vm.isOnLine = 'underLine';
+                vm.planInfo.underLine = true;
+              }
+            }
+          }
           if (xhr.data.data.phaseName == '高中') {
             vm.str = '测试'
           } else {
