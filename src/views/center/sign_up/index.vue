@@ -158,21 +158,19 @@
                 <tbody>
                 <tr v-for="i in 2" :key="i">
                   <td>
-                    <template v-if="i == 1 && !isEditInfo">{{regInfo.parents[i-1]['s_g']}}</template>
-                    <el-input placeholder="示例：张三（父子）" :maxlength="20" v-model="regInfo.parents[i-1]['s_g']" v-else/>
+                    <el-input :disabled="!isEditInfo" placeholder="示例：张三（父子）" :maxlength="20" v-model="regInfo.parents[i-1]['s_g']"/>
                   </td>
                   <td>
-                    <template v-if="i == 1">{{regInfo.parents[i-1]['s_h']}}</template>
-                    <el-input :maxlength="20" v-model="regInfo.parents[i-1]['s_h']" v-else/>
+                    <el-input :disabled="!isEditInfo" :maxlength="20" v-model="regInfo.parents[i-1]['s_h']"/>
                   </td>
                   <td>
-                    <el-input :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="10" v-model="regInfo.parents[i-1]['s_i']"/>
                   </td>
                   <td>
-                    <el-input :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
+                    <el-input  :disabled="!isEditInfo" :maxlength="50" v-model="regInfo.parents[i-1]['s_j']"/>
                   </td>
                   <td>
-                    <el-input :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="30" v-model="regInfo.parents[i-1]['s_k']"/>
                   </td>
                 </tr>
                 </tbody>
@@ -272,8 +270,7 @@
                     <!--{{regInfo.parents[i-1]['s_g']}}-->
                   <!--</p>-->
                   <template>
-                    <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_g']}}</span>
-                    <el-input v-else :maxlength="20" placeholder="示例：张三（父子）" v-model="regInfo.parents[i-1]['s_g']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="20" placeholder="示例：张三（父子）" v-model="regInfo.parents[i-1]['s_g']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="手机:" :required="$route.query.enroll?true:i==1? true:false">
@@ -281,8 +278,7 @@
                     <!--{{regInfo.parents[i-1]['s_h']}}-->
                   <!--</p>-->
                   <template>
-                    <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_h']}}</span>
-                    <el-input v-else :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="学历:" :required="$route.query.enroll?true:i==1? true:false">
@@ -290,8 +286,7 @@
                     <!--{{regInfo.parents[i-1]['s_i']}}-->
                   <!--</p>-->
                   <template>
-                    <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_i']}}</span>
-                    <el-input v-else :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="工作单位:" :required="$route.query.enroll?true:i==1? true:false">
@@ -299,8 +294,7 @@
                     <!--{{regInfo.parents[i-1]['s_j']}}-->
                   <!--</p>-->
                   <template>
-                    <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_j']}}</span>
-                    <el-input v-else :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="职务:">
@@ -308,8 +302,7 @@
                     <!--{{regInfo.parents[i-1]['s_k']}}-->
                   <!--</p>-->
                   <template>
-                    <span v-if="!isEditInfo">{{regInfo.parents[i-1]['s_k']}}</span>
-                    <el-input v-else :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
                   </template>
                 </el-form-item>
                 <div class="line-1" v-if="i==1"></div>
