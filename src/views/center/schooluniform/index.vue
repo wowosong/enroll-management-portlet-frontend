@@ -214,9 +214,9 @@
           }
           vm.planInfo = xhr.data.data;
           if(vm.planInfo.schoolEndDate > new Date().getTime()) {
-            vm.isEdit = false;
-          } else {
             vm.isEdit = true;
+          } else {
+            vm.isEdit = false;
           }
         });
       },

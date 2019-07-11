@@ -196,8 +196,8 @@
                 <table class="my-table" v-if="!isPhone">
                   <thead>
                   <tr>
-                    <th width="160px">身份证/护照号</th>
                     <th>姓名</th>
+                    <th width="160px">身份证/护照号</th>
                     <th v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
                       {{stuScore.name}}
                     </th>
@@ -205,8 +205,8 @@
                   </thead>
                   <tbody>
                   <tr>
-                    <td>{{nowStuInfo.idCard}}</td>
                     <td>{{nowStuInfo.stuName}}</td>
+                    <td>{{nowStuInfo.idCard}}</td>
                     <td v-for="(stuScore,index) in nowStuInfo.scores" :key="index">
                       {{stuScore.testScore}}
                     </td>
