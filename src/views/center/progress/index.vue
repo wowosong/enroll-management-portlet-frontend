@@ -279,9 +279,19 @@
         </div>
 
         <!-- 填写报到信息 -->
-        <template v-if="stempInfo.ifReport == 1">请按学校通知时间<span class="color1">到校报到</span>，并<span
-          class="color1">填写报到信息</span>~
-          <!-- <reportInfo></reportInfo> -->
+        <template v-if="stempInfo.ifReport == 1">
+          <div v-if="stempInfo.ifSubmit != 1 && is" >
+             请按学校通知时间<span class="color1">到校报到</span>，并<span class="color1">填写报到信息</span>~
+          <reportInfo @nodefn='ismod'></reportInfo>
+          </div>
+         <div v-else >
+           <!-- 预览 -->
+           <div class="bd-box">
+             <span> 您已完成报到信息填写,请按学校通知时间<span class="color1">到校报到</span></span> <span class="xg-nav" v-if="stempInfo.ifSubmit != 1" @click="clickModify">修改</span>
+           </div>
+              <preview></preview>
+         </div>
+
         </template>
       </div>
     </div>
@@ -303,14 +313,15 @@
 </template>
 <script>
   import reserve from "./reserve_comp"
-  import reportInfo from "./report_info"
+  import reportInfo from "./report_infos"
   import card from "./card"
-
+  import preview from './report_preview'
   export default {
     components: {
       reserve,
       reportInfo,
-      card
+      card,
+      preview
     },
     filters: {
       dateFormatHms: function (date) {
@@ -331,6 +342,7 @@
         isAgree: false,
         isLoading: false,
         stempInfo: {},
+        is: true,
         formData: {
           dataTime: '',
           timeRang: ''
@@ -370,6 +382,11 @@
         return this.$store.state.isPhone
       },
     },
+    created() {
+    //console.log(this.is)
+     localStorage.is = 0
+      this.query()
+    },
     mounted() {
       this.orderNo = localStorage.getItem('orderNo');
       if (this.orderNo) {
@@ -378,6 +395,17 @@
       this.query();
     },
     methods: {
+       // 点击保存
+      ismod() {
+        //console.log(11111)
+        this.is = !this.is 
+        this.query()
+      },
+      // 点击修改
+      clickModify() {
+        this.is = true
+        // this.stempInfo.ifSubmit = null
+      },
       serReserve(id) {
         const vm = this;
         let obj = {
@@ -416,6 +444,7 @@
             vm.expireFlag = new Date(vm.stempInfo.paymentDeadline).getTime() + (24 * 60 * 60 * 1000) < new Date().getTime();
           }
           vm.planId = xhr.data.planId;
+          localStorage.planid = xhr.data.planId;
           if (vm.stempInfo.paymentReserve) {
             vm.getReserve(vm.stempInfo.paymentReserve);
           }
@@ -654,6 +683,16 @@
   }
 </script>
 <style lang="less" scoped>
+.xg-nav {
+    float: right;
+    position: relative;
+    right: 20%;
+    border: 1px solid #000000;
+    padding: 5px 15px;
+    border-radius: 2px;
+    font-size: 16px;
+    cursor: pointer;
+  }
   .block {
     display: block;
   }

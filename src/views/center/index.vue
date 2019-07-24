@@ -87,6 +87,7 @@
             return;
           }
           vm.regId = xhr.data.data.regId;
+          localStorage.regid =  xhr.data.data.regId;
           vm.getReg();
         })
       },

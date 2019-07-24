@@ -20,7 +20,7 @@ module.exports = {
       },
       '/gateway': {
         // target:'http://119.23.47.139',
-        target: 'http://119.23.47.139',
+        target: 'http://demo.hanboard.cn:8100',
         changeOrigin: true,
         secure: false
       },
