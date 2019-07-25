@@ -217,8 +217,8 @@
             </template>
           </div>
           <!-- 缴费成功 -->
-          <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null && stempInfo.startReportInfo != 1">
-            <p class="bottomBorder text-left">您<span v-if="stempInfo.payTime == ''">已</span> <span v-if="stempInfo.payTime != ''">于</span><span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
+          <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus != 1 && stempInfo.startReportInfo != 1">
+            <p class="bottomBorder text-left">您<span v-if="stempInfo.payTime == null">已</span> <span v-if="stempInfo.payTime != null">于</span><span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
               class="color1">{{stempInfo.payAmount || 0}}元</span>，请及时完成
               <span class="color1">校服登记</span>~
               <span class="uniform-btn" @click="changeTab">校服登记</span>
@@ -289,17 +289,32 @@
 
         <!-- 填写报到信息 -->
         <template v-if="stempInfo.ifReport != 1  && stempInfo.startReportInfo == 1">
-          <div v-if="stempInfo.ifSubmit != 1 && is" >
+          
+
+        <div v-if="stempInfo.ifSubmit != 1">
+
+          <div v-if="(stempInfo.ifSubmit == null || stempInfo.ifSubmit == 0) && is" >
            请<span class="color1">填写报到信息</span>并按学校通知时间<span class="color1">到校报到</span>
           <reportInfo @nodefn='ismod'></reportInfo>
           </div>
-         <div v-else >
+
+         <div v-else-if="stempInfo.ifSubmit == 0 && !is" >
            <!-- 预览 -->
            <div class="bd-box">
              <span> 您已完成报到信息填写,请按学校通知时间<span class="color1">到校报到</span></span> <span class="xg-nav" v-if="stempInfo.ifSubmit != 1" @click="clickModify">修改</span>
            </div>
               <preview></preview>
          </div>
+         </div>
+          <div v-else>
+            <div>
+           <!-- 预览 -->
+           <div class="bd-box">
+             <span> 您已完成报到信息填写,请按学校通知时间<span class="color1">到校报到</span></span> <span class="xg-nav" v-if="stempInfo.ifSubmit != 1" @click="clickModify">修改</span>
+           </div>
+              <preview></preview>
+         </div>
+          </div>
 
         </template>
       </div>
@@ -393,7 +408,6 @@
     },
     created() {
     //console.log(this.is)
-     localStorage.is = 0
       this.query()
     },
     mounted() {

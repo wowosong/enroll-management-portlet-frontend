@@ -245,7 +245,9 @@ export default {
         vm.otherInfo = []; // 其他
         let idx = 0;
         let parentTemp = [];
-        let temp = ["s_g", "s_h", "s_j", "s_i", "s_k"];
+        let temp = ["s_g", "s_h", "s_j"
+        // , "s_i", "s_k"
+        ];
         //处理数据字典下拉列表数据
         if (vm.configList.fieldInfos && vm.configList.fieldInfos.length) {
           let map = {};
@@ -388,7 +390,7 @@ export default {
         let mobileRes = /^1[34578]\d{9}$/;
         for (let i of saveData) {
           //判断带*的是否填写
-          if (i.isRequired == 0) {
+          if (i.isRequired == 1) {
             if (!i.fieldValue) {
               vm.$message.warning("带*号的为必填项！");
               return;
@@ -438,11 +440,12 @@ export default {
             saveData
         )
         .then(res => {
-          console.log(e);
+          //console.log(res);
           if(res.data.code == 0) {
             vm.$emit('nodefn')
           }
         });
+      
     },
     // 点击上一步
     clickUpdata() {
