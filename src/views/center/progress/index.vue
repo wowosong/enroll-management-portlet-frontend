@@ -237,7 +237,16 @@
             <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务)</p>
           </template>
           <!-- 分班结果 -->
-          <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport != 1  ">分班与寝室分配已公布~
+          <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport != 1 ">
+            <div v-if="!isPhone" class="fb-box">
+            您的班级信息: <span class="color1 fbgl" v-if="stempInfo.className != ''">{{stempInfo.className}}</span> <span class="color1 fbgl" v-if="stempInfo.className == ''">暂未分班</span> 您的寝室信息: <span class="color1">{{stempInfo.dormitoryName}}</span>
+             </div>
+             <div v-if="isPhone" class="fb-box">
+               <p>您的班级信息: <span class="color1">{{stempInfo.className}}</span></p>
+               <p>您的寝室信息: <span class="color1">{{stempInfo.dormitoryName}}</span></p>
+             </div>
+          </template>
+          <!-- <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport != 1  ">分班与寝室分配已公布~
             <table class="table_list" v-if="!isPhone">
               <thead>
               <tr>
@@ -269,7 +278,7 @@
               <div><span>所属班级：</span>{{stempInfo.className}}</div>
               <div><span>所属寝室：</span>{{stempInfo.dormitoryName}}</div>
             </div>
-          </template>
+          </template> -->
           <!-- 报到成功 -->
           <template v-if="stempInfo.ifReport == 1">您于<span
             class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>完成到校报到注册手续~
@@ -692,6 +701,12 @@
     border-radius: 2px;
     font-size: 16px;
     cursor: pointer;
+  }
+  .fbgl {
+    padding-right: 20px;
+  }
+  .fb-box {
+    text-align: left;
   }
   .block {
     display: block;
