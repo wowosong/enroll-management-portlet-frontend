@@ -21,7 +21,7 @@
             <p class="text-left">您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了{{str}}卡~
             </p>
             <p class="text-left">并按{{str}}卡的{{str}}时间到校<span class="color1">参加{{str}}</span>~</p>
-            <span v-if="!isPhone" class="uniform-btn m-t" @click="print">打印测试卡</span>
+            <span v-if="!isPhone" class="uniform-btn m-t" @click="print">打印面谈卡</span>
           </template>
           <!-- 录取结果-->
           <div v-if="!stempInfo.ifPayment">
@@ -218,7 +218,7 @@
           </div>
           <!-- 缴费成功 -->
           <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null && stempInfo.startReportInfo != 1">
-            <p class="bottomBorder text-left">您于<span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
+            <p class="bottomBorder text-left">您<span v-if="stempInfo.payTime == ''">已</span> <span v-if="stempInfo.payTime != ''">于</span><span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
               class="color1">{{stempInfo.payAmount || 0}}元</span>，请及时完成
               <span class="color1">校服登记</span>~
               <span class="uniform-btn" @click="changeTab">校服登记</span>
@@ -237,7 +237,7 @@
             <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务)</p>
           </template>
           <!-- 分班结果 -->
-          <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport != 1 && stempInfo.startReportInfo == 1 ">分班与寝室分配已公布~
+          <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport != 1  ">分班与寝室分配已公布~
             <table class="table_list" v-if="!isPhone">
               <thead>
               <tr>

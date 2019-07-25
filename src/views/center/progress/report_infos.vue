@@ -1,14 +1,14 @@
 <template>
   <div class="content">
     <!-- 本人信息 -->
-    <div v-show="cuid == 1">
+    <div v-show="cuid == 1 ">
       <div class="top-title">本人信息</div>
       <div class="box">
         <ul class="list">
           <li v-for="(it,index) in brInfo" :key="index">
             <div class="title-box">
               <span class="name">
-                <span class="show" v-if="it.isRequired == 0">*</span>
+                <span class="show" v-if="it.isRequired == 1">*</span>
                 {{it.fieldName}}:
               </span>
               <div class="item-box">
@@ -76,16 +76,17 @@
       <div class="items-btn-box">
         <el-button @click="clickDown(1)" class="item-btn">保存至下一步</el-button>
       </div>
+      
     </div>
     <!-- 家长信息 -->
-    <div v-show="cuid == 2">
+    <div v-show="cuid == 2 ">
       <div class="top-title">家长信息</div>
       <div class="box">
         <ul class="list">
           <li v-for="(parent,index) in parentInfo" :key="index">
             <div class="title-box">
               <span class="name">
-                <span class="show" v-if="parent.isRequired == 0">*</span>
+                <span class="show" v-if="parent.isRequired == 1">*</span>
                 {{parent.fieldName}}:
               </span>
 
@@ -134,7 +135,7 @@
           <li v-for="(other,index) in otherInfo" :key="index">
             <div class="title-box">
               <span class="name">
-                <span class="show" v-if="other.isRequired == 0">*</span>
+                <span class="show" v-if="other.isRequired == 1">*</span>
                 {{other.fieldName}}:
               </span>
 
@@ -233,6 +234,10 @@ export default {
           localStorage.getItem("regid")
       )
       .then(xhr => {
+        if(xhr.data.fieldInfos.length == 0) {
+          vm.$message.warning("请导入表单信息");
+          return
+        }
         console.log(xhr)
         vm.configList = xhr.data;
         vm.brInfo = []; // 本人信息
@@ -453,7 +458,7 @@ export default {
       let i = 0
     if(e == 1){
         that.brInfo.forEach(item => {
-            if(item.fieldValue == '' && item.isRequired == 0){
+            if(item.fieldValue == '' && item.isRequired == 1){
                 return i = 1
             }
         });
@@ -465,7 +470,7 @@ export default {
     }
     if(e == 2){
         that.parentInfo.forEach(item => {
-            if(item.fieldValue == '' && item.isRequired == 0){
+            if(item.fieldValue == '' && item.isRequired == 1){
                 return i = 1
             }
         });
@@ -478,7 +483,7 @@ export default {
     },
     open3() {
       this.$message({
-        message: "请完善信息",
+        message: "带*的是必填项",
         type: "warning"
       });
     },

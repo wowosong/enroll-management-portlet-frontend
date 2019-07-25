@@ -17,7 +17,7 @@
             </ul>
         </div>
         <!-- 家长信息 -->
-        <div class="box">
+        <div class="box" v-if="parentInfo.length != 0">
             <span class="border-left">家长信息</span>
             <ul class="list">
                 <li v-for="(item,index) in parentInfo" :key="index">
@@ -33,7 +33,7 @@
             </ul>
         </div>
         <!-- 其他信息 -->
-        <div class="box">
+        <div class="box" v-if="otherInfo.length != 0">
             <span class="border-left">其他信息</span>
             <ul class="list">
                 <li v-for="(item,index) in otherInfo" :key="index">
