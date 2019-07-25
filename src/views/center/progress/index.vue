@@ -217,7 +217,7 @@
             </template>
           </div>
           <!-- 缴费成功 -->
-          <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null">
+          <template v-if="stempInfo.ifPayment == 1 && stempInfo.divideClassesStatus == null && stempInfo.startReportInfo != 1">
             <p class="bottomBorder text-left">您于<span class="color1">{{stempInfo.payTime | dateFormatYmd}}</span>到校完成缴费，缴费金额<span
               class="color1">{{stempInfo.payAmount || 0}}元</span>，请及时完成
               <span class="color1">校服登记</span>~
@@ -237,7 +237,7 @@
             <p class="pay_hint" style="text-align: left">(友情提示：若需要退学退费，请线下联系学校财务)</p>
           </template>
           <!-- 分班结果 -->
-          <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport == null">分班与寝室分配已公布~
+          <template v-if="stempInfo.divideClassesStatus == 1 && stempInfo.ifReport != 1 && stempInfo.startReportInfo == 1 ">分班与寝室分配已公布~
             <table class="table_list" v-if="!isPhone">
               <thead>
               <tr>
@@ -279,9 +279,9 @@
         </div>
 
         <!-- 填写报到信息 -->
-        <template v-if="stempInfo.ifReport == 1">
+        <template v-if="stempInfo.ifReport != 1  && stempInfo.startReportInfo == 1">
           <div v-if="stempInfo.ifSubmit != 1 && is" >
-             请按学校通知时间<span class="color1">到校报到</span>，并<span class="color1">填写报到信息</span>~
+           请<span class="color1">填写报到信息</span>并按学校通知时间<span class="color1">到校报到</span>
           <reportInfo @nodefn='ismod'></reportInfo>
           </div>
          <div v-else >
