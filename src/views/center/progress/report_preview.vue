@@ -6,7 +6,7 @@
             <ul class="list">
                 <li v-for="(item,index) in brInfo" :key="index">
                     <div class="left-box">
-                        <span v-if="item.isRequired == 0" class="colorred">*</span>
+                        <span v-if="item.isRequired == 1" class="colorred">*</span>
                         <span>{{item.fieldName}}:</span>
                     </div>
                     <div class="right-box">
@@ -22,7 +22,7 @@
             <ul class="list">
                 <li v-for="(item,index) in parentInfo" :key="index">
                     <div class="left-box">
-                        <span v-if="item.isRequired == 0" class="colorred">*</span>
+                        <span v-if="item.isRequired == 1" class="colorred">*</span>
                         <span>{{item.fieldName}}:</span>
                     </div>
                     <div class="right-box">
@@ -38,7 +38,7 @@
             <ul class="list">
                 <li v-for="(item,index) in otherInfo" :key="index">
                     <div class="left-box">
-                        <span v-if="item.isRequired == 0" class="colorred">*</span>
+                        <span v-if="item.isRequired == 1" class="colorred">*</span>
                         <span>{{item.fieldName}}:</span>
                     </div>
                     <div class="right-box">
