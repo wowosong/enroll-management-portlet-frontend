@@ -260,41 +260,89 @@ export default {
             vm.getOtherEnum(map);
           }
         }
-        for (let i of vm.configList.fieldInfos) {
-          vm.$set(i, "editable", false);
-          if (!i.fieldValue) {
-            i.fieldValue = "";
-            i.editable = true;
+         for (let i of vm.configList.fieldInfos) {
+            vm.$set(i,"editable",false)
+            if(!i.fieldValue) {
+              i.fieldValue = ''
+              i.editable = true;
+            }
+            if (i.classifyName == '本人信息') {
+              vm.brInfo.push(i);
+            } else if (i.classifyName == '家长信息') {
+              vm.parentInfo.push(i);
+                if(vm.configList.flag) {
+                    if(!i.batNum) {
+                      i.batNum = 1;
+                    }
+                  if(temp.indexOf(i.fieldCode)!=-1) {
+                    let temp = _.cloneDeep(i);
+                    //temp.batNum = 2;
+                    if(temp.batNum == 2) {
+                      i.batNum = 1;
+                      i.fieldValue = "";
+                      i.fieldText = ""
+                    } else {
+                      temp.batNum = 2;
+                    }
+
+                    if (temp.fieldValue == i.fieldValue) {
+                      temp.fieldValue = "";
+                    }
+                    if (temp.fieldText == i.fieldText) {
+                      temp.fieldText = "";
+                    }
+
+                    temp.editable = true;
+                    parentTemp.push(temp);
+                    idx = vm.parentInfo.length;
+                  }
+                }
+            } else {
+              vm.otherInfo.push(i);
+            }
           }
-          if (i.classifyName == "本人信息") {
-            vm.brInfo.push(i);
-          } else if (i.classifyName == "家长信息") {
-            vm.parentInfo.push(i);
-            if (vm.configList.flag) {
-              i.batNum = 1;
-              if (temp.indexOf(i.fieldCode) != -1) {
-                let temp = _.cloneDeep(i);
-                temp.batNum = 2;
-                parentTemp.push(temp);
-                idx = vm.parentInfo.length;
+           for(let i of vm.parentInfo) {
+            if(i.fieldCode == "s_g" && i.batNum == 1) {
+              i.fieldName = '监护人1姓名';
+            }
+            if(i.fieldCode == "s_g" && i.batNum == 2) {
+              i.fieldName = '监护人2姓名';
+            }
+
+            if(i.fieldCode == "s_h" && i.batNum == 1) {
+              i.fieldName = '监护人1手机号';
+            }
+            if(i.fieldCode == "s_h" && i.batNum == 2) {
+              i.fieldName = '监护人2手机号';
+            }
+            if(i.fieldCode == "s_j" && i.batNum == 1) {
+              i.fieldName = '监护人1工作单位';
+            }
+            if(i.fieldCode == "s_j" && i.batNum == 2) {
+              i.fieldName = '监护人2工作单位';
+            }
+          }
+           if(vm.parentInfo && parentTemp && parentTemp.length) {
+            for(let i of parentTemp) {
+              if(i.fieldCode == "s_g") {
+                i.fieldName = '监护人2姓名';
+              }
+              if(i.fieldCode == "s_h") {
+                i.fieldName = '监护人2手机号';
+              }
+              if(i.fieldCode == "s_j") {
+                i.fieldName = '监护人2工作单位';
               }
             }
-          } else {
-            vm.otherInfo.push(i);
+            vm.parentInfo = vm.parentInfo.slice(0,idx).concat(parentTemp).concat(vm.parentInfo.splice(idx));
           }
-        }
-        if (vm.parentInfo && parentTemp && parentTemp.length) {
-          vm.parentInfo = vm.parentInfo
-            .slice(0, idx)
-            .concat(parentTemp)
-            .concat(vm.parentInfo.splice(idx));
-        }
+       
       });
     
     this.isPhone = this.$store.state.isPhone;
     // this.items = res.data.fieldInfos
   },
-  mounted: {},
+  
   methods: {
     getAddList() {
       const vm = this;
