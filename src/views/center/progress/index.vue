@@ -226,8 +226,8 @@
             <div class="pay_info">
               <div><span>姓名：</span>{{stempInfo.stuName}}</div>
               <div><span>身份证/护照号：</span>{{stempInfo.idCard}}</div>
-              <div><span>本学年奖学金：</span>{{stempInfo.scholarship}}元</div>
-              <div><span>实际缴费：</span>{{stempInfo.payAmount}}元</div>
+              <div><span>本学年奖学金：</span>{{stempInfo.scholarship || 0}}元</div>
+              <div><span>实际缴费：</span>{{stempInfo.payAmount || 0}}元</div>
               <template v-if="stempInfo.paymentType == 1">
                 <div><span>订单号：</span>{{stempInfo.orderNumber}}</div>
                 <div><span>交易流水号：</span>{{stempInfo.paymentNum}}</div>
@@ -280,7 +280,7 @@
             </div>
           </template> -->
           <!-- 报到成功 -->
-          <template v-if="stempInfo.ifReport == 1">您于<span
+          <template v-if="stempInfo.ifReport == 1">您<span v-if="stempInfo.modifyTime == null || stempInfo.modifyTime == ''">已</span><span v-if="stempInfo.modifyTime != '' || stempInfo.modifyTime != null">于</span><span
             class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>完成到校报到注册手续~
           </template>
           <!-- 逾期未报到 -->
