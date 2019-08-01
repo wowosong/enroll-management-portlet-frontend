@@ -155,18 +155,23 @@
                             <span>{{i.vName}}</span>
                           </td>
                           <td>
-                            <el-input
-                              type="number"
+                            <input
+                              type="text"
+                              oninput = "value=value.replace(/[^\d]/g,'')"
                               :min="1"
                               :step="1"
+                              maxlength="4"
                               placeholder="请填写"
-                              v-model="i['s_a']"/>
+                              v-model="i['s_a']" />
+                            
                           </td>
                           <td>
                             <el-input
-                              type="number"
+                              type="text"
+                              oninput = "value=value.replace(/[^\d]/g,'')"
                               :min="1"
                               :step="1"
+                              :maxlength="4"
                               placeholder="请填写"
                               v-model="i['s_b']"/>
                           </td>
@@ -255,8 +260,10 @@
                         <tr v-for="i in rewardRows" :key="i" class="input-no-border">
                           <td>
                             <el-date-picker
-                              placeholder="年/月/日"
+                              placeholder="请选择日期"
                               v-model="regInfo.rewards[i-1]['s_c']"
+                              style="width: 130px"
+                              
                               type="date"/>
                           </td>
                           <td>
@@ -272,16 +279,17 @@
                               v-model="regInfo.rewards[i-1]['s_e']"/>
                           </td>
                           <td>
-                            <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
+                            <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择" style="width: 100px">
                               <el-option
                                 v-for="item in enumMap['s_t']"
                                 :key="item.seiValue"
                                 :label="item.seiName"
+                                
                                 :value="item.seiValue"/>
                             </el-select>
                           </td>
                           <td>
-                            <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
+                            <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择" style="width: 100px">
                               <el-option
                                 v-for="item in enumMap['s_u']"
                                 :key="item.seiValue"
@@ -346,6 +354,7 @@
                         type="number"
                         :min="1"
                         :step="1"
+                        :maxlength="4"
                         placeholder="请填写"
                         v-model="i['s_a']"/>
                     </el-form-item>
@@ -354,6 +363,7 @@
                         type="number"
                         :min="1"
                         :step="1"
+                        :maxlength="4"
                         placeholder="请填写"
                         v-model="i['s_b']"/>
                     </el-form-item>
@@ -416,7 +426,7 @@
                 </p>
                 <template v-for="i in rewardRows" v-if="prizeOpen">
                   <el-form-item label="获奖时间:">
-                    <el-date-picker placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
+                    <el-date-picker placeholder="请选择日期" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
                   </el-form-item>
                   <el-form-item label="奖项名称:">
                     <el-input placeholder="（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
@@ -607,7 +617,6 @@
       </el-dialog>
     </div>
   </div>
-
 </template>
 <script>
   export default {
@@ -627,7 +636,7 @@
       // };
       // 验证登录密码
       let checkpwd = (rule, value, callback) => {
-        let pattern = /^\d{6,18}$/;
+        let pattern = /^[a-zA-Z0-9]{6,18}$/;
         if (this.regInfo.pwd && !this.regInfo.repwd) {
           return callback(new Error('填写确认密码'));
         } else if (this.regInfo.pwd && this.regInfo.pwd != this.regInfo.repwd) {
@@ -1599,6 +1608,7 @@
       display: block;
     }
     .el-input__inner {
+      
       height: 36px;
       line-height: 36px;
     }
@@ -1616,7 +1626,9 @@
       background: #2f3861;
     }
   }
-
+  .user-info .el-input__inner {
+    width: 210px;
+  }
   .hide {
     width: 0 !important;
     height: 0 !important;

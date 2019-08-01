@@ -132,6 +132,7 @@
               return;
             } else {
               http.post(`/gateway/platform/jiaXiangUser/resetPassWord`, vm.formData).then(xhr => {
+
                 if (xhr.data.code) {
                   window.hint(
                     {
@@ -140,7 +141,9 @@
                     }
                   )
                 } else {
+
                   logout();
+                  vm.handleClose()
                 }
               })
             }

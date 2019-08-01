@@ -21,7 +21,7 @@
             <p class="text-left">您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了{{str}}卡~
             </p>
             <p class="text-left">并按{{str}}卡的{{str}}时间到校<span class="color1">参加{{str}}</span>~</p>
-            <span v-if="!isPhone" class="uniform-btn m-t" @click="print">打印面谈卡</span>
+            <span v-if="!isPhone" class="uniform-btn m-t" @click="print">打印{{str}}卡</span>
           </template>
           <!-- 录取结果-->
           <div v-if="!stempInfo.ifPayment">
@@ -101,8 +101,9 @@
                     <el-form label-width="120px" label-position="left" v-if="isPhone">
                       <el-form-item label="姓名：">{{nowStuInfo.stuName}}</el-form-item>
                       <el-form-item label="身份证/护照号：">{{nowStuInfo.idCard}}</el-form-item>
-                      <el-form-item label="本学年奖学金：">{{nowStuInfo.scholarship || 0}}</el-form-item>
-                      <el-form-item label="应缴费：">{{nowStuInfo.assessment || 0}}</el-form-item>
+                      <el-form-item label="本学年奖学金：" v-if="nowStuInfo.scholarship != null">{{nowStuInfo.scholarship}}</el-form-item>
+                      <el-form-item label="本学年奖学金：" v-else>0</el-form-item>
+                      <el-form-item label="应缴费：">{{nowStuInfo.assessment}}</el-form-item>
                     </el-form>
                     <!--pc-->
                     <table class="my-table" v-if="!isPhone">
@@ -118,8 +119,10 @@
                       <tr>
                         <td>{{nowStuInfo.stuName}}</td>
                         <td>{{nowStuInfo.idCard}}</td>
-                        <td>{{nowStuInfo.scholarship || 0}}</td>
-                        <td>{{nowStuInfo.assessment || 0}}</td>
+                        <td v-if="nowStuInfo.scholarship != null">{{nowStuInfo.scholarship }}</td>
+                        <td v-else>0</td>
+                        <td v-if="nowStuInfo.assessment != null">{{nowStuInfo.assessment }}</td>
+                        <td v-else>0</td>
                       </tr>
                       </tbody>
                     </table>
@@ -226,8 +229,8 @@
             <div class="pay_info">
               <div><span>姓名：</span>{{stempInfo.stuName}}</div>
               <div><span>身份证/护照号：</span>{{stempInfo.idCard}}</div>
-              <div><span>本学年奖学金：</span>{{stempInfo.scholarship || 0}}元</div>
-              <div><span>实际缴费：</span>{{stempInfo.payAmount || 0}}元</div>
+              <div><span>本学年奖学金：</span>{{stempInfo.scholarship ||0}}元</div>
+              <div><span>实际缴费：</span>{{stempInfo.payAmount ||0}}元</div>
               <template v-if="stempInfo.paymentType == 1">
                 <div><span>订单号：</span>{{stempInfo.orderNumber}}</div>
                 <div><span>交易流水号：</span>{{stempInfo.paymentNum}}</div>
@@ -280,7 +283,7 @@
             </div>
           </template> -->
           <!-- 报到成功 -->
-          <template v-if="stempInfo.ifReport == 1">您<span v-if="stempInfo.modifyTime == null || stempInfo.modifyTime == ''">已</span><span v-if="stempInfo.modifyTime != '' || stempInfo.modifyTime != null">于</span><span
+          <template v-if="stempInfo.ifReport == 1">您<span v-if="stempInfo.modifyTime == null">已</span><span v-if="stempInfo.modifyTime != null">于</span><span
             class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>完成到校报到注册手续~
           </template>
           <!-- 逾期未报到 -->
@@ -537,7 +540,9 @@
         });
         http.get("/gateway/enroll/api/erEnter/page", {params: obj}).then(function (xhr) {
           vm.tableData = xhr.data;
+           //console.log( '=========', xhr)
           if (vm.tableData.aaData && vm.tableData.aaData.length > 0) {
+           
             vm.nowStuInfo = vm.tableData.aaData[0];
           }
         });

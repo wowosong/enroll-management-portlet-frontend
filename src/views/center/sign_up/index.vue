@@ -129,6 +129,7 @@
                       type="number"
                       :min="1"
                       :step="1"
+                      maxlength="4"
                       placeholder="请填写"
                       v-model="i['s_a']"/>
                   </td>
@@ -137,6 +138,7 @@
                       type="number"
                       :min="1"
                       :step="1"
+                      :maxlength="4"
                       placeholder="请填写"
                       v-model="i['s_b']"/>
                   </td>

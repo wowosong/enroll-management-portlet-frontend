@@ -148,7 +148,7 @@
         this.$router.push({path: '/notice/detail', query: {id:data.id}});
       },
       changePwd(){
-        let pattern = /^\d{6,18}$/;
+        let pattern = /^[a-zA-Z0-9]{6,18}$/;
         this.pwdError = '';
         if(!pattern.test(this.loginForm.password)){
           this.pwdError = '密码长度在6-18位之间';
