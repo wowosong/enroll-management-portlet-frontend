@@ -20,7 +20,7 @@
           <template v-if="stempInfo.regStatus == 1 && stempInfo.ifEnter == null">
             <p class="text-left">您于<span class="color1">{{stempInfo.modifyTime | dateFormatYmd}}</span>到校办理了{{str}}卡~
             </p>
-            <p class="text-left">并按{{str}}卡的{{str}}时间到校<span class="color1">参加{{str}}</span>~</p>
+            <p class="text-left">请按{{str}}卡上的{{str}}时间到校<span class="color1">参加{{str}}</span>~</p>
             <span v-if="!isPhone" class="uniform-btn m-t" @click="print">打印{{str}}卡</span>
           </template>
           <!-- 录取结果-->
