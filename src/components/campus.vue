@@ -52,16 +52,16 @@ export default {
       })
     },
     camputedFn(item){
-      this.cnName = item.cnName;
+      // this.cnName = item.cnName;
       this.nowCampsId = item.id;
       if(this.isPhone){
         this.isShowMore = !this.isShowMore;
       }
-      this.$emit("query",item.id)
+      this.$emit("query",item.id,this.isShowMore)
     },
     isShowMoreFn(){
       this.nowCampsId = ''
-      this.$emit("query",'')
+      this.$emit("query",'',this.isShowMore)
       if(this.isPhone){
         this.isShowMore = !this.isShowMore
       }

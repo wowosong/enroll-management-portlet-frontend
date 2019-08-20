@@ -1,7 +1,7 @@
 <template>
     <div class="comm_main clearfix">
       <campus @query="queryCampus" :id="filter.schoolId" v-if="isShowCampu"></campus>
-        <div class="comm_item float_left">
+        <div class="comm_item float_left" v-show="!isShow">
             <div class="item_tit">通知公告</div>
             <div class="plan_cont">
                 <div class="plan_list" v-for="(item,index) in noticeList" :key="index">
@@ -28,7 +28,8 @@
                 campusId: '',
                 schoolId: '',
               },
-              isShowCampu:false
+              isShowCampu:false,
+              isShow: false
             }
         },
         mounted() {
@@ -46,9 +47,16 @@
             noticeDetail(item){
               this.$router.push({path:'/notice/detail',query:{id:item.id}});
             },
-          queryCampus(data){
+          queryCampus(data,a){
             //校区查询
+           // console.log('========a=',a)
             let vm = this;
+            if(a == true) {
+                vm.isShow = false
+            }else {
+                vm.isShow = !vm.isShow
+            }
+           // console.log('isSShow==',vm.isShow)
             vm.filter.schoolId = data;
             http.get("/gateway/enroll/api/erNotice/portalQuery", {params: vm.filter}).then(function (xhr) {
               vm.noticeList = xhr.data.data;

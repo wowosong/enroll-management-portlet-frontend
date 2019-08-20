@@ -18,7 +18,7 @@
             </div>
             <!--<div class="no_data" v-if="!datail || datail.noticeContent == ''"></div>-->
         </div>
-        <campus @query="goNoticeListFn"></campus>
+        <!-- <campus @query="goNoticeListFn"></campus> -->
     </div>
 </template>
 <script>
