@@ -44,8 +44,22 @@
                     <div class="right-box">
                         <span>{{item.fieldText}}</span>
                         <span v-if="item.remark  != ''">,{{item.remark}}</span>
+                         
                     </div>
+                    <ul class="fileList" v-if="item.domType == 7">
+                              <li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
+                               
+                                    <el-tooltip effect="light" :content="item.fileName" placement="top-start">
+                                        <a style="color: #6dbfff" :href="downloadUrl+item.fileId">{{index + 1}}
+                                            、{{item.fileName}}</a>
+                                    </el-tooltip>
+                                    
+                                   
+                                </li>
+                                 
+                            </ul>
                 </li>
+                
             </ul>
         </div>
     </div>
@@ -57,7 +71,8 @@ export default {
             brInfo: [], // 本人信息
             parentInfo: [], // 家长信息
             otherInfo: [], // 其他信息
-            configList: {}
+            configList: {},
+            fileInfo: []
         }
     },
     created() {
@@ -69,6 +84,7 @@ export default {
             return;
           }
           vm.configList = xhr.data;
+          vm.fileInfo = vm.configList.fileInfo;
           let idx = 0;
           let parentTemp = [];
           let temp = [
@@ -191,7 +207,7 @@ export default {
             }
             for (let c of codes) {
               vm.enumMap[c] = enums;
-              vm.itemMap[c] = items;
+              // vm.itemMap[c] = items;
             }
             vm.flag = true;
           }
@@ -228,5 +244,39 @@ export default {
                 }
             }
         }
+    }
+    @media screen and (max-width: 480px) {
+      .is_phone {
+        text-align: left  !important;
+      }
+      .content {
+        margin-top: 30px;
+        border-top: 1px solid #cccccc;
+        .box {
+          text-align: left;
+             margin-top: 20px;
+             border-bottom: 1px solid #cccccc;
+            .border-left {
+                border-left: 10px solid #97330e;
+                padding-left: 8px;
+                text-align: left 
+            }
+            .list {
+                margin-top: 10px;
+            }
+            .list li {
+                display: flex;
+                margin-bottom: 10px;
+                .left-box {
+                    width: 160px;
+                    text-align: left;
+                    padding-right: 10px;
+                    .colorred {
+                        color: red;
+                    }
+                }
+            }
+        }
+    }
     }
 </style>

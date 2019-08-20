@@ -152,7 +152,51 @@
                   <span v-if="other.fieldClass.indexOf('append') != -1">
                     <el-input v-model="other.remark" type="text"></el-input>
                   </span>
+                  
                 </span>
+                
+                 <span v-else-if="other.domType == 7 && flag ">
+                            <el-button  @click="downloadSq()" v-if="!isPhone">下载申请表</el-button>
+                            <div v-if="!isPhone" style='margin-top: 10px;'>
+                            <!-- <el-button type="primary" @click="showUploadAttach">点击上传</el-button> -->
+                            <el-upload
+                                :action= "url"
+                                list-type="picture-card"
+                                :on-success="handlePictureCardPreviews"
+                                :on-preview="handlePictureCardPreview"
+                                :on-remove="handleRemove">
+                                <i class="el-icon-plus"></i>
+                              </el-upload>
+                              <el-dialog :visible.sync="dialogVisible">
+                                <img width="100%" :src="dialogImageUrl" alt="">
+                              </el-dialog>
+                            <!-- <ul class="fileList">
+                              <li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
+                               
+                                    <el-tooltip effect="light" :content="item.fileName" placement="top-start">
+                                        <a style="color: #6dbfff" :href="downloadUrl+item.fileId">{{index + 1}}
+                                            、{{item.fileName}}</a>
+                                    </el-tooltip>
+                                    <el-button size="small" type="text" icon="el-icon-delete"
+                                               style="margin-left: 10px;color: #fa5555"
+                                               @click="fileInfo.splice(index, 1)">
+                                    </el-button>
+                                </li>
+                            </ul> -->
+                            </div>
+                            
+                            <span v-if="isPhone">
+        
+                              <el-upload
+                                class="upload-demo"
+                                :action= 'url'
+                                :on-success="handleChanges"
+                                :file-list="fileList">
+                                <el-button size="small" type="primary">点击上传</el-button>
+                                <div slot="tip" class="el-upload__tip"></div>
+                              </el-upload>
+                            </span>
+                  </span>
                 <span v-else class="el-input">
                     <span v-if="other.fieldText != ''">{{other.fieldValue}}</span>
                     <span v-if="other.fieldText == ''">
@@ -164,13 +208,19 @@
                   ></el-input>
                     </span>
                 </span>
-
+                
                 <span v-if="other.fieldClass.indexOf('append') != -1">
                   <el-input v-model="other.remark" type="text" :placeholder="other.reamkText"></el-input>
                 </span>
-              
+                   
               </div>
-             
+              <span v-if="other.domType == 3 && flag ">
+                <span v-if="other.reamkText != null" class="showText">{{other.reamkText}}</span>
+              </span>
+             <span v-if="other.domType == 7 && flag ">
+              <span class="showText" v-if="!isPhone">{{other.reamkText}}</span>
+               <span v-if="isPhone" class="showText">填写提示：周末离校方式若为自行离校的情况，须提交《自行离校申请》。请在“电脑端”打开此网页并下载打印申请表，填写后拍照上传。</span>
+             </span>
             </div>
           </li>
         </ul>
@@ -194,14 +244,20 @@
 export default {
   data() {
     return {
+      dialogImageUrl: '',
+      dialogVisible: false,
+      url: '/gateway/zuul/filesystem/api/upload/simpleupload?userId=' + window.userInfo.id,
+      fileList: [],
       brInfo: [], // 本人信息
       parentInfo: [], // 家长信息
       otherInfo: [], // 其他信息
       info: [],
+      userId: window.userInfo.id,
       configList: [],
       enumMap: {},
       itemMap: {},
       addList: [],
+      fileInfo: [],
       flag: false,
       cuid: 1, // 当前页面
       isJG: false,
@@ -225,7 +281,7 @@ export default {
   },
   created() {
     let vm = this;
-     
+    // console.log(window.userInfo.id)
     vm.getAddList();
     http.get(
         "/gateway/enroll/api/erReport/getByReportInfo/" +
@@ -238,8 +294,9 @@ export default {
           vm.$message.warning("请导入表单信息");
           return
         }
-        console.log(xhr)
+       // console.log(xhr)
         vm.configList = xhr.data;
+        vm.fileInfo = vm.configList.fileInfo;
         vm.brInfo = []; // 本人信息
         vm.parentInfo = []; // 家长
         vm.otherInfo = []; // 其他
@@ -339,11 +396,80 @@ export default {
        
       });
     
-    this.isPhone = this.$store.state.isPhone;
+    vm.isPhone = vm.$store.state.isPhone;
     // this.items = res.data.fieldInfos
+   // console.log(this.isPhone)
   },
   
   methods: {
+    handlePictureCardPreviews(file) {
+      let vm = this
+      console.log(file)
+      let v = file.data
+      vm.fileInfo.push({
+                fileId: v.id,
+                fileName: v.filename,
+                fileSize: v.filesize,
+                fileExt: v.ext
+              }); 
+             
+    },
+    handlePictureCardPreview(file){
+      //console.log(f)
+      this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+         console.log(this.dialogImageUrl)
+    },
+    handleRemove(file, fileList) {
+      //  console.log(file, fileList);
+      },
+      handlePreview(file) {
+       // console.log(file);
+      },
+      handlePreviews(file){
+        console.log(file)
+      },
+     handleChanges(files) {
+      // console.log('1222222')
+      let v = files.data
+      this.fileInfo.push({
+                fileId: v.id,
+                fileName: v.filename,
+                fileSize: v.filesize,
+                fileExt: v.ext
+              });
+       console.log(this.fileInfo)
+
+       
+      }
+    ,
+    downloadSq() {
+        window.location.href = "/gateway/enroll/erReport/downloadSqTemp?access_token="
+          + (JSON.parse(localStorage.getItem("accesstoken")).access_token  ? JSON.parse(localStorage.getItem("accesstoken")).access_token : "");
+      },
+       //上传附件
+      showUploadAttach() {
+        let vm = this;
+        window.fileUpload({
+          title: "上传附件",
+          uploadFileMaxNum: 5,
+          extensions: "",
+          confirm: function(files) {
+            _.forEach(files, function(v) {
+              window.updateFileStatus(v.id, function() {
+              });
+              vm.fileInfo.push({
+                fileId: v.id,
+                fileName: v.filename,
+                fileSize: v.filesize,
+                fileExt: v.ext
+              });
+            });
+           // console.log(files)
+          }
+        
+        });
+      },
     getAddList() {
       const vm = this;
       vm.addList = [];
@@ -489,12 +615,20 @@ export default {
         )
         .then(res => {
           //console.log(res);
+          vm.saveFileInfo();
           if(res.data.code == 0) {
             vm.$emit('nodefn')
           }
+          
         });
       
     },
+    saveFileInfo() {
+        let vm = this;
+          http.post("/gateway/enroll/api/erReport/saveFileInfo/" +  localStorage.getItem("regid"), vm.fileInfo).then(function (xhr) {
+            if (xhr.data.code) ;
+          });
+      },
     // 点击上一步
     clickUpdata() {
       this.cuid = this.cuid - 1;
@@ -543,6 +677,10 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.showText {
+  color: #ff7575;
+  font-size: 14px;
+}
 .content {
   border-top: 1px solid #cccccc;
   margin-top: 30px;
@@ -655,6 +793,10 @@ export default {
   }
 }
 @media screen and (max-width: 480px) {
+  .showText {
+    font-size: 12px;
+    text-align: left;
+  }
   .content {
     border-top: 1px solid #cccccc;
     margin-top: 20px;
@@ -737,6 +879,14 @@ export default {
   .list li {
     margin-top: 10px;
     line-height: 35px;
+  }
+}
+</style>
+<style>
+@media screen and (max-width: 480px) {
+  .el-input {
+    border: none;
+    border: 1px solid #cccccc;
   }
 }
 </style>

@@ -178,8 +178,8 @@
             </div>
             <!-- 未录取 -->
             <template v-if="stempInfo.ifEnter == 0">
-              <div class="text-left">您<span class="color1">未被录取</span></div>
-              <div class="over_hint text-left">人生的机会还有很多哦...</div>
+              <div class="text-left " style="border-bottom: 1px solid #cccccc; font-weight: bold;height: 40px;"><span class="ts-text">您<span class="color1">未被录取</span><span>，人生的机会还有很多哦...</span></span> </div>
+              <!-- <div class="over_hint text-left">人生的机会还有很多哦...</div> -->
               <!--<span class="btn" @click="viewScore()">查看成绩</span>-->
               <!--  未录取,并且显示成绩开关==1 显示成绩 -->
               <!--成绩-->
@@ -748,7 +748,11 @@
       line-height: 26px;
     }
   }
-
+  .ts-text {
+    position: relative;
+    left: -8px;
+    top: -4px;
+  }
   .color1 {
     color: #aa2f33;
   }

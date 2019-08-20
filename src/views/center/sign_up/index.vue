@@ -1428,7 +1428,9 @@
 
   .big_img img {
     max-height: 100%;
+    width: 600px;
     max-width: 100%;
+    height: 400px;
   }
 
   .close_btn {

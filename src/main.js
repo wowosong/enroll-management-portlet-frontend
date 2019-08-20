@@ -85,6 +85,7 @@ Vue.http.interceptors.push(function (request, next) {
           default:
             msg = '未处理的其它 level: ' + data.level
         }
+        vueApp.$vux.toast.text(msg);
         Vue.prototype.$message({
           message: msg,
           type: type,
