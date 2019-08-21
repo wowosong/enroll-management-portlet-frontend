@@ -47,17 +47,26 @@
                          
                     </div>
                     <ul class="fileList" v-if="item.domType == 7">
+                              <div v-if="isPhone == true">
                               <li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
                                
                                     <el-tooltip effect="light" :content="item.fileName" placement="top-start">
                                         <a style="color: #6dbfff" :href="downloadUrl+item.fileId">{{index + 1}}
-                                            、{{item.fileName}}</a>
+                                            、{{item.fileName}}</a>`
                                     </el-tooltip>
                                     
                                    
                                 </li>
+                                </div>
+                                <div v-if="isPhone ==false">
+                                   <img :src="imgUrl + id" alt="" style="border: 1px solid #ccc ; width: 100px ; height: 100px" class="imgBig" @click="imgBig">
+                                   <div class="maskImg" @click="FDimg" v-if="isBig">
+                                     <img :src="imgUrl + id" alt="" >
+                                   </div>
+                                </div>
                                  
-                            </ul>
+                      </ul>
+                     
                 </li>
                 
             </ul>
@@ -72,11 +81,17 @@ export default {
             parentInfo: [], // 家长信息
             otherInfo: [], // 其他信息
             configList: {},
-            fileInfo: []
+            fileInfo: [],
+            imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
+            id: localStorage.getItem('imgId'),
+            isPhone: this.$store.state.isPhone,
+            isBig: false
         }
     },
     created() {
         let vm = this
+         vm.isPhone = vm.$store.state.isPhone;
+        //  console.log('isPone',vm.isPhone)
         http.get('/gateway/enroll/api/erReport/getByReportInfo/' + localStorage.getItem('planid') + "/" + localStorage.getItem('regid'))
         .then((xhr) => {
         // console.log(res.data.fieldInfos)
@@ -171,6 +186,14 @@ export default {
      })
     },
     methods: {
+      FDimg() {
+        let vm = this
+        vm.isBig = false
+      },
+      imgBig() {
+        console.log('1111')
+        this.isBig = true
+      },
          getOtherEnum(fieldMap) {
         const vm = this;
         let pam = {};
@@ -244,6 +267,25 @@ export default {
                 }
             }
         }
+    }
+    .maskImg {
+      width: 100%;
+      height: 100%;
+      background:   rgba(204,204,204,.5);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 998;
+    }
+    .maskImg img {
+      width: 600px;
+      height: 600px;
+      opacity: 1 !important;
+      z-index: 999;
+      position: relative;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%)
     }
     @media screen and (max-width: 480px) {
       .is_phone {

@@ -162,6 +162,7 @@
                             <el-upload
                                 :action= "url"
                                 list-type="picture-card"
+                                limit= 1
                                 :on-success="handlePictureCardPreviews"
                                 :on-preview="handlePictureCardPreview"
                                 :on-remove="handleRemove">
@@ -169,6 +170,7 @@
                               </el-upload>
                               <el-dialog :visible.sync="dialogVisible">
                                 <img width="100%" :src="dialogImageUrl" alt="">
+                                <!-- <img width="100%" :src="imgUrl + id" alt=""> -->
                               </el-dialog>
                             <!-- <ul class="fileList">
                               <li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
@@ -190,6 +192,7 @@
                               <el-upload
                                 class="upload-demo"
                                 :action= 'url'
+                                limit= 1
                                 :on-success="handleChanges"
                                 :file-list="fileList">
                                 <el-button size="small" type="primary">点击上传</el-button>
@@ -245,8 +248,10 @@ export default {
   data() {
     return {
       dialogImageUrl: '',
+      id: localStorage.getItem('imgId'),
       dialogVisible: false,
       url: '/gateway/zuul/filesystem/api/upload/simpleupload?userId=' + window.userInfo.id,
+      imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
       fileList: [],
       brInfo: [], // 本人信息
       parentInfo: [], // 家长信息
@@ -281,6 +286,9 @@ export default {
   },
   created() {
     let vm = this;
+    http.get(vm.imgUrl + vm.id).then(xhr=> {
+      console.log('=======xhr=',xhr)
+    })
     // console.log(window.userInfo.id)
     vm.getAddList();
     http.get(
@@ -404,7 +412,7 @@ export default {
   methods: {
     handlePictureCardPreviews(file) {
       let vm = this
-      console.log(file)
+      console.log('2=======',file.data)
       let v = file.data
       vm.fileInfo.push({
                 fileId: v.id,
@@ -412,13 +420,13 @@ export default {
                 fileSize: v.filesize,
                 fileExt: v.ext
               }); 
-             
+      localStorage.setItem('imgId',v.id)      
     },
     handlePictureCardPreview(file){
       //console.log(f)
       this.dialogImageUrl = file.url;
         this.dialogVisible = true;
-         console.log(this.dialogImageUrl)
+         console.log('1--------',this.dialogImageUrl)
     },
     handleRemove(file, fileList) {
       //  console.log(file, fileList);
@@ -554,7 +562,7 @@ export default {
 
        vm.$ispreview = 1
       localStorage.is = 1
-      console.log(vm.$ispreview)
+     // console.log(vm.$ispreview)
       let saveData = [];
       saveData = saveData
         .concat(vm.brInfo)
@@ -603,7 +611,7 @@ export default {
       }
 
       vm.isSubmit = e;
-
+      console.log(vm.isSubmit)
       http.post(
           "/gateway/enroll/api/erReport/insertFieldInfo/" +
             localStorage.getItem("regid") +
@@ -614,7 +622,7 @@ export default {
             saveData
         )
         .then(res => {
-          //console.log(res);
+          console.log('===res=',saveData);
           vm.saveFileInfo();
           if(res.data.code == 0) {
             vm.$emit('nodefn')
@@ -626,7 +634,8 @@ export default {
     saveFileInfo() {
         let vm = this;
           http.post("/gateway/enroll/api/erReport/saveFileInfo/" +  localStorage.getItem("regid"), vm.fileInfo).then(function (xhr) {
-            if (xhr.data.code) ;
+            if (xhr.data.code) 
+            console.log('===xhr=',xhr);
           });
       },
     // 点击上一步

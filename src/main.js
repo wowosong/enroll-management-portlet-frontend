@@ -85,7 +85,7 @@ Vue.http.interceptors.push(function (request, next) {
           default:
             msg = '未处理的其它 level: ' + data.level
         }
-        vueApp.$vux.toast.text(msg);
+        // vueApp.$vux.toast.text(msg);
         Vue.prototype.$message({
           message: msg,
           type: type,
@@ -96,10 +96,10 @@ Vue.http.interceptors.push(function (request, next) {
     }
     // 出现异常 401
     if (!response.ok) {
-      if (!data.data || data.error == 'invalid_token' || data.error == 'unauthorized') {
-        // 跳到登录页
-        logout();
-      }
+      // if (!data.data || data.error == 'invalid_token' || data.error == 'unauthorized') {
+      //   // 跳到登录页
+      //   logout();
+      // }
     }
 
   });
