@@ -24,12 +24,12 @@
         </tr>
         <tr v-for="item in trTime" :key="item.seiValue">
           <td v-if="!isPhone" style="background: #ebeef5">{{item.seiName}}</td>
-          <td v-for="i in tableHead"
+          <td v-for="(i,index) in tableHead" 
               :key="i.date"
               @mouseover="changeBg('#409EFF', i.date+item.seiValue, (reserveMap[i.date]&&new Date()<i.date)?reserveMap[i.date][item.seiValue].nonChange:true)"
               @mouseout="changeBg('#fff', i.date+item.seiValue, (reserveMap[i.date]&&new Date()<i.date)?reserveMap[i.date][item.seiValue].nonChange:true)"
-              @click="choseTime((reserveMap[i.date]&&new Date()<i.date&&!reserveMap[i.date][item.seiValue].nonChange)?reserveMap[i.date][item.seiValue].id:'')"
-              :id="i.date+item.seiValue"
+              @click="choseTime((reserveMap[i.date]&&new Date()<i.date&&!reserveMap[i.date][item.seiValue].nonChange)?{id:reserveMap[i.date][item.seiValue].id,time:item.seiName,day:i.date}:'')"
+              :id="i.date+item.seiValue" v-bind:class="backgroundId==(reserveMap[i.date]?(reserveMap[i.date][item.seiValue]).id:'')?'backgroundStyle':''"
               :style="(reserveMap[i.date]&&new Date()<i.date)?(reserveMap[i.date][item.seiValue].nonChange?'background: #ff0000; color: #fff':'background: #fff'):'background: #e4e7ed'">
           <span v-if="reserveMap[i.date] && new Date() < i.date">
             <span v-if="reserveMap[i.date][item.seiValue].nonChange">
@@ -54,6 +54,7 @@
     name: "reserve",
     data() {
       return {
+        backgroundId:"default",
         editFlag: false,
         tableHead: [],
         trTime: [],
@@ -77,11 +78,12 @@
       vm.thisWeek();
     },
     methods: {
-      choseTime(id) {
-        if (!id) {
+      choseTime(msg) {
+       this.backgroundId = msg.id;
+        if (!msg) {
           return;
         }
-        this.$emit("serReserve", id);
+        this.$emit("serReserve", msg);
       },
       changeBg(color, id, nonChange) {
         if (nonChange) {
@@ -218,5 +220,10 @@
       }
     }
 
+  }
+
+  .backgroundStyle{
+    background: rgb(64, 158, 255) !important;
+    color: white !important;
   }
 </style>
