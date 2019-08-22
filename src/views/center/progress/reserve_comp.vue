@@ -78,11 +78,11 @@
       vm.thisWeek();
     },
     methods: {
-      choseTime(msg) {
-       this.backgroundId = msg.id;
+      choseTime(msg) {       
         if (!msg) {
           return;
         }
+        this.backgroundId = msg.id;
         this.$emit("serReserve", msg);
       },
       changeBg(color, id, nonChange) {
