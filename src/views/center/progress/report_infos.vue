@@ -192,7 +192,7 @@
                               <el-upload
                                 class="upload-demo"
                                 :action= 'url'
-                                limit= 1
+                                :limit= 1
                                 :on-success="handleChanges"
                                 :file-list="fileList">
                                 <el-button size="small" type="primary">点击上传</el-button>

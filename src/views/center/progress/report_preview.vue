@@ -49,7 +49,6 @@
                     <ul class="fileList" v-if="item.domType == 7">
                               <div v-if="isPhone == true">
                               <li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
-                               
                                     <el-tooltip effect="light" :content="item.fileName" placement="top-start">
                                         <a style="color: #6dbfff" :href="downloadUrl+item.fileId">{{index + 1}}
                                             、{{item.fileName}}</a>`
@@ -85,7 +84,8 @@ export default {
             imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
             id: localStorage.getItem('imgId'),
             isPhone: this.$store.state.isPhone,
-            isBig: false
+            isBig: false,
+            downloadUrl: '/gateway/zuul/filesystem/file/download/'
         }
     },
     created() {
