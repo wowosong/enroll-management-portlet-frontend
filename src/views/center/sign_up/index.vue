@@ -942,8 +942,10 @@
                       }
                     }
                   }
-                  vm.$set(reward, key, value + "#," + value);
+                  // vm.$set(reward, key, value + "#," + value);
+                  vm.$set(reward, key, value + "#," + (text ? text : value));
                 }
+
               }
             }
             for (let i = 0; i < 2; i++) {
