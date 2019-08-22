@@ -368,7 +368,7 @@
                 </div>
                 <div class="upload_item" v-if="!isPhone">
                   <div class="up_idcard" @click="uploadEnclosure">
-                    <template><img src="@/imgs/upload.png">上传证件</template>
+                    <template><img src="@/imgs/upload.png">上传证</template>
                   </div>
                   <div class="hint prove">请上传证书扫描件：格式为jpg、png等图片形式</div>
                 </div>
@@ -1394,7 +1394,7 @@
       right: 2px;
       bottom: 2px;
       left: 2px;
-      z-index: 1;
+      z-index: 0;
       cursor: pointer;
       background-color: rgba(0, 0, 0, .4);
       color: #fff;
