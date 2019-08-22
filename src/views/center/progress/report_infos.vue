@@ -38,10 +38,12 @@
                   filterable
                   :options="addList"
                   @change="handleChange"
-                 
+                  :style="width='100%'"
                 />
                 <el-autocomplete
                   v-model="it.fieldValue"
+                  type='text'
+                  :maxlength='50'
                   :fetch-suggestions="querySearch"
                   v-else-if="it.domType == 8 && flag && it.editable"
                   placeholder="请输入内容"
@@ -52,13 +54,15 @@
                   <el-input
                     v-model="it.fieldValue"
                     type="text"
+                    :style="width='100%'"
+                    :maxlength="50"
                     :placeholder="it.reamkText"
                     :disabled="it.isEdit != 1 && it.fieldValue != '' && !it.editable"
                   ></el-input>
                   </span>
                 </span>
                 <span v-if="it.fieldClass.indexOf('append') != -1" class="el-input el-input-bs">
-                    <el-input v-model="it.remark" type="text" :placeholder="it.reamkText"></el-input>
+                    <el-input v-model="it.remark" type="text" :placeholder="it.reamkText" :maxlength="50"></el-input>
                 </span>
                 <!-- <div v-if="!isPhone" class="pc-input">
                   <el-input
@@ -98,6 +102,7 @@
                       :key="item.seiValue"
                       :label="item.seiName"
                       :value="item.seiValue"
+                      :style="width='100%'"
                     />
                   </el-select>
                 </span>
@@ -107,6 +112,8 @@
                   <el-input
                     v-model="parent.fieldValue"
                     type="text"
+                    :style="width='100%'"
+                    :maxlength="50"
                     :placeholder="parent.reamkText"
                     :disabled="parent.isEdit != 1 && parent.fieldValue != '' && !parent.editable"
                   ></el-input>
@@ -114,7 +121,7 @@
                 </span>
 
                 <span v-if="parent.fieldClass.indexOf('append') != -1">
-                  <el-input v-model="parent.remark" type="text" :placeholder="parent.reamkText"></el-input>
+                  <el-input v-model="parent.remark" type="text" :placeholder="parent.reamkText" :maxlength="50"></el-input>
                 </span>
                
               </div>
@@ -150,7 +157,7 @@
                     />
                   </el-select>
                   <span v-if="other.fieldClass.indexOf('append') != -1">
-                    <el-input v-model="other.remark" type="text"></el-input>
+                    <el-input v-model="other.remark" type="text" :maxlength="50"></el-input>
                   </span>
                   
                 </span>
@@ -162,7 +169,7 @@
                             <el-upload
                                 :action= "url"
                                 list-type="picture-card"
-                                limit= 1
+                                :limit= 1
                                 :on-success="handlePictureCardPreviews"
                                 :on-preview="handlePictureCardPreview"
                                 :on-remove="handleRemove">
@@ -206,6 +213,7 @@
                   <el-input
                     v-model="other.fieldValue"
                     type="text"
+                    :maxlength="50"
                     :placeholder="other.reamkText"
                     :disabled="other.isEdit != 1 && other.fieldValue != '' && ! other.editable"
                   ></el-input>
@@ -213,7 +221,7 @@
                 </span>
                 
                 <span v-if="other.fieldClass.indexOf('append') != -1">
-                  <el-input v-model="other.remark" type="text" :placeholder="other.reamkText"></el-input>
+                  <el-input v-model="other.remark" type="text" :placeholder="other.reamkText" :maxlength="50"></el-input>
                 </span>
                    
               </div>
@@ -898,4 +906,7 @@ export default {
     border: 1px solid #cccccc;
   }
 }
+/* .content .item-box span  {
+  width: 100%;
+} */
 </style>

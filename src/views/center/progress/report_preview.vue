@@ -10,8 +10,8 @@
                         <span>{{item.fieldName}}:</span>
                     </div>
                     <div class="right-box">
-                        <span>{{item.fieldText}}</span>
-                        <span v-if="item.remark  != ''">,{{item.remark}}</span>
+                        <span>{{item.fieldText}} <span v-if="item.remark  != ''">,{{item.remark}}</span></span>
+                       
                     </div>
                 </li>
             </ul>
@@ -26,8 +26,8 @@
                         <span>{{item.fieldName}}:</span>
                     </div>
                     <div class="right-box">
-                        <span>{{item.fieldText}}</span>
-                        <span v-if="item.remark  != ''">,{{item.remark}}</span>
+                        <span>{{item.fieldText}}<span v-if="item.remark  != ''">,{{item.remark}}</span></span>
+                       
                     </div>
                 </li>
             </ul>
@@ -44,17 +44,13 @@
                     <div class="right-box">
                         <span>{{item.fieldText}}</span>
                         <span v-if="item.remark  != ''">,{{item.remark}}</span>
-                         
-                    </div>
-                    <ul class="fileList" v-if="item.domType == 7">
+                          <ul class="fileList" v-if="item.domType == 7">
                               <div v-if="isPhone == true">
                               <li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
                                     <el-tooltip effect="light" :content="item.fileName" placement="top-start">
                                         <a style="color: #6dbfff" :href="downloadUrl+item.fileId">{{index + 1}}
                                             、{{item.fileName}}</a>`
-                                    </el-tooltip>
-                                    
-                                   
+                                    </el-tooltip>      
                                 </li>
                                 </div>
                                 <div v-if="isPhone ==false">
@@ -65,6 +61,24 @@
                                 </div>
                                  
                       </ul>
+                    </div>
+                    <!-- <ul class="fileList" v-if="item.domType == 7">
+                              <div v-if="isPhone == true">
+                              <li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
+                                    <el-tooltip effect="light" :content="item.fileName" placement="top-start">
+                                        <a style="color: #6dbfff" :href="downloadUrl+item.fileId">{{index + 1}}
+                                            、{{item.fileName}}</a>`
+                                    </el-tooltip>      
+                                </li>
+                                </div>
+                                <div v-if="isPhone ==false">
+                                   <img :src="imgUrl + id" alt="" style="border: 1px solid #ccc ; width: 100px ; height: 100px" class="imgBig" @click="imgBig">
+                                   <div class="maskImg" @click="FDimg" v-if="isBig">
+                                     <img :src="imgUrl + id" alt="" >
+                                   </div>
+                                </div>
+                                 
+                      </ul> -->
                      
                 </li>
                 
@@ -319,6 +333,14 @@ export default {
                 }
             }
         }
+    }
+    // .right-box {
+    
+    // }
+    .right-box span {
+      display: inline-block;
+      width: 200px;
+      word-break: break-word
     }
     }
 </style>
