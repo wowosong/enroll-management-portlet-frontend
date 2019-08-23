@@ -15,8 +15,8 @@
         <el-form-item label="报名年级：" required>{{planInfo.gradeName}}</el-form-item>
         <el-form-item label="学生姓名：" required>{{regInfo.stuName}}</el-form-item>
         <el-form-item label="性别：" required>{{genderMap[regInfo.stuGender]}}</el-form-item>
-        <el-form-item label="监护人1姓名：" required>{{regInfo.parents[0]['s_g']}}</el-form-item>
-        <el-form-item label="监护人1手机号：" required>{{regInfo.parents[0]['s_h']}}</el-form-item>
+        <el-form-item label="监护人姓名：" required>{{regInfo.parents[0]['s_g']}}</el-form-item>
+        <el-form-item label="监护人手机号：" required>{{regInfo.parents[0]['s_h']}}</el-form-item>
         <el-form-item label="身高：" prop="height">
           <template v-if="isEdit">
             <el-col :span="6">
@@ -43,6 +43,7 @@
             <span class="error-info"> <i class="el-icon-circle-close"></i>{{scope.error}}</span>
           </template>
         </el-form-item>
+        
         <el-form-item label="尺码：" prop="size">
           <template v-if="isEdit">
             <el-col :span="6">
@@ -111,7 +112,7 @@
       };
       return {
         // 是否可编辑
-        isEdit: true,
+        isEdit: false,
         planId:'',
         genderMap: {2: "女", 1: "男"},
         // 性别数据

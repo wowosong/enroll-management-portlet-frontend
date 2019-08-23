@@ -50,19 +50,17 @@
                  style="width: 100%"
                 />
                 <span v-else class="el-input">
-                    <span class="el-inputs">
-                  <el-input
-                    v-model="it.fieldValue"
-                    type="text"
-                    :style="width='100%'"
-                    :maxlength="50"
-                    :placeholder="it.reamkText"
-                    :disabled="it.isEdit != 1 && it.fieldValue != '' && !it.editable"
-                  ></el-input>
+                  <span class="el-inputs">
+                    <el-input
+                      v-model="it.fieldValue"
+                      type="text"
+                      :maxlength="it.textLength"
+                      :placeholder="it.reamkText"
+                    ></el-input>
                   </span>
                 </span>
                 <span v-if="it.fieldClass.indexOf('append') != -1" class="el-input el-input-bs">
-                    <el-input v-model="it.remark" type="text" :placeholder="it.reamkText" :maxlength="50"></el-input>
+                    <el-input v-model="it.remark" type="text" :maxlength="it.textLength" :placeholder="it.reamkText"></el-input>
                 </span>
                 <!-- <div v-if="!isPhone" class="pc-input">
                   <el-input
@@ -376,23 +374,23 @@ export default {
           }
            for(let i of vm.parentInfo) {
             if(i.fieldCode == "s_g" && i.batNum == 1) {
-              i.fieldName = '监护人1姓名';
+              i.fieldName = '监护人姓名';
             }
             if(i.fieldCode == "s_g" && i.batNum == 2) {
-              i.fieldName = '监护人2姓名';
+              i.fieldName = '监护人姓名';
             }
 
             if(i.fieldCode == "s_h" && i.batNum == 1) {
-              i.fieldName = '监护人1手机号';
+              i.fieldName = '监护人手机号';
             }
             if(i.fieldCode == "s_h" && i.batNum == 2) {
-              i.fieldName = '监护人2手机号';
+              i.fieldName = '监护人手机号';
             }
             if(i.fieldCode == "s_j" && i.batNum == 1) {
-              i.fieldName = '监护人1工作单位';
+              i.fieldName = '监护人工作单位';
             }
             if(i.fieldCode == "s_j" && i.batNum == 2) {
-              i.fieldName = '监护人2工作单位';
+              i.fieldName = '监护人工作单位';
             }
           }
            if(vm.parentInfo && parentTemp && parentTemp.length) {
@@ -460,8 +458,8 @@ export default {
       }
     ,
     downloadSq() {
-        window.location.href = "/gateway/enroll/erReport/downloadSqTemp?access_token="
-          + (JSON.parse(localStorage.getItem("accesstoken")).access_token  ? JSON.parse(localStorage.getItem("accesstoken")).access_token : "");
+      window.location.href = "/gateway/enroll/erReport/downloadSqTemp?access_token="
+        + (JSON.parse(localStorage.getItem("accesstoken")).access_token  ? JSON.parse(localStorage.getItem("accesstoken")).access_token : "");
       },
        //上传附件
       showUploadAttach() {
@@ -658,30 +656,32 @@ export default {
     //   otherInfo: [], // 其他信息
     //   
       let i = 0
-    if(e == 1){
-        that.brInfo.forEach(item => {
-            if(item.fieldValue == '' && item.isRequired == 1){
-                return i = 1
-            }
-        });
-        if(i == 1 ) {
-            that.open3()
-        }else {
-            that.cuid = that.cuid + 1;
-        }
-    }
-    if(e == 2){
-        that.parentInfo.forEach(item => {
-            if(item.fieldValue == '' && item.isRequired == 1){
-                return i = 1
-            }
-        });
-        if(i == 1 ) {
-            that.open3()
-        }else {
-            that.cuid = that.cuid + 1;
-        }
-    }
+      switch(e){
+        case 1:
+           _.forEach(that.brInfo,item => {
+              if(item.fieldValue == '' && item.isRequired == 1){
+                  return i = 1
+              }
+          });
+          if(i == 1 ) {
+              that.open3()
+          }else {
+              that.cuid = that.cuid + 1;
+          }
+          break;
+          case 2:
+             that.parentInfo.forEach(item => {
+              if(item.fieldValue == '' && item.isRequired == 1){
+                  return i = 1
+              }
+          });
+          if(i == 1 ) {
+              that.open3()
+          }else {
+              that.cuid = that.cuid + 1;
+          }
+            break;
+      }
     },
     open3() {
       this.$message({

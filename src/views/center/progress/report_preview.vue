@@ -279,6 +279,7 @@ export default {
                         color: red;
                     }
                 }
+                .right-box{ width: 650px; }
             }
         }
     }

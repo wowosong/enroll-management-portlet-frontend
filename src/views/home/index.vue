@@ -17,10 +17,9 @@
           </div>
           <div class="login-item">
             <i class="iconfont">&#xe69e;</i>
-            <input type="password" maxlength="18" @blur="changePwd" v-model="loginForm.password" v-if="isPwd" placeholder="初始化密码为证件号后六位"/>
-            <input type="text" maxlength="18" @blur="changePwd" v-model="loginForm.password" v-if="!isPwd" placeholder="初始化密码为证件号后六位"/>
+            <input :type="isPwd ? 'password': 'text'" maxlength="18" @blur="changePwd" v-model="loginForm.password" v-if="isPwd" placeholder="初始化密码为证件号后六位"/>
             <i class="iconfont fr pointer" v-if="!isPwd" @click="isPwd = !isPwd">&#xe60d;</i>
-            <i class="iconfont fr pointer" v-if="isPwd" @click="isPwd = !isPwd">&#xe6b8;</i>
+            <i class="iconfont fr pointer" v-else @click="isPwd = !isPwd">&#xe6b8;</i>
           </div>
           <div class="pwd-wrap clearfix">
             <el-checkbox v-model="isRemember">记住密码</el-checkbox>

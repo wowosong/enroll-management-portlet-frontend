@@ -857,8 +857,7 @@ export default {
 <style lang="less" scoped>
 .xg-nav {
   float: right;
-  position: relative;
-  right: 20%;
+ 
   border: 1px solid #000000;
   padding: 5px 15px;
   border-radius: 2px;
