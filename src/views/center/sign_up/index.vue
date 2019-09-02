@@ -126,7 +126,8 @@
                   </td>
                   <td>
                     <el-input
-                      type="number"
+                      type="text"
+                      oninput = "value=value.replace(/[^\d]/g,'')"
                       :min="1"
                       :step="1"
                       maxlength="4"
@@ -135,7 +136,8 @@
                   </td>
                   <td>
                     <el-input
-                      type="number"
+                     type="text"
+                      oninput = "value=value.replace(/[^\d]/g,'')"
                       :min="1"
                       :step="1"
                       :maxlength="4"
@@ -249,14 +251,16 @@
                   <el-form-item label="年级排名(名)" :required="idx < 2">
                     <p class="phone-fill" v-if="!isEditInfo">{{i['s_a']}}</p>
                     <template v-else>
-                      <el-input type="number" :min="0" :maxlength="6" v-model.number="i['s_a']"
+                      <el-input type="text"
+                              oninput = "value=value.replace(/[^\d]/g,'')" :min="0" :maxlength="6" v-model.number="i['s_a']"
                                 placeholder="请输入"></el-input>
                     </template>
                   </el-form-item>
                   <el-form-item label="年级人数(人)" :required="idx < 2">
                     <p class="phone-fill" v-if="!isEditInfo">{{i['s_b']}}</p>
                     <template v-else>
-                      <el-input type="number" :min="0" :maxlength="6" v-model.number="i['s_b']"
+                      <el-input type="text"
+                              oninput = "value=value.replace(/[^\d]/g,'')" :min="0" :maxlength="6" v-model.number="i['s_b']"
                                 placeholder="请输入"></el-input>
                     </template>
                   </el-form-item>
@@ -815,6 +819,9 @@
       },
       addRewardRows() {
         let vm = this;
+        // let i = vm.rewardRows + 1
+        
+      //  console.log(i)
         if (vm.rewardRows < 8) {
           let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
           let data = _.cloneDeep(vm.regInfo);
@@ -824,12 +831,16 @@
           vm.$message.warning('不能超过8条获奖信息');
         }
       },
-
+      deletelast(arr){
+        //    var newarr=arr.slice(0);
+           return arr.slice(0,arr.length-1)
+    },
       delRewardRows() {
         let vm = this;
         if (vm.rewardRows != 1) {
           let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
           vm.regInfo.rewards[vm.rewardRows--] = obj
+           vm.regInfo.rewards =  vm.regInfo.rewards.splice(vm.rewardRows-1,1)
         } else {
           vm.$message.warning('不能低于1条获奖信息');
         }
