@@ -190,7 +190,7 @@ input {
 
 #app .sign-wrap .sign-left .sign-subttit::before,
 #app .sign-wrap .sign-left .sign-subttit span:first-child::after {
-  content: "●";
+  content: "";
   color: #bebebe;
   font-size: 12px;
 }

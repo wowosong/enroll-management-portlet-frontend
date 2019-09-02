@@ -2,9 +2,14 @@
   <div class="container sign-wrap">
     <div class="comm_main" v-loading="saving">
       <div class="sign-left">
-        <h6 class="sign-tit">[{{planInfo.campusName}}] {{planInfo.planName}}</h6>
-        <div class="sign-subttit">
+        <h6 class="sign-tit" style="text-align: left;padding: 2px">[{{planInfo.campusName}}] {{planInfo.planName}}</h6>
+        <div class="sign-subttit" v-if="!isPhone">
           报名校区：<span>{{planInfo.campusName}}</span> 报名年级：<span>{{planInfo.gradeName}}</span>
+        </div>
+        <div class="sign-subttit" v-else style="text-align: left;padding-left: 10%">
+          <div> 报名校区: <span>{{planInfo.campusName}}</span></div>
+          <div> 报名年级：<span>{{planInfo.gradeName}}</span></div>
+         
         </div>
         <!--基本信息-->
         <p class="tip">提示：加<span>*</span>为<span>“必须填”</span></p>
