@@ -7,7 +7,7 @@
           报名校区：<span>{{planInfo.campusName}}</span> 报名年级：<span>{{planInfo.gradeName}}</span>
         </div>
         <div class="sign-subttit" v-else style="text-align: left;padding-left: 10%">
-          <div> 报名校区: <span>{{planInfo.campusName}}</span></div>
+          <div style="margin-bottom: 10px"> 报名校区:- <span>{{planInfo.campusName}}</span></div>
           <div> 报名年级：<span>{{planInfo.gradeName}}</span></div>
          
         </div>

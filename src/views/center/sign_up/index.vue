@@ -252,8 +252,8 @@
                     <p class="phone-fill" v-if="!isEditInfo">{{i['s_a']}}</p>
                     <template v-else>
                       <el-input type="text"
-                              oninput = "value=value.replace(/[^\d]/g,'')" :min="0" :maxlength="6" v-model.number="i['s_a']"
-                                placeholder="请输入"></el-input>
+                              oninput = "value=value.replace(/[^\d]/g,'')" :min="0" :maxlength="4" v-model.number="i['s_a']"
+                                placeholder="请输入==="></el-input>
                     </template>
                   </el-form-item>
                   <el-form-item label="年级人数(人)" :required="idx < 2">
@@ -402,7 +402,7 @@
                 {{regInfo.eduConcept}}
               </template>
               <template v-else>
-                <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="regInfo.eduConcept"></el-input>
+                <el-input type="textarea" :rows="4" :maxlength="100" placeholder="请输入内容" v-model="regInfo.eduConcept"></el-input>
               </template>
             </el-form-item>
           </div>
@@ -568,9 +568,9 @@
               </div>
             </td>
           </tr>
-          <tr v-if="planInfo.phaseName != '高中'">
+          <tr v-if="planInfo.phaseName != '高中'" style="display: flex">
             <td width="110px" valign="top" align="right">家庭教育理念：</td>
-            <td>{{regInfo.eduConcept}}</td>
+            <td style="word-wrap:break-word;word-break:break-all">{{regInfo.eduConcept}}</td>
           </tr>
           </tbody>
         </table>
@@ -640,7 +640,7 @@
         planInfo: {},
         rewardRows: 3,
         regInfo: {
-          isRadio:'0',
+          isRadio: 0,
           otherData: {},
           parents: [
             {s_g: "", s_h: "", s_i: "", s_j: "", s_k: ""},
@@ -847,9 +847,12 @@
       },
       saveInfo() {
         const vm = this;
+        console.log('-==-==-',vm.regInfo)
         vm.$refs["ruleForm"].validate((valid) => {
           if (valid) {
+            console.log(vm.regInfo.isRadio)
             if (vm.$route.query.enroll) {
+              console.log(2)
               if (!vm.regInfo.stuName) {
                 vm.$message.warning("请填写学生姓名");
                 return false
