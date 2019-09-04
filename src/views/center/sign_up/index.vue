@@ -36,7 +36,7 @@
           <div class="basic_info clearfix">
             <el-form-item label="学生姓名:" required style="margin-bottom:5px">
               <template v-if="isEditInfo">
-                <el-col :span="12">
+                <el-col :span="12" class="show_phone">
                   <el-input v-model="regInfo.stuName" :maxlength="18"></el-input>
                 </el-col>
               </template>
@@ -47,7 +47,7 @@
             </el-form-item>
             <el-form-item label="出生日期:" required class="date-input" style="margin-bottom:5px">
               <template v-if="isEditInfo">
-                <el-col :span="12">
+                <el-col :span="12"  class="show_phone">
                   <el-date-picker
                     type="date"
                     placeholder="请填写"
@@ -68,7 +68,7 @@
               <span class="phone-fill" v-else>{{genderMap[regInfo.stuGender]}}</span>
             </el-form-item>
             <el-form-item label="户籍所在地:" prop="stuAdds" :required="isrequired">
-              <el-col :span="12">
+              <el-col :span="12"  class="show_phone">
                 <span class="phone-fill" v-if="!isEditInfo">
                   {{regInfo.localStr}}
                 </span>
@@ -81,7 +81,7 @@
               </el-col>
             </el-form-item>
             <el-form-item label="现就读学校:" prop="nowSchool">
-              <el-col :span="12">
+              <el-col :span="12"  class="show_phone">
                <span class="phone-fill" v-if="!isEditInfo">
                   {{regInfo.nowSchool}}
                </span>
@@ -92,7 +92,7 @@
               </el-col>
             </el-form-item>
             <el-form-item label="现就读年级:" prop="nowGrade">
-              <el-col :span="12">
+              <el-col :span="12"  class="show_phone">
              <span class="phone-fill" v-if="!isEditInfo">
                   {{regInfo.nowGradeName}}
              </span>
@@ -251,23 +251,23 @@
                   <el-form-item label="年级排名(名)" :required="idx < 2">
                     <p class="phone-fill" v-if="!isEditInfo">{{i['s_a']}}</p>
                     <template v-else>
-                      <el-input type="text"
+                      <el-input type="text"  class="show_phone"
                               oninput = "value=value.replace(/[^\d]/g,'')" :min="0" :maxlength="4" v-model.number="i['s_a']"
-                                placeholder="请输入==="></el-input>
+                                placeholder="请输入"></el-input>
                     </template>
                   </el-form-item>
                   <el-form-item label="年级人数(人)" :required="idx < 2">
                     <p class="phone-fill" v-if="!isEditInfo">{{i['s_b']}}</p>
                     <template v-else>
-                      <el-input type="text"
-                              oninput = "value=value.replace(/[^\d]/g,'')" :min="0" :maxlength="6" v-model.number="i['s_b']"
+                      <el-input type="text"  class="show_phone"
+                              oninput = "value=value.replace(/[^\d]/g,'')" :min="0" :maxlength="4" v-model.number="i['s_b']"
                                 placeholder="请输入"></el-input>
                     </template>
                   </el-form-item>
                 </div>
               </div>
             </div>
-            <div class="parents_info">
+            <div class="parents_info" style="padding: 20px">
               <p class="basic_tit">监护人信息</p>
               <template v-for="i in 2">
                 <p class="parent-hint">监护人{{i}}</p>
@@ -276,7 +276,7 @@
                     <!--{{regInfo.parents[i-1]['s_g']}}-->
                   <!--</p>-->
                   <template>
-                    <el-input :disabled="!isEditInfo" :maxlength="20" placeholder="示例：张三（父子）" v-model="regInfo.parents[i-1]['s_g']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="20" placeholder="示例：张三（父子）"  class="show_phone" v-model="regInfo.parents[i-1]['s_g']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="手机:" :required="$route.query.enroll?true:i==1? true:false">
@@ -284,7 +284,7 @@
                     <!--{{regInfo.parents[i-1]['s_h']}}-->
                   <!--</p>-->
                   <template>
-                    <el-input :disabled="!isEditInfo" :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"  class="show_phone"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="学历:" :required="$route.query.enroll?true:i==1? true:false">
@@ -292,7 +292,7 @@
                     <!--{{regInfo.parents[i-1]['s_i']}}-->
                   <!--</p>-->
                   <template>
-                    <el-input :disabled="!isEditInfo" :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="10" placeholder="请填写"  class="show_phone" v-model="regInfo.parents[i-1]['s_i']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="工作单位:" :required="$route.query.enroll?true:i==1? true:false">
@@ -300,7 +300,7 @@
                     <!--{{regInfo.parents[i-1]['s_j']}}-->
                   <!--</p>-->
                   <template>
-                    <el-input :disabled="!isEditInfo" :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="50" placeholder="请填写" class="show_phone" v-model="regInfo.parents[i-1]['s_j']"/>
                   </template>
                 </el-form-item>
                 <el-form-item label="职务:">
@@ -308,30 +308,30 @@
                     <!--{{regInfo.parents[i-1]['s_k']}}-->
                   <!--</p>-->
                   <template>
-                    <el-input :disabled="!isEditInfo" :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
+                    <el-input :disabled="!isEditInfo" :maxlength="30" placeholder="请填写" class="show_phone" v-model="regInfo.parents[i-1]['s_k']"/>
                   </template>
                 </el-form-item>
                 <div class="line-1" v-if="i==1"></div>
               </template>
             </div>
-            <div class="reward_info" v-if="planInfo.phaseName  == '高中'">
+            <div class="reward_info" v-if="planInfo.phaseName  == '高中'" style="padding: 20px">
               <p class="basic_tit">获奖信息</p>
               <template v-for="i in rewardRows">
                 <el-form-item label="获奖时间:">
                   <span v-if="!isEditInfo">{{regInfo.rewards[i-1]['s_c']}}</span>
-                  <el-date-picker v-else placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
+                  <el-date-picker v-else placeholder="年/月/日" v-model="regInfo.rewards[i-1]['s_c']" type="date" class="show_phone"/>
                 </el-form-item>
                 <el-form-item label="奖项名称:">
                   <span v-if="!isEditInfo">{{regInfo.rewards[i-1]['s_d']}}</span>
-                  <el-input v-else placeholder="（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
+                  <el-input v-else placeholder="（限20字）" :maxlength="20" class="show_phone" v-model="regInfo.rewards[i-1]['s_d']"/>
                 </el-form-item>
                 <el-form-item label="奖项等级:">
                   <span v-if="!isEditInfo">{{regInfo.rewards[i-1]['s_e']}}</span>
-                  <el-input v-else placeholder="（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
+                  <el-input v-else placeholder="（限10字）" :maxlength="10" class="show_phone" v-model="regInfo.rewards[i-1]['s_e']"/>
                 </el-form-item>
                 <el-form-item label="奖项范围:">
                   <span v-if="!isEditInfo">{{regInfo.rewards[i-1]['s_t']}}</span>
-                  <el-select v-else v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
+                  <el-select v-else v-model="regInfo.rewards[i-1]['s_t']" class="show_phone" clearable placeholder="请选择">
                     <el-option
                       v-for="item in enumMap['s_t']"
                       :key="item.seiValue"
@@ -341,7 +341,7 @@
                 </el-form-item>
                 <el-form-item label="奖项类别:">
                   <span v-if="!isEditInfo">{{regInfo.rewards[i-1]['s_u']}}</span>
-                  <el-select v-else v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
+                  <el-select v-else v-model="regInfo.rewards[i-1]['s_u']" class="show_phone" clearable placeholder="请选择">
                     <el-option
                       v-for="item in enumMap['s_u']"
                       :key="item.seiValue"
@@ -851,16 +851,16 @@
         vm.$refs["ruleForm"].validate((valid) => {
           if (valid) {
             console.log(vm.regInfo.isRadio)
-            if (vm.$route.query.enroll) {
+            // if (vm.$route.query.enroll) {
               console.log(2)
               if (!vm.regInfo.stuName) {
                 vm.$message.warning("请填写学生姓名");
                 return false
               }
-              if (!vm.regInfo.isRadio || vm.regInfo.isRadio == 0) {
-                vm.$message.warning("请选择本校是否为第一志愿");
-                return false
-              }
+              // if (!vm.regInfo.isRadio || vm.regInfo.isRadio == 0) {
+              //   vm.$message.warning("请选择本校是否为第一志愿");
+              //   return false
+              // }
               if (!vm.regInfo.stuBirthday) {
                 vm.$message.warning("请填写出生日期");
                 return false
@@ -869,7 +869,7 @@
                 vm.$message.warning("请填写性别");
                 return false
               }
-            }
+            // }
             // 监护人手机号1验证
             for (let i = 0; i <= vm.regInfo.parents.length; i++) {
               // if (vm.$route.query.enroll) {
@@ -1546,6 +1546,12 @@
   }
 </style>
 <style lang="less" scoped>
+@media screen and (max-width: 480px) {
+  .show_phone {
+    width: 100% !important;
+    border: 1px solid #ccc
+  }
+}
   .basic_tit {
     border-left: 3px solid #aa2f33;
     line-height: 16px;

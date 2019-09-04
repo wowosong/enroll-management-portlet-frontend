@@ -52,7 +52,7 @@
                   </template>
                 </el-form-item>
                 <el-form-item label="学生姓名:" prop="stuName" id="regInfo_stuName">
-                  <el-col :span="12">
+                  <el-col :span="12" class="show_modeid">
                     <el-input :maxlength="18" v-model="regInfo.stuName" placeholder="请填写"></el-input>
                   </el-col>
                   <!--错误信息-->
@@ -61,7 +61,7 @@
                   </template>
                 </el-form-item>
                 <el-form-item label="身份证/护照号:" prop="idCard" id="regInfo_idCard">
-                  <el-col :span="12">
+                  <el-col :span="12" class="show_modeid">
                     <el-input v-model="regInfo.idCard" :maxlength="18" placeholder="请填写" @change="idCardNumFn"
                               style="line-height: normal"></el-input>
                   </el-col>
@@ -71,7 +71,7 @@
                   </template>
                 </el-form-item>
                 <el-form-item label="出生日期:" prop="stuBirthday" id="regInfo_stuBirthday">
-                  <el-col :span="12">
+                  <el-col :span="12" class="show_modeid">
                     <el-date-picker
                       type="date"
                       placeholder="请填写"
@@ -95,7 +95,7 @@
                   </template>
                 </el-form-item>
                 <el-form-item prop="stuAdds" label="户籍所在地:" id="regInfo_stuAdds">
-                  <el-col :span="12" class="width_750">
+                  <el-col :span="12" class="width_750 show_modeid">
                     <el-cascader
                       placeholder="请填写"
                       style="width: 100%"
@@ -109,7 +109,7 @@
                   </template>
                 </el-form-item>
                 <el-form-item label="现就读学校:" prop="nowSchool" id="regInfo_nowSchool">
-                  <el-col :span="12" class="width_750">
+                  <el-col :span="12" class="width_750 show_modeid">
                     <el-autocomplete :maxlength="50" v-model="regInfo.nowSchool" :fetch-suggestions="querySearch"
                                      placeholder="请填写"/>
                   </el-col>
@@ -119,7 +119,7 @@
                   </template>
                 </el-form-item>
                 <el-form-item label="现就读年级:" prop="nowGrade" id="regInfo_nowGrade">
-                  <el-col :span="12" class="width_750">
+                  <el-col :span="12" class="width_750 show_modeid">
                     <el-select clearable v-model="regInfo.nowGrade" placeholder="请填写">
                       <el-option
                         v-for="item in gradeList"
@@ -168,7 +168,7 @@
                               maxlength="4"
                               placeholder="请填写"
                               v-model="i['s_a']" />
-                            
+                              
                           </td>
                           <td>
                             <el-input
@@ -356,7 +356,9 @@
                     </el-form-item>
                     <el-form-item label="年级排名(名):" :required="idx < 2">
                       <el-input
-                        type="number"
+                      class="show_modeid"
+                        type="text"
+                        oninput = "value=value.replace(/[^\d]/g,'')"
                         :min="1"
                         :step="1"
                         :maxlength="4"
@@ -365,7 +367,9 @@
                     </el-form-item>
                     <el-form-item label="年级人数(人):" :required="idx < 2">
                       <el-input
-                        type="number"
+                      class="show_modeid"
+                         type="text"
+                        oninput = "value=value.replace(/[^\d]/g,'')"
                         :min="1"
                         :step="1"
                         :maxlength="4"
@@ -390,20 +394,20 @@
                 </p>
                 <template v-for="i in 2" v-if="guardianOpen">
                   <el-form-item label="姓名(关系):" :required="i==1 ? true:false">
-                    <el-input :maxlength="20" placeholder="示例：张三（父子）" v-model="regInfo.parents[i-1]['s_g']"/>
+                    <el-input :maxlength="20" placeholder="示例：张三（父子）" class="show_modeid" v-model="regInfo.parents[i-1]['s_g']"/>
                   </el-form-item>
                   <el-form-item label="手机:" :required="i==1 ? true:false">
-                    <el-input :maxlength="20" placeholder="请填写" v-model="regInfo.parents[i-1]['s_h']"
+                    <el-input :maxlength="20" placeholder="请填写" class="show_modeid" v-model="regInfo.parents[i-1]['s_h']"
                               @blur="setLoginName"/>
                   </el-form-item>
                   <el-form-item label="学历:" :required="i==1 ? true:false">
-                    <el-input :maxlength="10" placeholder="请填写" v-model="regInfo.parents[i-1]['s_i']"/>
+                    <el-input :maxlength="10" placeholder="请填写" class="show_modeid" v-model="regInfo.parents[i-1]['s_i']"/>
                   </el-form-item>
                   <el-form-item label="工作单位:" :required="i==1 ? true:false">
-                    <el-input :maxlength="50" placeholder="请填写" v-model="regInfo.parents[i-1]['s_j']"/>
+                    <el-input :maxlength="50" placeholder="请填写" class="show_modeid" v-model="regInfo.parents[i-1]['s_j']"/>
                   </el-form-item>
                   <el-form-item label="职务:">
-                    <el-input :maxlength="30" placeholder="请填写" v-model="regInfo.parents[i-1]['s_k']"/>
+                    <el-input :maxlength="30" placeholder="请填写" class="show_modeid" v-model="regInfo.parents[i-1]['s_k']"/>
                   </el-form-item>
                   <div class="line-1" v-if="i==1"></div>
                 </template>
@@ -431,16 +435,16 @@
                 </p>
                 <template v-for="i in rewardRows" v-if="prizeOpen">
                   <el-form-item label="获奖时间:">
-                    <el-date-picker placeholder="请选择日期" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
+                    <el-date-picker placeholder="请选择日期" class="show_modeid" v-model="regInfo.rewards[i-1]['s_c']" type="date"/>
                   </el-form-item>
                   <el-form-item label="奖项名称:">
-                    <el-input placeholder="（限20字）" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
+                    <el-input placeholder="（限20字）" class="show_modeid" :maxlength="20" v-model="regInfo.rewards[i-1]['s_d']"/>
                   </el-form-item>
                   <el-form-item label="奖项等级:">
-                    <el-input placeholder="（限10字）" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
+                    <el-input placeholder="（限10字）" class="show_modeid" :maxlength="10" v-model="regInfo.rewards[i-1]['s_e']"/>
                   </el-form-item>
                   <el-form-item label="奖项范围:">
-                    <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择">
+                    <el-select v-model="regInfo.rewards[i-1]['s_t']" clearable placeholder="请选择" class="show_modeid">
                       <el-option
                         v-for="item in enumMap['s_t']"
                         :key="item.seiValue"
@@ -449,7 +453,7 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item label="奖项类别:">
-                    <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择">
+                    <el-select v-model="regInfo.rewards[i-1]['s_u']" clearable placeholder="请选择" class="show_modeid">
                       <el-option
                         v-for="item in enumMap['s_u']"
                         :key="item.seiValue"
@@ -642,9 +646,12 @@
       // 验证登录密码
       let checkpwd = (rule, value, callback) => {
         let pattern = /^[a-zA-Z0-9]{6,18}$/;
+        // if(this.regInfo.repwd && !this.regInfo.pwd) {
+        //    return callback(new Error('请填写密码'));
+        // }
         if (this.regInfo.pwd && !this.regInfo.repwd) {
           return callback(new Error('填写确认密码'));
-        } else if (this.regInfo.pwd && this.regInfo.pwd != this.regInfo.repwd) {
+        } else if ((this.regInfo.pwd && this.regInfo.pwd != this.regInfo.repwd )|| (this.regInfo.repwd && !this.regInfo.pwd)) {
           return callback(new Error('两次密码不一致'));
         } else if (this.regInfo.pwd && !pattern.test(this.regInfo.pwd) || this.regInfo.repwd && !pattern.test(this.regInfo.repwd)) {
           return callback(new Error('密码长度在6-18位之间'));
@@ -1212,6 +1219,7 @@
         if (vm.rewardRows != 1) {
           let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
           vm.regInfo.rewards[vm.rewardRows--] = obj
+           vm.regInfo.rewards =  vm.regInfo.rewards.splice(vm.rewardRows-1,1)
         } else {
           vm.$message.warning('不能低于1条获奖信息');
         }
@@ -1606,6 +1614,12 @@
   }
 </style>
 <style lang="less">
+  @media screen and (max-width: 480px) {
+    .show_modeid {
+      width: 100% !important;
+      border: 1px solid #ccc;
+    }
+  }
   .sign-wrap {
     /*height: 100%;*/
     /*overflow-y: scroll;*/
