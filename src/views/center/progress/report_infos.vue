@@ -129,7 +129,7 @@
       </div>
       <div class="parents-btn-box">
         <el-button @click="clickUpdata" class="item">上一步</el-button>
-        <el-button @click="clickDown(2)" class="item">保存至下一步</el-button>
+        <el-button @click="clickDown(2,parentInfo)" class="item">保存至下一步</el-button>
       </div>
     </div>
     <!-- 其他信息 -->
@@ -173,23 +173,11 @@
                                 :on-remove="handleRemove">
                                 <i class="el-icon-plus"></i>
                               </el-upload>
-                              <el-dialog :visible.sync="dialogVisible">
+                              <el-dialog :visible.sync="dialogVisible" style="width: 100px;" class="is">
                                 <img width="100%" :src="dialogImageUrl" alt="">
                                 <!-- <img width="100%" :src="imgUrl + id" alt=""> -->
                               </el-dialog>
-                            <!-- <ul class="fileList">
-                              <li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
-                               
-                                    <el-tooltip effect="light" :content="item.fileName" placement="top-start">
-                                        <a style="color: #6dbfff" :href="downloadUrl+item.fileId">{{index + 1}}
-                                            、{{item.fileName}}</a>
-                                    </el-tooltip>
-                                    <el-button size="small" type="text" icon="el-icon-delete"
-                                               style="margin-left: 10px;color: #fa5555"
-                                               @click="fileInfo.splice(index, 1)">
-                                    </el-button>
-                                </li>
-                            </ul> -->
+                            
                             </div>
                             
                             <span v-if="isPhone">
@@ -575,7 +563,7 @@ export default {
         .concat(vm.parentInfo)
         .concat(vm.otherInfo);
       if (saveData && saveData.length > 0) {
-        let mobileRes = /^1[34578]\d{9}$/;
+        let mobileRes = /^1[3456789]\d{9}$/;
         for (let i of saveData) {
           //判断带*的是否填写
           if (i.isRequired == 1) {
@@ -649,9 +637,11 @@ export default {
       this.cuid = this.cuid - 1;
     },
     //  下一步
-    clickDown(e) {
+    clickDown(e,a) {
       let that = this;
-        console.log(that.brInfo)
+       let mobileRes = /^1[3456789]\d{9}$/;
+        console.log(e,a)
+        
     //      parentInfo: [], // 家长信息
     //   otherInfo: [], // 其他信息
     //   
@@ -674,9 +664,30 @@ export default {
               if(item.fieldValue == '' && item.isRequired == 1){
                   return i = 1
               }
+              if(item.fieldCode == "s_h" || item.fieldCode == 's_jjlxr_phone' ){
+                if(item.fieldValue == '') {
+                  return 
+                }else if(!mobileRes.test(item.fieldValue)){
+                    
+                    console.log('======',mobileRes.test(item.fieldValue))
+                    console.log('--',item.fieldValue)
+                     return i = 2;
+                }
+
+                  
+                  
+                
+                 
+          }
           });
-          if(i == 1 ) {
-              that.open3()
+          if(i == 1 || i == 2 ) {
+            if(i == 1) {
+                that.open3()
+            }
+            if(i == 2) {
+                that.$message.warning("请输入正确格式的监护人手机号");
+            }
+            
           }else {
               that.cuid = that.cuid + 1;
           }
@@ -904,6 +915,9 @@ export default {
   .el-input {
     border: none;
     border: 1px solid #cccccc;
+  }
+  .upload-demo .el-upload-list--text {
+    width: 200px;
   }
 }
 /* .content .item-box span  {
