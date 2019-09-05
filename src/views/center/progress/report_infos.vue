@@ -225,7 +225,7 @@
       <div class="other-btn-box">
         <div class="btn-box">
           <el-button @click="clickUpdata" class="item-other">上一步</el-button>
-          <el-button @click="clickX(false)" class="item-other">保存</el-button>
+          <el-button @click="clickX(false,otherInfo)" class="item-other">保存</el-button>
         </div>
         <div class="btn-submit-box">
           <el-button @click="clickX(true)" class="item-submit">保存并提交</el-button>
@@ -550,10 +550,10 @@ export default {
         }
       });
     },
-    clickX(e) {
+    clickX(e,a) {
       //console.log(this.other);
       let vm = this;
-
+    console.log('=========',a)
        vm.$ispreview = 1
       localStorage.is = 1
      // console.log(vm.$ispreview)

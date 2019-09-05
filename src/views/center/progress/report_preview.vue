@@ -326,11 +326,15 @@ export default {
                 margin-bottom: 10px;
                 .left-box {
                     width: 160px;
+                    
                     text-align: left;
                     padding-right: 10px;
                     .colorred {
                         color: red;
                     }
+                }
+                .right-box {
+                  width: 200px;
                 }
             }
         }
