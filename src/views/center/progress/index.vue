@@ -364,9 +364,7 @@
         <template v-if="stempInfo.ifReport != 1  && stempInfo.startReportInfo == 1">
           <div v-if="stempInfo.ifSubmit != 1">
             <div v-if="(stempInfo.ifSubmit == null || stempInfo.ifSubmit == 0) && is">
-              请
-              <span class="color1">填写报到信息</span>并按学校通知时间
-              <span class="color1">到校报到</span>
+         <span>请</span><span class="color1">填写报到信息</span>并按学校通知时间<span class="color1">到校报到</span>
               <reportInfo @nodefn="ismod"></reportInfo>
             </div>
 
