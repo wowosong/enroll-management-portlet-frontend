@@ -117,7 +117,7 @@
                         v-if="nowStuInfo.scholarship != null"
                       >{{nowStuInfo.scholarship}}</el-form-item>
                       <el-form-item label="本学年奖学金：" v-else>0</el-form-item>
-                      <el-form-item label="应缴费：">{{nowStuInfo.assessment}}</el-form-item>
+                      <el-form-item label="应缴费：">{{nowStuInfo.assessment || 0}}</el-form-item>
                     </el-form>
                     <!--pc-->
                     <table class="my-table" v-if="!isPhone">
@@ -133,7 +133,7 @@
                         <tr>
                           <td>{{nowStuInfo.stuName}}</td>
                           <td>{{nowStuInfo.idCard}}</td>
-                          <td v-if="nowStuInfo.scholarship != null">{{nowStuInfo.scholarship }}</td>
+                          <td v-if="nowStuInfo.scholarship != null">{{nowStuInfo.scholarship}}</td>
                           <td v-else>0</td>
                           <td v-if="nowStuInfo.assessment != null">{{nowStuInfo.assessment }}</td>
                           <td v-else>0</td>
@@ -165,14 +165,14 @@
                           <button
                             :disabled="!isAgree"
                             :class="['save',{'disabled':!isAgree}]"
-                            @click="getAgrNo('h5')"
+                            @click="getAgrNo('h5',nowStuInfo.assessment)"
                           >在线支付</button>
                         </template>
                         <template v-if="!isPhone">
                           <button
                             :disabled="!isAgree"
                             :class="['save',{'disabled':!isAgree}]"
-                            @click="getAgrNo('web')"
+                            @click="getAgrNo('web',nowStuInfo.assessment)"
                           >在线支付</button>
                         </template>
                       </template>
@@ -657,8 +657,14 @@ export default {
         });
     },
     //获取客户协议号
-    getAgrNo(type) {
-      let vm = this;
+    getAgrNo(type,m) {
+        let vm = this;
+      console.log('===========',m,type)
+      if(!m) {
+         vm.$message.warning("在线支付功能升级中，请预约线下缴费。");
+        return
+      }
+    
       http
         .get(`/gateway/enroll/erCmbPay/getAgrNo/${vm.stempInfo.id}`)
         .then(function(xhr) {
