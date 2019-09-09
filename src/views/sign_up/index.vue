@@ -1218,8 +1218,8 @@
         let vm = this;
         if (vm.rewardRows != 1) {
           let obj = {s_c: "", s_d: "", s_e: "", s_t: "", s_u: ""};
-          vm.regInfo.rewards[vm.rewardRows--] = obj
-           vm.regInfo.rewards =  vm.regInfo.rewards.splice(vm.rewardRows-1,1)
+          vm.regInfo.rewards[--vm.rewardRows] = obj
+          vm.regInfo.rewards.pop()
         } else {
           vm.$message.warning('不能低于1条获奖信息');
         }
