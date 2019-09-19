@@ -487,7 +487,7 @@ export default {
   },
   created() {
     //console.log(this.is)
-    this.query();
+    // this.query();
   },
   mounted() {
     this.orderNo = localStorage.getItem("orderNo");
@@ -548,6 +548,7 @@ export default {
           if (xhr.code) return;
           vm.isLoading = false;
           vm.stempInfo = xhr.data;
+        
           vm.viewScore();
           vm.getPlanInfo();
           vm.expireFlag = false;
@@ -567,6 +568,7 @@ export default {
     getPlanInfo() {
       const vm = this;
       vm.planFlag = true;
+      
       http
         .get("/gateway/enroll/erEnrollPlan/" + vm.stempInfo.planId)
         .then(xhr => {

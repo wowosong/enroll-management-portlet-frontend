@@ -7,7 +7,7 @@
           报名校区：<span>{{planInfo.campusName}}</span> 报名年级：<span>{{planInfo.gradeName}}</span>
         </div>
         <div class="sign-subttit" v-else style="text-align: left;padding-left: 10%">
-          <div style="margin-bottom: 10px"> 报名校区:- <span>{{planInfo.campusName}}</span></div>
+          <div style="margin-bottom: 10px"> 报名校区: <span>{{planInfo.campusName}}</span></div>
           <div> 报名年级：<span>{{planInfo.gradeName}}</span></div>
          
         </div>
@@ -35,10 +35,11 @@
                   <span class="head-tips">本人近期免冠2寸白底或 蓝底证件照片。格式为png/jpg</span>
                   <div class="head-wrap">
                     <el-upload
+
                       class="avatar-uploader"
                       :action="uploadUrl"
                       :show-file-list="false"
-                      :multiple="true"
+                      :multiple="false"
                       :accept="'image/*'"
                       :on-success="handleAvatarSuccess">
                       <img v-if="!regInfo.photoId" src="@/imgs/warp/head.png" class="org-img"/>
@@ -479,7 +480,7 @@
                       </div>
                       <el-upload
                         :action="uploadUrl"
-                        :multiple="true"
+                        :multiple="false"
                         :show-file-list="false"
                         :file-list="fileList"
                         :accept="'image/*'"
@@ -778,6 +779,7 @@
     mounted() {
       const vm = this;
       vm.phaseName = vm.$route.query.phaseName;
+     
       vm.planId = vm.$route.query.id;
       if (vm.phaseName == "高中") {
         vm.isrequired = false
@@ -788,6 +790,8 @@
       vm.getGradeList();
       vm.getPlanInfo();
       vm.getReg();
+      
+     
       // 解决google记住密码后自动填充
       setTimeout(() => {
         vm.showInput = true;

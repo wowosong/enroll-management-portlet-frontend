@@ -160,6 +160,7 @@
     mounted() {
       if(this.$store.state.userInfo.id){
         this.init();
+        console.log(this.isEdit)
       }
     },
     methods: {
@@ -172,8 +173,9 @@
           }
           vm.planId = xhr.data.data.planId;
           vm.regId = xhr.data.data.regId;
-          vm.getPlanInfo();
           vm.getReg();
+          vm.getPlanInfo();
+         
         })
       },
       querySearch(queryString, cb) {
@@ -214,7 +216,7 @@
             return;
           }
           vm.planInfo = xhr.data.data;
-          if(vm.planInfo.schoolEndDate > new Date().getTime()) {
+          if((vm.planInfo.schoolEndDate > new Date().getTime() || vm.planInfo.schoolEndDate == null ) && vm.regInfo.isRegistration != 1) {
             vm.isEdit = true;
           } else {
             vm.isEdit = false;

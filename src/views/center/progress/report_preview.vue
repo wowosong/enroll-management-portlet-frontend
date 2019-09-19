@@ -53,10 +53,11 @@
                                     </el-tooltip>      
                                 </li>
                                 </div>
-                                <div v-if="isPhone ==false">
+                                <div v-if="isPhone == false">
                                    <img :src="imgUrl + id" alt="" style="border: 1px solid #ccc ; width: 100px ; height: 100px" class="imgBig" @click="imgBig">
                                    <div class="maskImg" @click="FDimg" v-if="isBig">
                                      <img :src="imgUrl + id" alt="" >
+                                     <div></div>
                                    </div>
                                 </div>
                                  

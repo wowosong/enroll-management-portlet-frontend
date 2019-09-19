@@ -31,7 +31,7 @@
               @click="choseTime((reserveMap[i.date]&&time<i.date&&reserveMap[i.date][item.seiValue].maxNum != 0&&!reserveMap[i.date][item.seiValue].nonChange)?{id:reserveMap[i.date][item.seiValue].id,time:item.seiName,day:i.date}:'')"
               :id="i.date+item.seiValue" v-bind:class="backgroundId==(reserveMap[i.date]?(reserveMap[i.date][item.seiValue]).id:'')?'backgroundStyle':''"
               :style="(reserveMap[i.date]&&time<i.date)&&reserveMap[i.date][item.seiValue].maxNum != 0?(reserveMap[i.date][item.seiValue].nonChange?'background: #ff0000; color: #fff':'background: #fff'):'background: #e4e7ed'">
-          <span v-if="reserveMap[i.date] &&time < i.date && reserveMap[i.date][item.seiValue].maxNum != 0">
+          <span v-if="reserveMap[i.date] && (i.date > time) && reserveMap[i.date][item.seiValue].maxNum">
             <span v-if="reserveMap[i.date][item.seiValue].nonChange">
               已约满
             </span>
@@ -39,7 +39,7 @@
               可预约
             </span>
           </span>
-            <span v-else>不可预约</span>
+          <span v-else>不可预约</span>
           </td>
         </tr>
       </table>
@@ -69,12 +69,14 @@
       }
     },
     computed: {
+     
       isPhone: function () {
         return this.$store.state.isPhone
       },
     },
     mounted() {
       const vm = this;
+       vm.time =  new Date().getTime(),
       vm.pageFlag = false;
       vm.thisWeek();
     },
@@ -122,6 +124,7 @@
             obj["haveNum"] = haveNum;
             obj["maxNum"] = maxNum;
             vm.reserveMap[date] = obj;
+            console.log(vm.reserveMap[date])
           }
           vm.getEnum();
         })
@@ -145,7 +148,7 @@
             return;
           }
           vm.tableHead = xhr.data.data;
-          
+          // console.log(xhr.data.data)
           vm.getReserve();
         })
       },

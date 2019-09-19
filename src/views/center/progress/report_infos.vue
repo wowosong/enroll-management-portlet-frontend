@@ -165,19 +165,22 @@
                             <div v-if="!isPhone" style='margin-top: 10px;'>
                             <!-- <el-button type="primary" @click="showUploadAttach">点击上传</el-button> -->
                             <el-upload
+                                
                                 :action= "url"
                                 list-type="picture-card"
                                 :limit= 1
+                               
+                                :file-list="fileList"
                                 :on-success="handlePictureCardPreviews"
                                 :on-preview="handlePictureCardPreview"
                                 :on-remove="handleRemove">
                                 <i class="el-icon-plus"></i>
                               </el-upload>
-                              <el-dialog :visible.sync="dialogVisible" style="width: 100px;" class="is">
+                              <el-dialog :visible.sync="dialogVisible" style="width: 100%;" class="is">
                                 <img width="100%" :src="dialogImageUrl" alt="">
+                               
                                 <!-- <img width="100%" :src="imgUrl + id" alt=""> -->
                               </el-dialog>
-                            
                             </div>
                             
                             <span v-if="isPhone">
@@ -246,7 +249,10 @@ export default {
       dialogVisible: false,
       url: '/gateway/zuul/filesystem/api/upload/simpleupload?userId=' + window.userInfo.id,
       imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
-      fileList: [],
+      fileList: [
+        { name: 'data.png',
+          url: ''
+        }],
       brInfo: [], // 本人信息
       parentInfo: [], // 家长信息
       otherInfo: [], // 其他信息
@@ -280,8 +286,12 @@ export default {
   },
   created() {
     let vm = this;
+    vm.dialogImageUrl = localStorage.getItem('dialogImageUrl')
+    // vm.dialogImageUrl = vm.imgUrl + vm.id
     http.get(vm.imgUrl + vm.id).then(xhr=> {
       console.log('=======xhr=',xhr)
+      vm.fileList[0].url = xhr.url
+      // vm.fileList[0].name = xhr.name
     })
     // console.log(window.userInfo.id)
     vm.getAddList();
@@ -402,7 +412,13 @@ export default {
     // this.items = res.data.fieldInfos
    // console.log(this.isPhone)
   },
-  
+  mounted(){
+    let vm = this
+    if(this.dialogImageUrl) {
+      this.dialogImageUrl = vm.imgUrl + vm.id
+      console.log('====00=====',this.dialogImageUrl)
+    }
+  },
   methods: {
     handlePictureCardPreviews(file) {
       let vm = this
@@ -419,11 +435,18 @@ export default {
     handlePictureCardPreview(file){
       //console.log(f)
       this.dialogImageUrl = file.url;
+      localStorage.setItem('dialogImageUrl',this.dialogImageUrl)
         this.dialogVisible = true;
-         console.log('1--------',this.dialogImageUrl)
+         console.log('1--------',file)
     },
     handleRemove(file, fileList) {
+      let vm = this
       //  console.log(file, fileList);
+       http.get(vm.imgUrl + vm.id).then(xhr=> {
+      console.log('=======xhr=',xhr)
+      
+      // vm.fileList[0].name = xhr.name
+    })
       },
       handlePreview(file) {
        // console.log(file);
@@ -551,6 +574,7 @@ export default {
       });
     },
     clickX(e,a) {
+      
       //console.log(this.other);
       let vm = this;
     console.log('=========',a)

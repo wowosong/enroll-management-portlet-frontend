@@ -95,7 +95,7 @@ Vue.http.interceptors.push(function (request, next) {
       }
     }
     // 出现异常 401
-    if (!response.ok) {
+    if (!response.ok == 401) {
       // if (!data.data || data.error == 'invalid_token' || data.error == 'unauthorized') {
       //   // 跳到登录页
       //   logout();

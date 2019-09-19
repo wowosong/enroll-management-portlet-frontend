@@ -36,6 +36,7 @@ export default {
   watch:{
     isPhone:function(oldData,newData){
       this.isShowMore = newData ? false : true
+      console.log(this.isShowMore)
     }
   },
   mounted() {
@@ -49,6 +50,7 @@ export default {
       let vm = this;
       http.get("/gateway/platform/api/school/all").then(function (xhr) {
         vm.campusList = xhr.data
+        console.log(xhr.data)
       })
     },
     camputedFn(item){
