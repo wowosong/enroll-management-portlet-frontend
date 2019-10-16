@@ -21,7 +21,7 @@
               <label @click="goCenter">
                 <img v-if="userInfo.accountAvatar" :src="avatar_url+userInfo.accountAvatar">
                 <img v-else src="@/imgs/avatar.png">
-                <span class="user-name">{{userInfo.userName}}</span>
+                <span class="user-name" style="width: 150px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; display: inline-block;">{{userInfo.userName}}</span>
               </label>
               <span class="logout" @click="logout">退出</span>
             </a>
@@ -133,6 +133,7 @@
       }
     }
     a {
+	  display: flex;
       color: #fff;
       float: right;
       label {
