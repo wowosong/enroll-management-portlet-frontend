@@ -11,7 +11,6 @@
                     </div>
                     <div class="right-box">
                         <span>{{item.fieldText}} <span v-if="item.remark  != ''">,{{item.remark}}</span></span>
-                       
                     </div>
                 </li>
             </ul>
@@ -27,7 +26,6 @@
                     </div>
                     <div class="right-box">
                         <span>{{item.fieldText}}<span v-if="item.remark  != ''">,{{item.remark}}</span></span>
-                       
                     </div>
                 </li>
             </ul>
@@ -44,7 +42,7 @@
                     <div class="right-box">
                         <span>{{item.fieldText}}</span>
                         <span v-if="item.remark  != ''">,{{item.remark}}</span>
-                          <ul class="fileList" v-if="item.domType == 7">
+                        <ul class="fileList" v-if="item.domType == 7">
                               <div v-if="isPhone == true">
                               <li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
                                     <el-tooltip effect="light" :content="item.fileName" placement="top-start">
@@ -60,8 +58,7 @@
                                      <div></div>
                                    </div>
                                 </div>
-                                 
-                      </ul>
+						</ul>
                     </div>
                 </li>
             </ul>
@@ -321,9 +318,6 @@ export default {
             }
         }
     }
-    // .right-box {
-    
-    // }
     .right-box span {
       display: inline-block;
       width: 200px;
