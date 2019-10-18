@@ -159,17 +159,14 @@
                   </span>
                   
                 </span>
-                
                  <span v-else-if="other.domType == 7 && flag ">
                             <el-button  @click="downloadSq()" v-if="!isPhone">下载申请表</el-button>
                             <div v-if="!isPhone" style='margin-top: 10px;'>
                             <!-- <el-button type="primary" @click="showUploadAttach">点击上传</el-button> -->
                             <el-upload
-                                
                                 :action= "url"
                                 list-type="picture-card"
                                 :limit= 1
-                               
                                 :file-list="fileList"
                                 :on-success="handlePictureCardPreviews"
                                 :on-preview="handlePictureCardPreview"
@@ -178,13 +175,10 @@
                               </el-upload>
                               <el-dialog :visible.sync="dialogVisible" style="width: 100%;" class="is">
                                 <img width="100%" :src="dialogImageUrl" alt="">
-                               
                                 <!-- <img width="100%" :src="imgUrl + id" alt=""> -->
                               </el-dialog>
                             </div>
-                            
                             <span v-if="isPhone">
-        
                               <el-upload
                                 class="upload-demo"
                                 :action= 'url'
@@ -250,7 +244,7 @@ export default {
       url: '/gateway/zuul/filesystem/api/upload/simpleupload?userId=' + window.userInfo.id,
       imgUrl: '/gateway/zuul/filesystem/api/image/thumbnail/',
       fileList: [
-        { name: 'data.png',
+        { name: '',
           url: ''
         }],
       brInfo: [], // 本人信息
@@ -306,7 +300,7 @@ export default {
           vm.$message.warning("请导入表单信息");
           return
         }
-       // console.log(xhr)
+		console.log('xhr',xhr);
         vm.configList = xhr.data;
         vm.fileInfo = vm.configList.fileInfo;
         vm.brInfo = []; // 本人信息
@@ -314,9 +308,7 @@ export default {
         vm.otherInfo = []; // 其他
         let idx = 0;
         let parentTemp = [];
-        let temp = ["s_g", "s_h", "s_j"
-        // , "s_i", "s_k"
-        ];
+        let temp = ["s_g", "s_h", "s_j"];
         //处理数据字典下拉列表数据
         if (vm.configList.fieldInfos && vm.configList.fieldInfos.length) {
           let map = {};
@@ -329,6 +321,7 @@ export default {
             vm.getOtherEnum(map);
           }
         }
+		console.log('configList.fieldInfos:-------------',vm.configList.fieldInfos)
          for (let i of vm.configList.fieldInfos) {
             vm.$set(i,"editable",false)
             if(!i.fieldValue) {
@@ -367,6 +360,7 @@ export default {
                   }
                 }
             } else {
+			  console.log('--------------',vm.otherInfo)
               vm.otherInfo.push(i);
             }
           }
@@ -422,7 +416,8 @@ export default {
   methods: {
     handlePictureCardPreviews(file) {
       let vm = this
-      console.log('2=======',file.data)
+      // console.log('2=======',file.data)
+	  console.log('location',file.data)
       let v = file.data
       vm.fileInfo.push({
                 fileId: v.id,
@@ -447,25 +442,17 @@ export default {
       
       // vm.fileList[0].name = xhr.name
     })
-      },
-      handlePreview(file) {
-       // console.log(file);
-      },
-      handlePreviews(file){
-        console.log(file)
-      },
+    },
      handleChanges(files) {
-      // console.log('1222222')
       let v = files.data
+	  // vm.brInfo
       this.fileInfo.push({
                 fileId: v.id,
                 fileName: v.filename,
                 fileSize: v.filesize,
                 fileExt: v.ext
               });
-       console.log(this.fileInfo)
-
-       
+       console.log(this.fileInfo)    
       }
     ,
     downloadSq() {
@@ -490,7 +477,6 @@ export default {
                 fileExt: v.ext
               });
             });
-           // console.log(files)
           }
         
         });
@@ -574,11 +560,9 @@ export default {
       });
     },
     clickX(e,a) {
-      
-      //console.log(this.other);
-      let vm = this;
+    let vm = this;
     console.log('=========',a)
-       vm.$ispreview = 1
+      vm.$ispreview = 1
       localStorage.is = 1
      // console.log(vm.$ispreview)
       let saveData = [];
@@ -591,6 +575,7 @@ export default {
         for (let i of saveData) {
           //判断带*的是否填写
           if (i.isRequired == 1) {
+				console.log('--------------',i.isrequired)
             if (!i.fieldValue) {
               vm.$message.warning("带*号的为必填项！");
               return;
@@ -645,7 +630,6 @@ export default {
           if(res.data.code == 0) {
             vm.$emit('nodefn')
           }
-          
         });
       
     },
@@ -697,11 +681,6 @@ export default {
                     console.log('--',item.fieldValue)
                      return i = 2;
                 }
-
-                  
-                  
-                
-                 
           }
           });
           if(i == 1 || i == 2 ) {
@@ -873,7 +852,7 @@ export default {
     font-size: 14px;
   }
   .el-input {
-    // margin-top: 5px;
+    margin-top: 5px;
   }
   .el-box {
     display: block;
@@ -948,3 +927,4 @@ export default {
   width: 100%;
 } */
 </style>
+>>>>>>> fdae421ee8d70545afcfe1c8daa0043a5dc4875b
