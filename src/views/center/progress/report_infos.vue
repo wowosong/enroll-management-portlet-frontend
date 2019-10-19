@@ -154,7 +154,6 @@
                  <span v-else-if="other.domType == 7 && flag ">
                             <el-button  @click="downloadSq()" v-if="!isPhone">下载申请表</el-button>
                             <div v-if="!isPhone" style='margin-top: 10px;'>
-                            <!-- <el-button type="primary" @click="showUploadAttach">点击上传</el-button> -->
                             <el-upload
                                 :action= "url"
                                 list-type="picture-card"
