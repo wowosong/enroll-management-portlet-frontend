@@ -43,21 +43,21 @@
                         <span>{{item.fieldText}}</span>
                         <span v-if="item.remark  != ''">,{{item.remark}}</span>
                         <ul class="fileList" v-if="item.domType == 7">
-                              <div v-if="isPhone == true">
-                              <li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
-                                    <el-tooltip effect="light" :content="item.fileName" placement="top-start">
-                                        <a style="color: #6dbfff" :href="downloadUrl+item.fileId">{{index + 1}}
-                                            、{{item.fileName}}</a>`
-                                    </el-tooltip>      
-                                </li>
-                                </div>
-                                <div v-if="isPhone == false">
-                                   <img :src="imgUrl + id" alt="" style="border: 1px solid #ccc ; width: 100px ; height: 100px" class="imgBig" @click="imgBig">
-                                   <div class="maskImg" @click="FDimg" v-if="isBig">
-                                     <img :src="imgUrl + id" alt="" >
-                                     <div></div>
-                                   </div>
-                                </div>
+							<div v-if="isPhone == true">
+							<li v-if="fileInfo && fileInfo.length > 0" v-for="(item,index) in fileInfo" :key="index">
+								<el-tooltip effect="light" :content="item.fileName" placement="top-start">
+									<a style="color: #6dbfff" :href="downloadUrl+item.fileId">{{index + 1}}
+										、{{item.fileName}}</a>`
+								</el-tooltip>      
+							</li>
+							</div>
+							<div v-if="isPhone == false">
+							   <img :src="imgUrl + id" alt="" style="border: 1px solid #ccc ; width: 100px ; height: 100px" class="imgBig" @click="imgBig">
+							   <div class="maskImg" @click="FDimg" v-if="isBig">
+								 <img :src="imgUrl + id" alt="" >
+								 <div></div>
+							   </div>
+							</div>
 						</ul>
                     </div>
                 </li>
@@ -175,7 +175,6 @@ export default {
             }
             vm.parentInfo = vm.parentInfo.slice(0,idx).concat(parentTemp).concat(vm.parentInfo.splice(idx));
           }
-
      })
     },
     methods: {
@@ -242,7 +241,6 @@ export default {
             .border-left {
                 border-left: 10px solid #97330e;
                 padding-left: 8px;
-                
             }
             .list {
                 margin-top: 10px;
