@@ -12,7 +12,6 @@
                 <div class="no_data" v-if="!noticeList || noticeList.length == 0"></div>
             </div>
         </div>
-
     </div>
 </template>
 <script>
