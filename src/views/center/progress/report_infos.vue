@@ -62,14 +62,6 @@
                 <span v-if="it.fieldClass.indexOf('append') != -1" class="el-input el-input-bs">
                     <el-input v-model="it.remark" type="text" :maxlength="it.textLength" :placeholder="it.reamkText"></el-input>
                 </span>
-                <!-- <div v-if="!isPhone" class="pc-input">
-                  <el-input
-                    v-model="it.remark"
-                    :placeholder="it.reamkText"
-                    class="inputs"
-                    v-if="it.reamkText != ''"
-                  ></el-input>
-                </div> -->
               </div>
             </div>
           </li>
@@ -78,7 +70,7 @@
       <div class="items-btn-box">
         <el-button @click="clickDown(1)" class="item-btn">保存至下一步</el-button>
       </div>
-      
+
     </div>
     <!-- 家长信息 -->
     <div v-show="cuid == 2 ">
@@ -121,7 +113,7 @@
                 <span v-if="parent.fieldClass.indexOf('append') != -1">
                   <el-input v-model="parent.remark" type="text" :placeholder="parent.reamkText" :maxlength="50"></el-input>
                 </span>
-               
+
               </div>
             </div>
           </li>
@@ -157,12 +149,11 @@
                   <span v-if="other.fieldClass.indexOf('append') != -1">
                     <el-input v-model="other.remark" type="text" :maxlength="50"></el-input>
                   </span>
-                  
+
                 </span>
                  <span v-else-if="other.domType == 7 && flag ">
                             <el-button  @click="downloadSq()" v-if="!isPhone">下载申请表</el-button>
                             <div v-if="!isPhone" style='margin-top: 10px;'>
-                            <!-- <el-button type="primary" @click="showUploadAttach">点击上传</el-button> -->
                             <el-upload
                                 :action= "url"
                                 list-type="picture-card"
@@ -202,11 +193,11 @@
                   ></el-input>
                     </span>
                 </span>
-                
+
                 <span v-if="other.fieldClass.indexOf('append') != -1">
                   <el-input v-model="other.remark" type="text" :placeholder="other.reamkText" :maxlength="50"></el-input>
                 </span>
-                   
+
               </div>
               <span v-if="other.domType == 3 && flag ">
                 <span v-if="other.reamkText != null" class="showText">{{other.reamkText}}</span>
@@ -399,12 +390,10 @@ export default {
             }
             vm.parentInfo = vm.parentInfo.slice(0,idx).concat(parentTemp).concat(vm.parentInfo.splice(idx));
           }
-       
+
       });
-    
+
     vm.isPhone = vm.$store.state.isPhone;
-    // this.items = res.data.fieldInfos
-   // console.log(this.isPhone)
   },
   mounted(){
     let vm = this
@@ -424,8 +413,8 @@ export default {
                 fileName: v.filename,
                 fileSize: v.filesize,
                 fileExt: v.ext
-              }); 
-      localStorage.setItem('imgId',v.id)      
+              });
+      localStorage.setItem('imgId',v.id)
     },
     handlePictureCardPreview(file){
       //console.log(f)
@@ -439,7 +428,7 @@ export default {
       //  console.log(file, fileList);
        http.get(vm.imgUrl + vm.id).then(xhr=> {
       console.log('=======xhr=',xhr)
-      
+
       // vm.fileList[0].name = xhr.name
     })
     },
@@ -452,7 +441,7 @@ export default {
                 fileSize: v.filesize,
                 fileExt: v.ext
               });
-       console.log(this.fileInfo)    
+       console.log(this.fileInfo)
       }
     ,
     downloadSq() {
@@ -478,7 +467,7 @@ export default {
               });
             });
           }
-        
+
         });
       },
     getAddList() {
@@ -631,12 +620,12 @@ export default {
             vm.$emit('nodefn')
           }
         });
-      
+
     },
     saveFileInfo() {
         let vm = this;
           http.post("/gateway/enroll/api/erReport/saveFileInfo/" +  localStorage.getItem("regid"), vm.fileInfo).then(function (xhr) {
-            if (xhr.data.code) 
+            if (xhr.data.code)
             console.log('===xhr=',xhr);
           });
       },
@@ -647,12 +636,8 @@ export default {
     //  下一步
     clickDown(e,a) {
       let that = this;
-       let mobileRes = /^1[3456789]\d{9}$/;
-        console.log(e,a)
-        
-    //      parentInfo: [], // 家长信息
-    //   otherInfo: [], // 其他信息
-    //   
+      let mobileRes = /^1[3456789]\d{9}$/;
+      console.log(e,a)
       let i = 0
       switch(e){
         case 1:
@@ -674,9 +659,9 @@ export default {
               }
               if(item.fieldCode == "s_h" || item.fieldCode == 's_jjlxr_phone' ){
                 if(item.fieldValue == '') {
-                  return 
+                  return
                 }else if(!mobileRes.test(item.fieldValue)){
-                    
+
                     console.log('======',mobileRes.test(item.fieldValue))
                     console.log('--',item.fieldValue)
                      return i = 2;
@@ -690,7 +675,7 @@ export default {
             if(i == 2) {
                 that.$message.warning("请输入正确格式的监护人手机号");
             }
-            
+
           }else {
               that.cuid = that.cuid + 1;
           }

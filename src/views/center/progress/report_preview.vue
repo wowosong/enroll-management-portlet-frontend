@@ -321,5 +321,4 @@ export default {
       width: 200px;
       word-break: break-word
     }
-    }
-</style>
+}
