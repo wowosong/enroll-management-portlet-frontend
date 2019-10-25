@@ -89,24 +89,7 @@ export default {
         border-left: 4px solid #aa2f33;
         font-weight: bold;
     }
-    // .campus_tit{
-    //     border-left: 4px solid #fff;
-    //     padding-left: 20px;
-    //     font-size: 14px;
-    //     // font-weight: bold;
-    //     margin-bottom: 15px;
-    //     line-height: 16px;
-    //     cursor: pointer;
-    //     color:#666;
-    //     img{
-    //       display: none;
-    //     }
-    // }
-    // .allInfo{
-    //   color: #2f3861;
-    //   border-left: 4px solid #aa2f33;
-
-    // }
+   
     //warp版本
     .is_phone{
       .campus_main{
@@ -148,4 +131,3 @@ export default {
       }
     }
 </style>
-
